@@ -26,9 +26,9 @@ def main():
     random.seed(1234)
     servers = generate_servers()
     tasks = []
-    scheduler = Scheduler(servers, scheduler="carbon_greedy")
-    # scheduler = Scheduler(servers, scheduler="carbon_aware")
-    # scheduler = Scheduler(servers, scheduler="latency_greedy")
+    # scheduler = Scheduler(servers, scheduler="carbon_greedy")
+    scheduler = Scheduler(servers, scheduler="carbon_aware")
+    #scheduler = Scheduler(servers, scheduler="latency_greedy")
     mean_latencies = []
     mean_carbon_intensity = []
 
@@ -60,7 +60,7 @@ def main():
 def generate_servers():
     servers = []
     for filename, location in zip(REGION_NAMES, LOCATIONS):
-        df = load(f"../electricity_map/{filename}.csv", False)
+        df = load(f"electricity_map/{filename}.csv", False)
         r = Region(filename, location)
         s = Server(1000, r, df)
         servers.append(s)
