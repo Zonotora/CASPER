@@ -10,7 +10,6 @@ class Server:
     """
 
     def __init__(self, capacity: int, region: Region, carbon_data):
-        """ """
         self.capacity = capacity
         self.current_utilization = 0
         self.region = region

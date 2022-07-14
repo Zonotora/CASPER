@@ -75,13 +75,9 @@ class Scheduler:
         above = sorted([x for x in data if x["latency"] > max_latency], key=lambda x: x["carbon_intensity"])
         return below + above
 
-    def schedule(self, task_batch, dt: int):
+    def schedule(self, plot, task_batch, dt: int):
         data = {"latency": [], "carbon_intensity": []}
         self.buffer.append(task_batch)
-
-        def add_data(task_batch, scheduled_item):
-            for key in ["latency", "carbon_intensity"]:
-                data[key].append(scheduled_item[key] * task_batch.load)
 
         i = 0
         while i < len(self.buffer):
@@ -92,7 +88,7 @@ class Scheduler:
                 s = scheduled_item["server"]
 
                 if s.update_utilization(task_batch):
-                    add_data(task_batch, scheduled_item)
+                    plot.add(task_batch, scheduled_item, dt)
                     del self.buffer[i]
                     i -= 1
                     break
@@ -107,7 +103,7 @@ class Scheduler:
                     )
                     s.update_utilization(partial_batch)
 
-                    add_data(task_batch, scheduled_item)
+                    plot.add(task_batch, scheduled_item, dt)
             i += 1
 
         for key in ["latency", "carbon_intensity"]:
