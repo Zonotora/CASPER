@@ -24,24 +24,24 @@ def main():
         Scheduler(servers, Region(name, location), scheduler=conf.algorithm)
         for name, location in zip(REGION_NAMES, REGION_LOCATIONS)
     ]
-    plot = Plot(TIMESTEPS)
+    plot = Plot(conf)
     id = 0
 
-    for dt in range(TIMESTEPS):
-        for _ in range(0, TASK_PER_TIMESTEP):
+    for dt in range(conf.timesteps):
+        for ds in range(0, conf.tasks_per_hour):
             # get list of servers for each task batch where the
             # scheduler thinks it is best to place each batch
             indices = np.random.choice(len(schedulers), len(schedulers), replace=False)
             for i in indices:
                 scheduler = schedulers[i]
-                task_batch = TaskBatch(f"Task {id}", 1, 1, scheduler.region)
-                data = scheduler.schedule(plot, task_batch, dt)
+                task_batch = TaskBatch(f"Task {id}", 1, 6, scheduler.region)
+                scheduler.schedule(plot, task_batch, dt, ds)
                 id += 1
 
             for s in servers:
                 s.step()
 
-    plot.plot(conf)
+    plot.plot()
 
 
 if __name__ == "__main__":

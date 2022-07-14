@@ -18,7 +18,7 @@ class Server:
         self.buffer = []
 
     def __repr__(self) -> str:
-        return f"{self.region:<15} capcity: {self.capacity:<6}"
+        return f"{self.region:<10} capcity: {self.capacity:<6} utilization: {self.current_utilization:<6} buffer: {len(self.buffer):<6}"
 
     def get_utilization_left(self):
         return self.capacity - self.current_utilization
@@ -43,10 +43,10 @@ class Server:
 
 def build_servers():
     servers = []
-    for name, location in zip(REGION_NAMES, REGION_LOCATIONS):
+    for name, location, capacity in zip(REGION_NAMES, REGION_LOCATIONS, [10, 20, 30, 40]):
         df = load(f"electricity_map/{name}.csv", False)
         r = Region(name, location)
-        s = Server(1000, r, df)
+        s = Server(capacity, r, df)
         servers.append(s)
 
     return servers

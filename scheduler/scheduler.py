@@ -1,7 +1,6 @@
 from scheduler.region import Region
 from scheduler.task import TaskBatch
 import numpy as np
-from collections import deque
 
 
 class Scheduler:
@@ -9,15 +8,14 @@ class Scheduler:
         self.servers = servers
         self.region = region
         self.alg = self.__get_scheduler(scheduler)
-        self.buffer = deque()
 
     def __get_scheduler(self, name):
         if name == "latency_greedy":
             return self.__latency_greedy
         elif name == "carbon_greedy":
             return self.__carbon_greedy
-        elif name == "carbon_aware":
-            return self.__carbon_aware
+        elif name == "carbon_aware_naive":
+            return self.__carbon_aware_naive
 
     def __latency_greedy(self, task_batch, dt):
         """
@@ -53,7 +51,7 @@ class Scheduler:
             key=lambda x: x["carbon_intensity"],
         )
 
-    def __carbon_aware(self, task_batch, dt):
+    def __carbon_aware_naive(self, task_batch, dt):
         """
         Input: tasks that want to be run.
         Output: What server each task should be run on
@@ -75,35 +73,33 @@ class Scheduler:
         above = sorted([x for x in data if x["latency"] > max_latency], key=lambda x: x["carbon_intensity"])
         return below + above
 
-    def schedule(self, plot, task_batch, dt: int):
-        self.buffer.append(task_batch)
+    def schedule(self, plot, task_batch, dt: int, ds: int):
+        scheduled_task_batch = self.alg(task_batch, dt)
 
-        i = 0
-        while i < len(self.buffer):
-            task_batch = self.buffer[i]
-            scheduled_task_batch = self.alg(task_batch, dt)
+        has_been_scheduled = True
+        for scheduled_item in scheduled_task_batch:
+            s = scheduled_item["server"]
 
-            for scheduled_item in scheduled_task_batch:
-                s = scheduled_item["server"]
+            if s.update_utilization(task_batch):
+                plot.add(task_batch, scheduled_item, dt, ds)
+                has_been_scheduled = True
+                break
+            else:
+                # send partial batch and update load
+                partial_load = s.get_utilization_left()
+                if partial_load == 0:
+                    continue
+                task_batch.reduce_load(partial_load)
+                partial_batch = TaskBatch(
+                    task_batch.name + ":partial", partial_load, task_batch.lifetime, task_batch.region
+                )
+                s.update_utilization(partial_batch)
 
-                if s.update_utilization(task_batch):
-                    plot.add(task_batch, scheduled_item, dt)
-                    del self.buffer[i]
-                    i -= 1
-                    break
-                else:
-                    # send partial batch and update load
-                    partial_load = s.get_utilization_left()
-                    if partial_load == 0:
-                        continue
-                    task_batch.reduce_load(partial_load)
-                    partial_batch = TaskBatch(
-                        task_batch.name + ":partial", partial_load, task_batch.lifetime, task_batch.region
-                    )
-                    s.update_utilization(partial_batch)
+                plot.add(task_batch, scheduled_item, dt, ds)
 
-                    plot.add(task_batch, scheduled_item, dt)
-            i += 1
+        # task batch should be fully distributed to available servers
+        assert has_been_scheduled
+
         data = {}
         for key in ["latency", "carbon_intensity"]:
             data[key] = plot.get(key)
