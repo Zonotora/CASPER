@@ -49,3 +49,13 @@ def load(name, resample=True, resample_metric="W"):
         df.set_index(["datetime"], inplace=True)
         df = df.resample(resample_metric)
     return df
+
+def load_carbon_intensity(name, resample=True, resample_metric="W"):
+    df = pd.read_csv(name)
+    if resample:
+        df.datetime = pd.to_datetime(df["datetime"], format="%Y-%m-%d %H:%M:%S.%f")
+        df.set_index(["datetime"], inplace=True)
+        df = df.resample(resample_metric)
+    return df["carbon_intensity"]
+
+

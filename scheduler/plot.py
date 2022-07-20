@@ -13,7 +13,6 @@ class Plot:
         else:
             self.data = data
 
-
     def add(self, task_batch, scheduled_item, t):
         data = {}
         for key in ["latency", "carbon_emissions"]:
