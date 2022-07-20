@@ -1,6 +1,12 @@
 from collections import defaultdict
+import matplotlib.pyplot as plt
 import pandas as pd
 from datetime import datetime
+import numpy as np
+import os
+
+from scheduler.region import Region
+from scheduler.constants import REGION_LOCATIONS
 
 
 def save_file(name, data):
@@ -75,3 +81,16 @@ def load_request_rate(path="data\de.out", date_start="2007-12-12"):
     return request_regions
 
 
+
+def load_region_data(d, resample=True, resample_metric="W"):
+    data = {}
+    for file in os.listdir(d):
+        if file.endswith(".csv"):
+            path = os.path.join(d, file)
+            name = os.path.basename(path)
+            name, ext = os.path.splitext(name)
+            region_data = {}
+            region_data["data"] = load(path, resample=resample, resample_metric=resample_metric)
+            location = REGION_LOCATIONS[name]
+            region_data["region"] = Region(name, location)
+    return data

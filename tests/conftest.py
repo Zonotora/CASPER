@@ -15,7 +15,8 @@ def df_carbon_intensity():
 def servers_infty():
     servers = []
     df_all = pd.read_csv("data/carbon_intensity_avg.csv")
-    for name, location in zip(df_all.columns, REGION_LOCATIONS):
+    for name in df_all.columns:
+        location = REGION_LOCATIONS[name]
         df = pd.DataFrame(data={"carbon_intensity_avg": df_all[name]})
         r = Region(name, location)
         s = Server(999999, r, df)

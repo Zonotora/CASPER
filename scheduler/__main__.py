@@ -1,4 +1,4 @@
-from scheduler.server import build_servers
+from scheduler.server import ServerManager, build_servers
 from scheduler.request import RequestBatch
 from scheduler.constants import REGION_LOCATIONS, REGION_NAMES
 from scheduler.parser import parse_arguments
@@ -24,25 +24,22 @@ def main():
         plot.plot()
         exit()
 
-    servers = build_servers()
-    regions = [Region(name, location) for name, location in zip(REGION_NAMES, REGION_LOCATIONS)]
+    server_manager = ServerManager()
     plot = Plot(conf)
-    id = 0
 
     request_update_interval = 60 // conf.request_update_interval
 
     for t in range(conf.timesteps):
-        for server in servers:
-            server.reset_utilization()
+        for _ in range(0, request_update_interval):
+            # get number of requests for timeframe
+            requests = 1000
+            # call the scheduling algorithm
+            latency, carbon_intensity, requests = schedule(requests, conf.algorithm, t)
+            # send requests to servers
+            server_manager.send()
 
-        for _ in range(request_update_interval):
-            # get list of servers for each task batch where the
-            # scheduler thinks it is best to place each batch
-            for i in range(len(regions)):
-                task_batch = RequestBatch(f"Task {id}", 1, regions[i])
-                latency, carbon_intensity, requests = schedule(task_batch, servers, conf.algorithm, t)
-                update_servers(plot, servers, task_batch, t, latency, carbon_intensity, requests)
-                id += 1
+        # move servers to regions according to scheduling estimation the next hour
+        server_manager.move()
 
     if conf.file_to_save:
         save_file(conf.file_to_save, plot.data)

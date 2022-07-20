@@ -1,6 +1,7 @@
-from scheduler.constants import REGION_NAMES, REGION_LOCATIONS
+from typing import Counter
+from scheduler.constants import REGION_LOCATIONS, REGION_NAMES
 from scheduler.region import Region
-from scheduler.util import load
+from scheduler.util import load_region_data
 
 
 class Server:
@@ -9,37 +10,55 @@ class Server:
     latency and capacity.
     """
 
-    def __init__(self, capacity: int, region: Region, carbon_data):
+    def __init__(self, capacity: int, region: Region):
         self.capacity = capacity
-        self.current_utilization = 0
+        self.utilization = 0
         self.region = region
-        self.carbon_data = carbon_data
-        self.carbon_intensity = carbon_data["carbon_intensity_avg"]
 
     def __repr__(self) -> str:
         return f"{self.region:<15} capcity: {self.capacity:<6}"
 
-    def get_utilization_left(self):
-        return self.capacity - self.current_utilization
+    def utilization_left(self):
+        return self.capacity - self.utilization
 
-    def update_utilization(self, task_batch):
-        if self.current_utilization + task_batch.load <= self.capacity:
-            self.current_utilization += task_batch.load
-            return True
-        return False
+    def push(self, request_batch):
+        """
+        Push batch of requests to buffer. Batches of requests are removed
+        from the buffer when they have been completed.
+        """
+        assert self.utilization + request_batch.load <= self.capacity, self.utilization + request_batch.load
+
+        self.utilization += request_batch.load
 
     def reset_utilization(self):
-        self.current_utilization = 0
+        self.utilization = 0
 
 
-def build_servers():
-    servers = []
-    i = 1
-    for name, location in zip(REGION_NAMES, REGION_LOCATIONS):
-        df = load(f"electricity_map/{name}.csv", False)
-        r = Region(name, location)
-        s = Server(10 * i, r, df)
-        servers.append(s)
-        i += 1
+class ServerManager:
+    def __init__(self, capacity=10):
+        self.servers = [None] * capacity
+        self.region_data = load_region_data("electricity_map")
 
-    return servers
+    def send(self, requests_per_region):
+        """
+        Distributes requests to each server for each region
+        """
+        raise NotImplementedError
+
+    def move(self, servers_per_region):
+        """
+        We should only move the minimum amount of servers to satisfy the
+        number of servers per region
+
+        servers_per_region: specifies the number of servers per region
+        """
+        raise NotImplementedError
+        count = {name: 0 for name in REGION_NAMES}
+
+        for s in self.servers:
+            count[s.region.name] += 1
+
+        buffer = [0] * len(servers_per_region)
+        for name, c in zip(REGION_NAMES, servers_per_region):
+            if c < count[name]:
+                pass
