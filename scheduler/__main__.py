@@ -4,8 +4,8 @@ from scheduler.constants import REGION_LOCATIONS, REGION_NAMES
 from scheduler.parser import parse_arguments
 from scheduler.region import Region
 from scheduler.plot import Plot
-from scheduler.lp_sched import schedule
 from scheduler.util import save_file, load_file, load_request_rate
+from scheduler.milp_sched import schedule
 import sys
 import random
 
