@@ -28,4 +28,19 @@ def parse_arguments(argv):
         default=6,
     )
 
+    parser.add_argument(
+        "-l",
+        "--file-to-load",
+        type=str,
+        help="Name of file to load and plot"
+    )
+
+    parser.add_argument(
+        "-s",
+        "--file-to-save",
+        type=str,
+        help="Name of file to save and plot",
+        default="plotting_data"
+    )
+
     return parser.parse_args(argv)

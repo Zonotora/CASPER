@@ -5,10 +5,14 @@ from scheduler.constants import REGION_NAMES
 
 
 class Plot:
-    def __init__(self, conf) -> None:
+    def __init__(self, conf, data=None) -> None:
         self.conf = conf
         self.timesteps = conf.timesteps
-        self.data = [[] for _ in range(conf.timesteps)]
+        if data is None:
+            self.data = [[] for _ in range(conf.timesteps)]
+        else:
+            self.data = data
+
 
     def add(self, task_batch, scheduled_item, t):
         data = {}
@@ -18,8 +22,7 @@ class Plot:
         s = scheduled_item["server"]
         data["server"] = {
             "name": s.region.name,
-            "utilization": s.current_utilization,
-            "buffer_size": len(s.buffer),
+            "utilization": s.current_utilization
         }
 
         self.data[t].append(data)

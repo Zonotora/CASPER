@@ -5,6 +5,7 @@ from scheduler.parser import parse_arguments
 from scheduler.region import Region
 from scheduler.plot import Plot
 from scheduler.lp_sched import schedule
+from scheduler.util import save_file, load_file
 import sys
 import random
 
@@ -17,6 +18,11 @@ def main():
     """
     random.seed(1234)
     conf = parse_arguments(sys.argv[1:])
+    if conf.file_to_load:
+        data = load_file(conf.file_to_load)
+        plot = Plot(conf, data=data)
+        plot.plot()
+        exit()
 
     servers = build_servers()
     regions = [Region(name, location) for name, location in zip(REGION_NAMES, REGION_LOCATIONS)]
@@ -35,6 +41,9 @@ def main():
 
             for s in servers:
                 s.step()
+
+    if conf.file_to_save:
+        save_file(conf.file_to_save, plot.data)
 
     plot.plot()
 
