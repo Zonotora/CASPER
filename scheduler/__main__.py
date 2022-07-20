@@ -1,8 +1,6 @@
 from scheduler.server import ServerManager
 from scheduler.request import RequestBatch
-from scheduler.constants import REGION_LOCATIONS, REGION_NAMES
 from scheduler.parser import parse_arguments
-from scheduler.region import Region
 from scheduler.plot import Plot
 from scheduler.util import save_file, load_file
 from scheduler.milp_sched import schedule
@@ -30,13 +28,17 @@ def main():
     request_update_interval = 60 // conf.request_update_interval
 
     for t in range(conf.timesteps):
-        for _ in range(0, request_update_interval):
+        # reset server utilization for every server before scheduling requests again
+        # we can do this as requests are managed instantaneous for each server
+        server_manager.reset()
+
+        for _ in range(request_update_interval):
             # get number of requests for timeframe
             requests = 1000
             # call the scheduling algorithm
-            latency, carbon_intensity, requests_per_region = schedule(requests, conf.algorithm, t)
+            latency, carbon_intensity, requests = schedule(requests, conf.algorithm, t)
             # send requests to servers
-            server_manager.send(requests_per_region)
+            server_manager.send()
 
         # move servers to regions according to scheduling estimation the next hour
         server_manager.move()
