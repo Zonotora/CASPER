@@ -43,4 +43,12 @@ def parse_arguments(argv):
         default="plotting_data",
     )
 
+    parser.add_argument(
+        "-d",
+        "--requests-date",
+        type=str,
+        help="Date of requests in format Y-M-D. Takes for all hours that day",
+        default="plotting_data"
+    )
+
     return parser.parse_args(argv)
