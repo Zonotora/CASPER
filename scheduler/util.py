@@ -1,8 +1,6 @@
 from collections import defaultdict
-from msilib.schema import Error
 import pandas as pd
 from datetime import datetime
-import time
 
 
 def save_file(name, data):
@@ -74,7 +72,6 @@ def load_request_rate(path="data\de.out", date_start="2007-12-12"):
         request_regions[region] = request_rate["Requests"].iloc[cali_time_index + off_sets[region]:
             cali_time_index + off_sets[region] + hours_of_data].reset_index(drop=True)
 
-    print(request_regions)
     return request_regions
 
 
