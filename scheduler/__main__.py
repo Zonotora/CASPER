@@ -5,7 +5,7 @@ from scheduler.parser import parse_arguments
 from scheduler.region import Region
 from scheduler.plot import Plot
 from scheduler.lp_sched import schedule
-from scheduler.util import save_file, load_file
+from scheduler.util import save_file, load_file, load_request_rate
 import sys
 import random
 
@@ -16,6 +16,8 @@ def main():
     Schedule and run the workload. Get the latency
     and carbon footprint summary. Report it.
     """
+    load_request_rate()
+    exit()
     random.seed(1234)
     conf = parse_arguments(sys.argv[1:])
     if conf.file_to_load:

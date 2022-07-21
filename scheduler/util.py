@@ -1,5 +1,8 @@
 from collections import defaultdict
+from msilib.schema import Error
 import pandas as pd
+from datetime import datetime
+import time
 
 
 def save_file(name, data):
@@ -46,3 +49,32 @@ def load(name, resample=True, resample_metric="W"):
         df.set_index(["datetime"], inplace=True)
         df = df.resample(resample_metric)
     return df
+
+def load_request_rate(path="data\de.out", date_start="2007-12-12"):
+    '''
+    Dates between 2007-12-09-19:00:00 and 2013-10-16-16:00:00
+    Returns array on 24 hour basis
+    Assumes dataset time is relative to california. Shift with TEX(+2),MIDATLANTIC(+6),MIDWEST(+2)
+    '''
+    date = datetime.strptime(date_start,"%Y-%m-%d")
+    date = int(datetime.strftime(date, "%Y%m%d%H%M%S"))
+
+    request_rate = pd.read_csv(path, delimiter=" ", usecols=[0, 2])
+    request_rate.columns = ["Dates", "Requests"]
+
+    if date not in set(request_rate["Dates"]):
+        raise Error("Date doesn't exist")
+
+    cali_time_index = request_rate.index[request_rate["Dates"] == date][0]
+
+    off_sets = {"CAL":0, "TEX":2, "MIDA":6,"MIDW":2}
+    hours_of_data = 24
+    request_regions = pd.DataFrame(columns = ["CAL", "TEX", "MIDA", "MIDW"])
+    for region in request_regions:
+        request_regions[region] = request_rate["Requests"].iloc[cali_time_index + off_sets[region]:
+            cali_time_index + off_sets[region] + hours_of_data].reset_index(drop=True)
+
+    print(request_regions)
+    return request_regions
+
+
