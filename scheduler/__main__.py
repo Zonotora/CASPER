@@ -34,9 +34,9 @@ def main():
             # get number of requests for timeframe
             requests = 1000
             # call the scheduling algorithm
-            latency, carbon_intensity, requests = schedule(requests, conf.algorithm, t)
+            latency, carbon_intensity, requests_per_region = schedule(requests, conf.algorithm, t)
             # send requests to servers
-            server_manager.send()
+            server_manager.send(requests_per_region)
 
         # move servers to regions according to scheduling estimation the next hour
         server_manager.move()
