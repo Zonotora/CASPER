@@ -97,9 +97,7 @@ class Scheduler:
                     if partial_load == 0:
                         continue
                     task_batch.reduce_load(partial_load)
-                    partial_batch = RequestBatch(
-                        task_batch.name + ":partial", partial_load, task_batch.lifetime, task_batch.region
-                    )
+                    partial_batch = RequestBatch(task_batch.name + ":partial", partial_load, task_batch.region)
                     s.update_utilization(partial_batch)
 
                     plot.add(task_batch, scheduled_item, dt)

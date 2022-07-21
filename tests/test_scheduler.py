@@ -14,7 +14,7 @@ def test_carbon_greedy_with_one_scheduler_0_24(df_carbon_intensity, servers_inft
     region = Region(REGION_NAMES[0], REGION_LOCATIONS[0])
 
     for t in range(conf.timesteps):
-        task_batch = RequestBatch("Task 1", 1, 1, region)
+        task_batch = RequestBatch("Task 1", 1, region)
         _, carbon_intensity, requests = schedule(task_batch, servers_infty, conf.algorithm, t)
         indices = np.nonzero(requests)
         value = np.array(carbon_intensity)[indices]
@@ -26,7 +26,7 @@ def test_latency_greedy_with_one_scheduler_0_24(servers_infty):
     region = Region(REGION_NAMES[0], REGION_LOCATIONS[0])
 
     for t in range(conf.timesteps):
-        task_batch = RequestBatch("Task 1", 1, 1, region)
+        task_batch = RequestBatch("Task 1", 1, region)
         latency, _, requests = schedule(task_batch, servers_infty, conf.algorithm, t)
         indices = np.nonzero(requests)
         value = np.array(latency)[indices]

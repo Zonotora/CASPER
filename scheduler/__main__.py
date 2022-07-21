@@ -39,9 +39,6 @@ def main():
                 update_servers(plot, servers, task_batch, t, latency, carbon_intensity, requests)
                 id += 1
 
-            for s in servers:
-                s.step()
-
     if conf.file_to_save:
         save_file(conf.file_to_save, plot.data)
 
@@ -54,7 +51,7 @@ def update_servers(plot, servers, task_batch, t, latency, carbon_intensity, requ
         load = requests[i]
         if load == 0:
             continue
-        batch = RequestBatch(f"{task_batch.name}_{i}", requests[i], task_batch.lifetime, task_batch.region)
+        batch = RequestBatch(f"{task_batch.name}_{i}", requests[i], task_batch.region)
         servers[i].update_utilization(batch)
 
         data = {"latency": latency[i], "carbon_emissions": carbon_intensity[i] * load, "server": servers[i]}

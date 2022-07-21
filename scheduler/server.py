@@ -15,7 +15,6 @@ class Server:
         self.region = region
         self.carbon_data = carbon_data
         self.carbon_intensity = carbon_data["carbon_intensity_avg"]
-        self.buffer = []
 
     def __repr__(self) -> str:
         return f"{self.region:<15} capcity: {self.capacity:<6}"
@@ -32,13 +31,6 @@ class Server:
 
     def reset_utilization(self):
         self.current_utilization = 0
-
-    def step(self):
-        for task_batch in self.buffer:
-            task_batch.lifetime -= 1
-            if task_batch.lifetime <= 0:
-                self.current_utilization -= task_batch.load
-        self.buffer = [task_batch for task_batch in self.buffer if task_batch.lifetime > 0]
 
 
 def build_servers():
