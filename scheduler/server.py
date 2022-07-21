@@ -42,10 +42,12 @@ class ServerManager:
     def send(self, requests_per_region):
         """
         Distributes requests to each server for each region
+
+        requests_per_region: the number of requests that should be
+        distributed across servers in a region
         """
-        for i in range(requests_per_region):
-            requests = requests_per_region[i]
-            servers = [s for s in self.servers if s.region == REGION_NAMES[i]]
+        for region, requests in zip(REGION_NAMES, requests_per_region):
+            servers = [s for s in self.servers if s.region == region]
             request_batches = self.build_request_batches(servers, requests)
             for batch, server in request_batches:
                 server.push(batch)
@@ -70,13 +72,28 @@ class ServerManager:
 
         servers_per_region: specifies the number of servers per region
         """
-        raise NotImplementedError
-        count = {name: 0 for name in REGION_NAMES}
+        count = {region: 0 for region in REGION_NAMES}
 
-        for s in self.servers:
-            count[s.region.name] += 1
+        for server in self.servers:
+            count[server.region.name] += 1
 
-        buffer = [0] * len(servers_per_region)
-        for name, c in zip(REGION_NAMES, servers_per_region):
-            if c < count[name]:
-                pass
+        # Add servers to each region to satisfy the new server per region constraint
+        for region, requested_count in zip(REGION_NAMES, servers_per_region):
+            c = count[region]
+            while c < requested_count:
+                # TODO: Set server capacity in a more generic way
+                server = Server(10, region)
+                self.servers.append(server)
+                c += 1
+            count[region] = c
+            assert count[region] == requested_count
+
+        # Remove all abundant servers in each region
+        for region, requested_count in zip(REGION_NAMES, servers_per_region):
+            if count[region] > requested_count:
+                indices = [i for i, s in enumerate(self.servers) if s.region == region]
+                n = count[region] - requested_count
+                assert len(indices) > n
+                for i in range(n):
+                    index = indices[i]
+                    self.servers.pop(index)
