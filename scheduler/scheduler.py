@@ -20,7 +20,6 @@ def __latency_greedy(task_batch, server_manager, t):
     """
     regions = server_manager.regions
     utilization_left = server_manager.utilization_left_regions()
-
     latencies = [task_batch.region.latency(region) for region in regions]
     carbon_intensities = [region.carbon_intensity for region in regions]
 
@@ -28,7 +27,7 @@ def __latency_greedy(task_batch, server_manager, t):
     requests_per_region = [0] * len(regions)
     for index in indices:
         name = regions[index].name
-        left = utilization_left[name]
+        left = utilization_left[index]
         load = min(task_batch.load, left)
         requests_per_region[index] += load
         task_batch.load -= load

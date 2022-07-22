@@ -52,7 +52,15 @@ class ServerManager:
         for server in self.servers:
             utilization_left[server.region.name] += server.utilization_left()
 
-        return utilization_left
+        return [utilization_left[region] for region in REGION_NAMES]
+
+    def servers_per_regions(self):
+        count = {region: 0 for region in REGION_NAMES}
+
+        for server in self.servers:
+            count[server.region.name] += 1
+
+        return [count[region] for region in REGION_NAMES]
 
     def send(self, requests_per_region):
         """

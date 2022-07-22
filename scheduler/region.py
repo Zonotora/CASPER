@@ -4,7 +4,7 @@ from scheduler.constants import REGION_NAMES, REGION_LOCATIONS, REGION_OFFSETS
 
 
 class Region:
-    def __init__(self, name, location, requests_per_hour, carbon_intensity) -> None:
+    def __init__(self, name, location, carbon_intensity, requests_per_hour=0) -> None:
         self.name = name
         self.location = location
         self.requests_per_hour = requests_per_hour

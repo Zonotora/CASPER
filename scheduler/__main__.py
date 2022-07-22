@@ -1,10 +1,9 @@
-from turtle import update
 from scheduler.server import ServerManager
 from scheduler.request import RequestBatch
 from scheduler.parser import parse_arguments
 from scheduler.plot import Plot
 from scheduler.util import save_file, load_file
-from scheduler.milp_sched import schedule
+from scheduler.milp_sched import schedule_requests, schedule_servers
 import sys
 import random
 
@@ -35,16 +34,21 @@ def main():
             server_manager.reset()
             # get number of requests for timeframe
             # TODO: Change this to dynamic requests
-            request_batch = RequestBatch("", 36, server_manager.regions[0])
+            request_batches = [
+                RequestBatch("", 36, server_manager.regions[i]) for i in range(len(server_manager.regions))
+            ]
             # call the scheduling algorithm
-            latency, carbon_intensity, requests_per_region = schedule(request_batch, server_manager, conf.algorithm, t)
+            latency, carbon_intensity, requests_per_region = schedule_requests(request_batches, server_manager, t)
             # send requests to servers
             server_manager.send(requests_per_region)
             # update plots
             update_plot(plot, t, latency, carbon_intensity, requests_per_region)
 
+        # TODO: Use schedule_servers()
+        # servers_per_region = schedule_servers()
+        servers_per_region = [1, 1, 1, 1]
         # move servers to regions according to scheduling estimation the next hour
-        server_manager.move([1, 1, 1, 1])
+        server_manager.move(servers_per_region)
 
     if conf.file_to_save:
         save_file(conf.file_to_save, plot.data)
