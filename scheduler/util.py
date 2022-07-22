@@ -73,6 +73,7 @@ def load_electricity_data(path, date, offset, resample=False, resample_metric="W
 
     return electricity_map
 
+
 def load_request_rate(path="data\de.out", date="2007-12-12/2007-12-13"):
     """
     Dates between 2007-12-09-19:00:00 and 2013-10-16-16:00:00
@@ -82,11 +83,11 @@ def load_request_rate(path="data\de.out", date="2007-12-12/2007-12-13"):
     start_date, end_date = date.split("/")
 
     date_start_unformated = datetime.strptime(start_date, "%Y-%m-%d")
-    #date_start_unformated = datetime.strptime(date_start, "%Y-%m-%d")
+    # date_start_unformated = datetime.strptime(date_start, "%Y-%m-%d")
     date_start = int(datetime.strftime(date_start_unformated, "%Y%m%d%H%M%S"))
 
     date_end_unformated = datetime.strptime(end_date, "%Y-%m-%d")
-    #date_end_unformated = datetime.strptime(date_end, "%Y-%m-%d")
+    # date_end_unformated = datetime.strptime(date_end, "%Y-%m-%d")
     date_end = int(datetime.strftime(date_end_unformated, "%Y%m%d%H%M%S"))
 
     duration = date_end_unformated - date_start_unformated
@@ -107,15 +108,13 @@ def load_request_rate(path="data\de.out", date="2007-12-12/2007-12-13"):
     for region in request_regions:
         start = cali_time_index + REGION_OFFSETS[region]
         end = cali_time_index + REGION_OFFSETS[region] + hours_of_data
-        request_regions[region] = (request_rate["Requests"].iloc[start: end].reset_index(drop=True)
-        )
+        request_regions[region] = request_rate["Requests"].iloc[start:end].reset_index(drop=True)
 
     return request_regions
 
+
 def date_is_valid(date):
     try:
-        datetime.datetime.strptime(date, '%Y-%m-%d')
+        datetime.datetime.strptime(date, "%Y-%m-%d")
     except ValueError:
         raise ValueError("Incorrect data format, should be YYYY-MM-DD")
-
-
