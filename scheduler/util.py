@@ -91,7 +91,7 @@ def load_request_rate(path="data\de.out", date_start="2007-12-12", date_end="200
     return request_regions
 
 
-def load_region_data(d, resample=True, resample_metric="W"):
+def load_region_data(d, resample=False, resample_metric="W"):
     '''
 
     '''
@@ -106,6 +106,7 @@ def load_region_data(d, resample=True, resample_metric="W"):
             region_data["data"] = load(path, resample=resample, resample_metric=resample_metric)
             location = REGION_LOCATIONS[name]
             region_request_rate = regions_request_rate[name]
-            region_data["region"] = Region(name, location, region_request_rate)
-            print(region_request_rate)
+            region_data["region"] = Region(name, location, region_request_rate, carbon_intensity)
+            print(region_data["data"])
+    print("US-CAL-CISO")
     return data
