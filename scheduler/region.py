@@ -1,10 +1,16 @@
-import math
+from scheduler.constants import REGION_OFFSETS
 
 
 class Region:
-    def __init__(self, name, location) -> None:
+    def __init__(self, name, location, requests_per_hour) -> None:
         self.name = name
         self.location = location
+        self.requests_per_hour = requests_per_hour
+        self.offset = REGION_OFFSETS[self.name]
+
+
+    def get_request_by_hour(self, i):
+        return self.requests.per_hour.iloc(i)
 
     def latency(self, other):
         (x1, y1) = self.location

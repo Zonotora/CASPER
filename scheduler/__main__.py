@@ -1,10 +1,10 @@
-from scheduler.server import ServerManager, build_servers
+from scheduler.server import ServerManager
 from scheduler.request import RequestBatch
 from scheduler.constants import REGION_LOCATIONS, REGION_NAMES
 from scheduler.parser import parse_arguments
 from scheduler.region import Region
 from scheduler.plot import Plot
-from scheduler.util import save_file, load_file, load_request_rate
+from scheduler.util import save_file, load_file
 from scheduler.milp_sched import schedule
 import sys
 import random
