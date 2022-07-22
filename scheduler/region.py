@@ -2,11 +2,12 @@ from scheduler.constants import REGION_OFFSETS
 
 
 class Region:
-    def __init__(self, name, location, requests_per_hour) -> None:
+    def __init__(self, name, location, requests_per_hour, carbon_intensity) -> None:
         self.name = name
         self.location = location
         self.requests_per_hour = requests_per_hour
         self.offset = REGION_OFFSETS[self.name]
+        self.carbon_intensity = carbon_intensity
 
 
     def get_request_by_hour(self, i):
