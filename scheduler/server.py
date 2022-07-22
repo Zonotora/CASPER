@@ -34,8 +34,8 @@ class Server:
 
 
 class ServerManager:
-    def __init__(self):
-        self.regions = load_regions("electricity_map")
+    def __init__(self, conf):
+        self.regions = load_regions("electricity_map", conf.start_end_date)
         # TODO: Think about initialization of servers
         self.servers = [Server(10, region) for region in self.regions]
 

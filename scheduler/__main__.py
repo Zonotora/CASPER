@@ -24,7 +24,7 @@ def main():
         exit()
 
     plot = Plot(conf)
-    server_manager = ServerManager()
+    server_manager = ServerManager(conf)
 
     request_update_interval = 60 // conf.request_update_interval
 

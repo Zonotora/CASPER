@@ -36,9 +36,9 @@ def parse_arguments(argv):
 
     parser.add_argument(
         "-da",
-        "--simulation-date",
+        "--start-end-date",
         type=str,
-        help="Date of simulation in format Y-M-D. Takes for all hours that day",
+        help="Start date till end date of simulation in format Y-M-D/Y-M-D. Takes for all hours those days",
         default="plotting_data",
     )
 

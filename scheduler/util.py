@@ -43,37 +43,50 @@ def load_file(name):
     return data
 
 
-def load_electricity_data(name, date, resample=False, resample_metric="W"):
-    electricity_map = pd.read_csv(name)
-
-    if date not in set(electricity_map["datetime"]):
-        raise Exception("Date doesn't exist")
-
-    cali_time_index = electricity_map.index[electricity_map["datetime"] == date][0]
-
-    for region in request_regions:
-        request_regions[region] = request_rate["Requests"].iloc[cali_time_index + off_sets[region]:
-            cali_time_index + off_sets[region] + hours_of_data].reset_index(drop=True)
-
-    return request_regions
+def load_electricity_data(path, date, offset, resample=False, resample_metric="W"):
+    electricity_map = pd.read_csv(path)
 
     if resample:
         electricity_map.datetime = pd.to_datetime(electricity_map["datetime"], format="%Y-%m-%d %H:%M:%S.%f")
         electricity_map.set_index(["datetime"], inplace=True)
-        electricity_map = df.resample(resample_metric)
+        electricity_map = electricity_map.resample(resample_metric)
+        return electricity_map
+
+    start_date, end_date = date.split("/")
+    start_date = datetime.strptime(start_date, "%Y-%m-%d")
+    end_date = datetime.strptime(end_date, "%Y-%m-%d")
+
+    duration = end_date - start_date
+    hours_of_data = duration.days * 24 + duration.seconds // 3600
+
+    assert isinstance(hours_of_data, int)
+
+    if start_date or end_date not in set(electricity_map["datetime"]):
+        raise Exception("Date doesn't exist")
+
+    cali_time_index = electricity_map.index[electricity_map["datetime"] == date][0]
+
+    start = cali_time_index + offset
+    end = cali_time_index + offset + hours_of_data
+    # TODO: Consider whether avg or take everything
+    electricity_map = electricity_map["carbon_intensity_avg"].iloc[start:end].reset_index(drop=True)
+
     return electricity_map
 
-
-def load_request_rate(path="data\de.out", date_start="2007-12-12", date_end="2007-12-13"):
+def load_request_rate(path="data\de.out", date="2007-12-12/2007-12-13"):
     """
     Dates between 2007-12-09-19:00:00 and 2013-10-16-16:00:00
     Returns array on 24 hour basis
     Assumes dataset time is relative to california. Shift with TEX(+2),MIDATLANTIC(+6),MIDWEST(+2)
     """
-    date_start_unformated = datetime.strptime(date_start, "%Y-%m-%d")
+    start_date, end_date = date.split("/")
+
+    date_start_unformated = datetime.strptime(start_date, "%Y-%m-%d")
+    #date_start_unformated = datetime.strptime(date_start, "%Y-%m-%d")
     date_start = int(datetime.strftime(date_start_unformated, "%Y%m%d%H%M%S"))
 
-    date_end_unformated = datetime.strptime(date_end, "%Y-%m-%d")
+    date_end_unformated = datetime.strptime(end_date, "%Y-%m-%d")
+    #date_end_unformated = datetime.strptime(date_end, "%Y-%m-%d")
     date_end = int(datetime.strftime(date_end_unformated, "%Y%m%d%H%M%S"))
 
     duration = date_end_unformated - date_start_unformated
@@ -92,10 +105,9 @@ def load_request_rate(path="data\de.out", date_start="2007-12-12", date_end="200
     # off_sets = {"US-CAL-CISO":0, "US-TEX-ERCO":2, "US-MIDA-PJM":6,"US-MIDW-MISO":2}
     request_regions = pd.DataFrame(columns=[REGION_NAMES[i] for i in range(len(REGION_NAMES))])
     for region in request_regions:
-        request_regions[region] = (
-            request_rate["Requests"]
-            .iloc[cali_time_index + REGION_OFFSETS[region] : cali_time_index + REGION_OFFSETS[region] + hours_of_data]
-            .reset_index(drop=True)
+        start = cali_time_index + REGION_OFFSETS[region]
+        end = cali_time_index + REGION_OFFSETS[region] + hours_of_data
+        request_regions[region] = (request_rate["Requests"].iloc[start: end].reset_index(drop=True)
         )
 
     return request_regions
