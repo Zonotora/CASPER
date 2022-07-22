@@ -43,13 +43,25 @@ def load_file(name):
     return data
 
 
-def load(name, resample=True, resample_metric="W"):
-    df = pd.read_csv(name)
+def load_electricity_data(name, date, resample=False, resample_metric="W"):
+    electricity_map = pd.read_csv(name)
+
+    if date not in set(electricity_map["datetime"]):
+        raise Exception("Date doesn't exist")
+
+    cali_time_index = electricity_map.index[electricity_map["datetime"] == date][0]
+
+    for region in request_regions:
+        request_regions[region] = request_rate["Requests"].iloc[cali_time_index + off_sets[region]:
+            cali_time_index + off_sets[region] + hours_of_data].reset_index(drop=True)
+
+    return request_regions
+
     if resample:
-        df.datetime = pd.to_datetime(df["datetime"], format="%Y-%m-%d %H:%M:%S.%f")
-        df.set_index(["datetime"], inplace=True)
-        df = df.resample(resample_metric)
-    return df
+        electricity_map.datetime = pd.to_datetime(electricity_map["datetime"], format="%Y-%m-%d %H:%M:%S.%f")
+        electricity_map.set_index(["datetime"], inplace=True)
+        electricity_map = df.resample(resample_metric)
+    return electricity_map
 
 
 def load_request_rate(path="data\de.out", date_start="2007-12-12", date_end="2007-12-13"):
@@ -87,3 +99,11 @@ def load_request_rate(path="data\de.out", date_start="2007-12-12", date_end="200
         )
 
     return request_regions
+
+def date_is_valid(date):
+    try:
+        datetime.datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        raise ValueError("Incorrect data format, should be YYYY-MM-DD")
+
+
