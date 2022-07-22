@@ -1,3 +1,4 @@
+from turtle import update
 from scheduler.server import ServerManager
 from scheduler.request import RequestBatch
 from scheduler.parser import parse_arguments
@@ -22,26 +23,28 @@ def main():
         plot.plot()
         exit()
 
-    server_manager = ServerManager()
     plot = Plot(conf)
+    server_manager = ServerManager()
 
     request_update_interval = 60 // conf.request_update_interval
 
     for t in range(conf.timesteps):
-        # reset server utilization for every server before scheduling requests again
-        # we can do this as requests are managed instantaneous for each server
-        server_manager.reset()
-
         for _ in range(request_update_interval):
+            # reset server utilization for every server before scheduling requests again
+            # we can do this as requests are managed instantaneously for each server
+            server_manager.reset()
             # get number of requests for timeframe
-            requests = 1000
+            # TODO: Change this to dynamic requests
+            request_batch = RequestBatch("", 36, server_manager.regions[0])
             # call the scheduling algorithm
-            latency, carbon_intensity, requests_per_region = schedule(requests, conf.algorithm, t)
+            latency, carbon_intensity, requests_per_region = schedule(request_batch, server_manager, conf.algorithm, t)
             # send requests to servers
             server_manager.send(requests_per_region)
+            # update plots
+            update_plot(plot, t, latency, carbon_intensity, requests_per_region)
 
         # move servers to regions according to scheduling estimation the next hour
-        server_manager.move()
+        server_manager.move([1, 1, 1, 1])
 
     if conf.file_to_save:
         save_file(conf.file_to_save, plot.data)
@@ -49,17 +52,14 @@ def main():
     plot.plot()
 
 
-def update_servers(plot, servers, task_batch, t, latency, carbon_intensity, requests):
-
-    for i in range(len(requests)):
-        load = requests[i]
+def update_plot(plot, t, latency, carbon_intensity, requests_per_region):
+    for i in range(len(requests_per_region)):
+        load = requests_per_region[i]
         if load == 0:
             continue
-        batch = RequestBatch(f"{task_batch.name}_{i}", requests[i], task_batch.region)
-        servers[i].update_utilization(batch)
 
-        data = {"latency": latency[i], "carbon_emissions": carbon_intensity[i] * load, "server": servers[i]}
-        plot.add(batch, data, t)
+        data = {"latency": latency[i], "carbon_emissions": carbon_intensity[i] * load}
+        plot.add(data, t)
 
 
 if __name__ == "__main__":

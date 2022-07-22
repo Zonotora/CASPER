@@ -1,7 +1,6 @@
 from scheduler.constants import REGION_NAMES
-from scheduler.region import Region
+from scheduler.region import Region, load_regions
 from scheduler.request import RequestBatch
-from scheduler.util import load_region_data
 
 
 class Server:
@@ -36,8 +35,24 @@ class Server:
 
 class ServerManager:
     def __init__(self):
-        self.servers = []
-        self.region_data = load_region_data("electricity_map")
+        self.regions = load_regions("electricity_map")
+        # TODO: Think about initialization of servers
+        self.servers = [Server(10, region) for region in self.regions]
+
+    def reset(self):
+        """
+        Reset utilization for every server
+        """
+        for server in self.servers:
+            server.reset_utilization()
+
+    def utilization_left_regions(self):
+        utilization_left = {region: 0 for region in REGION_NAMES}
+
+        for server in self.servers:
+            utilization_left[server.region.name] += server.utilization_left()
+
+        return utilization_left
 
     def send(self, requests_per_region):
         """
@@ -47,7 +62,7 @@ class ServerManager:
         distributed across servers in a region
         """
         for region, requests in zip(REGION_NAMES, requests_per_region):
-            servers = [s for s in self.servers if s.region == region]
+            servers = [s for s in self.servers if s.region.name == region]
             request_batches = self.build_request_batches(servers, requests)
             for batch, server in request_batches:
                 server.push(batch)
@@ -58,10 +73,10 @@ class ServerManager:
             left = server.utilization_left()
             load = min(requests, left)
             # TODO: Add correct name (id)
-            batch = RequestBatch("", load, 0, server.region)
+            batch = RequestBatch("", load, server.region)
             requests -= load
             batches.append((batch, server))
-        assert requests == 0
+        assert requests == 0, requests
 
         return batches
 
