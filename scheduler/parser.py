@@ -9,7 +9,7 @@ def parse_arguments(argv):
         "--algorithm",
         choices=["latency_greedy", "carbon_greedy", "carbon_aware"],
         help="The scheduling algorithm to use",
-        default="carbon_aware",
+        default="latency_greedy",
     )
 
     parser.add_argument(

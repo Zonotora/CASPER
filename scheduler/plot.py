@@ -13,16 +13,13 @@ class Plot:
         else:
             self.data = data
 
-    def add(self, task_batch, scheduled_item, t):
+    def add(self, scheduled_item, t):
         data = {}
         for key in ["latency", "carbon_emissions"]:
             data[key] = scheduled_item[key]
 
-        s = scheduled_item["server"]
-        data["server"] = {
-            "name": s.region.name,
-            "utilization": s.current_utilization
-        }
+        # s = scheduled_item["server"]
+        # data["server"] = {"name": s.region.name, "utilization": s.current_utilization}
 
         self.data[t].append(data)
 
@@ -71,11 +68,11 @@ class Plot:
     def plot(self):
         mean_latency, std_latency = self.__preprocess("latency")
         mean_carbon_emissions, std_carbon_emissions = self.__preprocess("carbon_emissions")
-        mean_utilization, std_utilization = self.__preprocess("utilization", should_index_server=True)
+        # mean_utilization, std_utilization = self.__preprocess("utilization", should_index_server=True)
         graphs = {
             "latency": [mean_latency, std_latency],
             "carbon_emissions": [mean_carbon_emissions, std_carbon_emissions],
-            "utilization": [mean_utilization, std_utilization],
+            # "utilization": [mean_utilization, std_utilization],
         }
 
         fig = plt.figure(figsize=(18, 14))
@@ -91,7 +88,9 @@ class Plot:
             ax.plot(x, mean, label=key)
             ax.fill_between(x, mean - error, mean + error, alpha=0.3)
             i += 1
-
+        plt.show()
+        exit()
+        # TODO: Make sure this work
         mean_servers_latency, std_servers_latency = self.__preprocess("latency", False)
         mean_servers_carbon_emissions, std_servers_carbon_emissions = self.__preprocess("carbon_emissions", False)
         mean_servers_utilization, std_servers_utilization = self.__preprocess(
