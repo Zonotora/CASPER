@@ -25,7 +25,6 @@ class Server:
     def update_utilization(self, task_batch):
         if self.current_utilization + task_batch.load <= self.capacity:
             self.current_utilization += task_batch.load
-            self.buffer.append(task_batch)
             return True
         return False
 

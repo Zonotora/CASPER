@@ -31,12 +31,17 @@ def main():
     plot = Plot(conf)
     id = 0
 
+    request_update_interval = 60 // conf.request_update_interval
+
     for t in range(conf.timesteps):
-        for _ in range(0, conf.tasks_per_timestep):
+        for server in servers:
+            server.reset_utilization()
+
+        for _ in range(request_update_interval):
             # get list of servers for each task batch where the
             # scheduler thinks it is best to place each batch
             for i in range(len(regions)):
-                task_batch = RequestBatch(f"Task {id}", 3, 5, regions[i])
+                task_batch = RequestBatch(f"Task {id}", 1, regions[i])
                 latency, carbon_intensity, requests = schedule(task_batch, servers, conf.algorithm, t)
                 update_servers(plot, servers, task_batch, t, latency, carbon_intensity, requests)
                 id += 1

@@ -13,7 +13,7 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
-        "-dt",
+        "-t",
         "--timesteps",
         type=int,
         help="The total number of hours",
@@ -21,27 +21,18 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
-        "-ds",
-        "--tasks-per-timestep",
+        "-r",
+        "--request-update-interval",
         type=int,
-        help="The number of times per timestep that task batches are generated",
-        default=6,
+        help="The number of minutes between each scheduling",
+        choices=range(0, 61),
+        metavar="[0-60]",
+        default=10,
     )
 
-    parser.add_argument(
-        "-l",
-        "--file-to-load",
-        type=str,
-        help="Name of file to load and plot"
-    )
+    parser.add_argument("-l", "--file-to-load", type=str, help="Name of file to load and plot")
 
-    parser.add_argument(
-        "-s",
-        "--file-to-save",
-        type=str,
-        help="Name of file to save and plot",
-        default="plotting_data"
-    )
+    parser.add_argument("-s", "--file-to-save", type=str, help="Name of file to save and plot")
 
     parser.add_argument(
         "-d",
