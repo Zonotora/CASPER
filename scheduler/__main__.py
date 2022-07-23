@@ -34,19 +34,25 @@ def main():
             server_manager.reset()
             # get number of requests for timeframe
             # TODO: Change this to dynamic requests
-            request_batches = [
-                RequestBatch("", 8, server_manager.regions[i]) for i in range(len(server_manager.regions))
-            ]
+            batches = []
+            for region in server_manager.regions:
+                rate = region.get_requests_per_hour(t) / request_update_interval
+                batch = RequestBatch("", rate, region)
+                batches.append(batch)
+
             # call the scheduling algorithm
-            latency, carbon_intensity, requests_per_region = schedule_requests(request_batches, server_manager, t)
+            latency, carbon_intensity, requests_per_region = schedule_requests(batches, server_manager, t)
             # send requests to servers
             server_manager.send(requests_per_region)
             # TODO: update plots
             # update_plot(plot, t, latency, carbon_intensity, requests_per_region)
 
-        # TODO: Use schedule_servers()
-        # servers_per_region = schedule_servers()
-        servers_per_region = [1, 1, 1, 1]
+        batches = []
+        for region in server_manager.regions:
+            rate = region.get_requests_per_hour(t)
+            batch = RequestBatch("", rate, region)
+            batches.append(batch)
+        servers_per_region = schedule_servers(batches, server_manager, t)
         # move servers to regions according to scheduling estimation the next hour
         server_manager.move(servers_per_region)
 

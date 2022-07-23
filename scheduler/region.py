@@ -4,16 +4,15 @@ from scheduler.constants import REGION_NAMES, REGION_LOCATIONS, REGION_OFFSETS
 
 
 class Region:
-    def __init__(self, name, location, carbon_intensity, requests_per_hour=0) -> None:
+    def __init__(self, name, location, carbon_intensity, requests_per_hour, offset) -> None:
         self.name = name
         self.location = location
         self.requests_per_hour = requests_per_hour
         self.carbon_intensity = carbon_intensity
-        self.offset = REGION_OFFSETS[self.name]
-        self.carbon_intensity = carbon_intensity
+        self.offset = offset
 
-    def get_request_by_hour(self, i):
-        return self.requests_per_hour.iloc[i]
+    def get_requests_per_hour(self, t):
+        return self.requests_per_hour.iloc[t + self.offset]
 
     def latency(self, other):
         (x1, y1) = self.location
@@ -39,7 +38,6 @@ def load_regions(date):
         request_path = os.path.join(d, "requests.csv")
         requests_per_hour = load_request_rate(request_path, offset, date)
         carbon_intensity = load_carbon_intensity(path, offset, date)
-        # carbon_intensity = df["carbon_intensity_avg"]
-        region = Region(name, location, requests_per_hour, carbon_intensity)
+        region = Region(name, location, carbon_intensity, requests_per_hour, offset)
         regions.append(region)
     return regions

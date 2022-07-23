@@ -103,7 +103,7 @@ class ServerManager:
             c = count[region]
             while c < requested_count:
                 # TODO: Set server capacity in a more generic way
-                server = Server(10, region)
+                server = Server(SERVER_CAPACITY, region)
                 self.servers.append(server)
                 c += 1
             count[region] = c
