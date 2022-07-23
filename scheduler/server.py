@@ -54,7 +54,7 @@ class ServerManager:
 
         return [utilization_left[region] for region in REGION_NAMES]
 
-    def servers_per_regions(self):
+    def servers_per_region(self):
         count = {region: 0 for region in REGION_NAMES}
 
         for server in self.servers:

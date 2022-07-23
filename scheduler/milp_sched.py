@@ -79,7 +79,7 @@ def schedule_servers(request_batches, server_manager, t, max_servers=10, max_lat
     opt_model.setObjective(objective)
     opt_model.solve()
     if opt_model.sol_status != 1:
-        print("Did not find sol!")
+        print("Did not find solution!")
 
     return [int(s.varValue) for s in s_vars.values()]
 
@@ -141,8 +141,8 @@ def schedule_requests(request_batches, server_manager, t, max_latency=100):
     opt_model.setObjective(objective)
     opt_model.solve()
     if opt_model.sol_status != 1:
-        print("Did not find sol!")
+        print("Did not find solution!")
     requests = np.zeros((len(set_R), len(set_R)), dtype=int)
     for i, j in x_vars.keys():
         requests[i, j] = int(x_vars[i, j].varValue)
-    return requests
+    return latencies, carbon_intensities, requests
