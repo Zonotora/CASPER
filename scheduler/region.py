@@ -1,5 +1,5 @@
 import os
-from scheduler.util import load_electricity_data, load_request_rate
+from scheduler.util import load_carbon_intensity, load_request_rate
 from scheduler.constants import REGION_NAMES, REGION_LOCATIONS, REGION_OFFSETS
 
 
@@ -27,18 +27,19 @@ class Region:
         return format(self.name, __format_spec)
 
 
-
-def load_regions(self, d, date, resample=False, resample_metric="W"):
+def load_regions(date):
     regions = []
-    requests = load_request_rate(date=date)
+    d = "api"
     for name in REGION_NAMES:
         file = f"{name}.csv"
         path = os.path.join(d, file)
         location = REGION_LOCATIONS[name]
-        carbon_intensity = load_electricity_data(path, date, self.offset,
-            resample=resample, resample_metric=resample_metric)
-        #carbon_intensity = df["carbon_intensity_avg"]
-        requests_per_hour = requests[name]
+        offset = REGION_OFFSETS[name]
+
+        request_path = os.path.join(d, "requests.csv")
+        requests_per_hour = load_request_rate(request_path, offset, date)
+        carbon_intensity = load_carbon_intensity(path, offset, date)
+        # carbon_intensity = df["carbon_intensity_avg"]
         region = Region(name, location, requests_per_hour, carbon_intensity)
         regions.append(region)
     return regions

@@ -30,16 +30,26 @@ def parse_arguments(argv):
         default=10,
     )
 
-    parser.add_argument("-l", "--file-to-load", type=str, help="Name of file to load and plot")
-
-    parser.add_argument("-s", "--file-to-save", type=str, help="Name of file to save and plot")
+    parser.add_argument(
+        "-l",
+        "--file-to-load",
+        type=str,
+        help="Name of file to load and plot",
+    )
 
     parser.add_argument(
-        "-da",
-        "--start-end-date",
+        "-s",
+        "--file-to-save",
         type=str,
-        help="Start date till end date of simulation in format Y-M-D/Y-M-D. Takes for all hours those days",
-        default="plotting_data",
+        help="Name of file to save and plot",
+    )
+
+    parser.add_argument(
+        "-d",
+        "--start-date",
+        type=str,
+        help="Start date in ISO format (YYYY-MM-DD)",
+        default="2021-01-01",
     )
 
     return parser.parse_args(argv)
