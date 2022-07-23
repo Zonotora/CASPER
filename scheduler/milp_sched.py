@@ -5,7 +5,7 @@ import pulp as plp
 
 def schedule_servers(request_batches, server_manager, t, max_servers=10, max_latency=100):
     """
-        Place servers
+    Place servers
     """
     carbon_intensities = [region.carbon_intensity[t] for region in server_manager.regions]
     latencies = np.array(
@@ -20,7 +20,7 @@ def schedule_servers(request_batches, server_manager, t, max_servers=10, max_lat
 
 def schedule_requests(request_batches, server_manager, t, max_latency=100):
     """
-        Schedule requests
+    Schedule requests
     """
     carbon_intensities = [region.carbon_intensity[t] for region in server_manager.regions]
     latencies = np.array(
