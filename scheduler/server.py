@@ -1,4 +1,4 @@
-from scheduler.constants import REGION_NAMES
+from scheduler.constants import REGION_NAMES, SERVER_CAPACITY
 from scheduler.region import Region, load_regions
 from scheduler.request import RequestBatch
 
@@ -37,7 +37,7 @@ class ServerManager:
     def __init__(self, conf):
         self.regions = load_regions(conf.start_date)
         # TODO: Think about initialization of servers
-        self.servers = [Server(10, region) for region in self.regions]
+        self.servers = [Server(SERVER_CAPACITY, region) for region in self.regions]
 
     def reset(self):
         """

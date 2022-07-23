@@ -43,9 +43,9 @@ def load_file(name):
 
 
 def load_electricity_map_with_resample(path, metric="W"):
-    '''
+    """
     Loads electricity map data with resample to smooth out graph
-    '''
+    """
     df = pd.read_csv(path)
     df.datetime = pd.to_datetime(df["datetime"], format="%Y-%m-%d %H:%M:%S.%f")
     df.set_index(["datetime"], inplace=True)
@@ -54,10 +54,10 @@ def load_electricity_map_with_resample(path, metric="W"):
 
 
 def load_carbon_intensity(path, offset, date="2021-01-01"):
-    '''
+    """
     Loads carbon intensity for a Region taking time offset to california into account
     for a certain date.
-    '''
+    """
     df = pd.read_csv(path)
     start_date = datetime.fromisoformat(date).replace(tzinfo=timezone.utc)
     timestamp = int(start_date.timestamp())
@@ -78,9 +78,9 @@ def load_carbon_intensity(path, offset, date="2021-01-01"):
 
 
 def load_request_rate(path, offset, date="2021-01-01"):
-    '''
+    """
     Loads request rate data for a region and returns its data.
-    '''
+    """
     df = pd.read_csv(path)
     start_date = datetime.fromisoformat(date).replace(tzinfo=timezone.utc)
     timestamp = int(start_date.timestamp())
