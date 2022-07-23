@@ -69,24 +69,22 @@ class ServerManager:
         requests_per_region: the number of requests that should be
         distributed across servers in a region
         """
-        for region, requests in zip(REGION_NAMES, requests_per_region):
+
+        for i in range(len(REGION_NAMES)):
+            requests = requests_per_region[:, i]
+            region = REGION_NAMES[i]
             servers = [s for s in self.servers if s.region.name == region]
-            request_batches = self.build_request_batches(servers, requests)
-            for batch, server in request_batches:
-                server.push(batch)
+            request_batches = self.build_request_batches(requests)
 
-    def build_request_batches(self, servers, requests):
-        batches = []
-        for server in servers:
-            left = server.utilization_left()
-            load = min(requests, left)
-            # TODO: Add correct name (id)
-            batch = RequestBatch("", load, server.region)
-            requests -= load
-            batches.append((batch, server))
-        assert requests == 0, requests
+            for batch in request_batches:
+                if batch.load == 0:
+                    continue
 
-        return batches
+                for server in servers:
+                    server.push(batch)
+
+    def build_request_batches(self, requests):
+        return [RequestBatch("", load, REGION_NAMES[i]) for i, load in enumerate(requests)]
 
     def move(self, servers_per_region):
         """
