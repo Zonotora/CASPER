@@ -96,3 +96,6 @@ def load_request_rate(path, offset, date="2021-01-01"):
     df = df["requests"].iloc[start:end].reset_index(drop=True)
 
     return df
+
+def ui(timestep, request_per_region, servers):
+    print("")

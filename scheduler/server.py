@@ -25,7 +25,7 @@ class Server:
         Push batch of requests to buffer. Batches of requests are removed
         from the buffer when they have been completed.
         """
-        assert self.utilization + request_batch.load <= self.capacity, self.utilization + request_batch.load
+        assert self.utilization + request_batch.load <= self.capacity, (self.utilization + request_batch.load, self.capacity)
 
         self.utilization += request_batch.load
 
