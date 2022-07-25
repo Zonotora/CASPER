@@ -15,12 +15,14 @@ class Plot:
             *[f"{name}_carbon_emissions" for name in REGION_NAMES],
             "total_requests",
             *[f"{name}_requests" for name in REGION_NAMES],
+            "total_dropped_requests",
+            *[f"{name}_dropped_requests" for name in REGION_NAMES],
         ]
         self.outer_columns = ["timestep", "servers_per_region"]
         self.inner = []
         self.outer = []
 
-    def add(self, latency, carbon_intensity, requests_per_region, t):
+    def add(self, latency, carbon_intensity, requests_per_region, dropped_requests_per_region, t):
         total_requests_per_region = np.sum(requests_per_region, axis=0)
         mask = total_requests_per_region != 0
 
@@ -32,6 +34,7 @@ class Plot:
         mean_latency = np.mean(latencies[mask])
         mean_carbon_emissions = np.mean(carbon_emissions[mask])
         total_requests = np.sum(total_requests_per_region)
+        total_dropped_requests = np.sum(dropped_requests_per_region)
 
         data = (
             t,
@@ -41,6 +44,8 @@ class Plot:
             *carbon_emissions,
             total_requests,
             *total_requests_per_region,
+            total_dropped_requests,
+            *dropped_requests_per_region,
         )
         self.inner.append(data)
 
@@ -59,10 +64,14 @@ class Plot:
             df_inner[[f"{name}_latency" for name in REGION_NAMES]],
             df_inner["mean_carbon_emissions"],
             df_inner[[f"{name}_carbon_emissions" for name in REGION_NAMES]],
+            df_inner["total_requests"],
+            df_inner[[f"{name}_requests" for name in REGION_NAMES]],
+            df_inner["total_dropped_requests"],
+            df_inner[[f"{name}_dropped_requests" for name in REGION_NAMES]],
         ]
         i = 0
         for df in dfs:
-            ax = plt.subplot(2, 2, i + 1)
+            ax = plt.subplot(2, 4, i + 1)
             df.plot(ax=ax)
             i += 1
         plt.show()

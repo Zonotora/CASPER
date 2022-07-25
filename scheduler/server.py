@@ -1,6 +1,7 @@
 from scheduler.constants import REGION_NAMES, SERVER_CAPACITY
 from scheduler.region import Region, load_regions
 from scheduler.request import RequestBatch
+import logging
 
 
 class Server:
@@ -20,14 +21,17 @@ class Server:
     def utilization_left(self):
         return self.capacity - self.utilization
 
-    def push(self, request_batch):
+    def push(self, load):
         """
         Push batch of requests to buffer. Batches of requests are removed
         from the buffer when they have been completed.
         """
-        assert self.utilization + request_batch.load <= self.capacity, (self.utilization + request_batch.load, self.capacity)
+        assert self.utilization + load <= self.capacity, (
+            self.utilization + load,
+            self.capacity,
+        )
 
-        self.utilization += request_batch.load
+        self.utilization += load
 
     def reset_utilization(self):
         self.utilization = 0
@@ -69,22 +73,38 @@ class ServerManager:
         requests_per_region: the number of requests that should be
         distributed across servers in a region
         """
-
+        dropped_requests_per_region = []
         for i in range(len(REGION_NAMES)):
-            requests = requests_per_region[:, i]
             region = REGION_NAMES[i]
+            # All requests to a {region}
+            requests = sum(requests_per_region[:, i])
+            # All servers in the {region} we should send our request batches
             servers = [s for s in self.servers if s.region.name == region]
-            request_batches = self.build_request_batches(requests)
+            # Craete request batches that are destined to {region}
+            server_loads, dropped_requests = self.build_server_loads(servers, requests)
+            dropped_requests_per_region.append(dropped_requests)
 
-            for batch in request_batches:
-                if batch.load == 0:
-                    continue
+            for server, load in server_loads:
+                server.push(load)
 
-                for server in servers:
-                    server.push(batch)
+        return dropped_requests_per_region
 
-    def build_request_batches(self, requests):
-        return [RequestBatch("", load, REGION_NAMES[i]) for i, load in enumerate(requests)]
+    def build_server_loads(self, servers, requests):
+        initial_requests = requests
+        loads = []
+        for server in servers:
+            left = server.utilization_left()
+            load = min(left, requests)
+            requests -= load
+            assert requests >= 0, requests
+            loads.append((server, load))
+
+        if requests > 0:
+            logging.warning(
+                f"Dropping requests: {requests}, initially: {initial_requests}, server_length: {len(servers)}"
+            )
+
+        return loads, requests
 
     def move(self, servers_per_region):
         """
@@ -98,13 +118,11 @@ class ServerManager:
         for server in self.servers:
             count[server.region.name] += 1
 
-
         # self.servers = []
         # for region, requested_count in zip(self.regions, servers_per_region):
         #     for _ in range(requested_count):
         #         server = Server(SERVER_CAPACITY, region)
         #         self.servers.append(server)
-
 
         # Remove all abundant servers in each region
         for region_name, requested_count in zip(REGION_NAMES, servers_per_region):
@@ -130,4 +148,3 @@ class ServerManager:
         for region, requested_count in zip(self.regions, servers_per_region):
             s = sum([1 for s in self.servers if s.region.name == region.name])
             assert s == requested_count, (s, requested_count, region)
-

@@ -43,9 +43,9 @@ def main():
             # call the scheduling algorithm
             latency, carbon_intensity, requests_per_region = schedule_requests(batches, server_manager, t)
             # send requests to servers
-            server_manager.send(requests_per_region)
+            dropped_requests_per_region = server_manager.send(requests_per_region)
             # update_plot(plot, t, latency, carbon_intensity, requests_per_region)
-            plot.add(latency, carbon_intensity, requests_per_region, t)
+            plot.add(latency, carbon_intensity, requests_per_region, dropped_requests_per_region, t)
 
         batches = []
         for region in server_manager.regions:
@@ -53,6 +53,7 @@ def main():
             batch = RequestBatch("", rate, region)
             batches.append(batch)
         servers_per_region = schedule_servers(batches, server_manager, t)
+        print(servers_per_region)
         # move servers to regions according to scheduling estimation the next hour
         server_manager.move(servers_per_region)
 
