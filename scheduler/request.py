@@ -5,4 +5,4 @@ class RequestBatch:
         self.region = region
 
     def __repr__(self) -> str:
-        return f"{self.name:<14} load: {self.load:<6} region: {self.region:<15}"
+        return f"RequestBatch({self.region}, load={self.load})"

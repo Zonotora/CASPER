@@ -27,11 +27,10 @@ def main():
 
     request_update_interval = 60 // conf.request_update_interval
 
+    move(server_manager, 0)
+
     for t in range(conf.timesteps):
         for _ in range(request_update_interval):
-            # reset server utilization for every server before scheduling requests again
-            # we can do this as requests are managed instantaneously for each server
-            server_manager.reset()
             # get number of requests for timeframe
             # TODO: Change this to dynamic requests
             batches = []
@@ -47,15 +46,11 @@ def main():
             # update_plot(plot, t, latency, carbon_intensity, requests_per_region)
             plot.add(latency, carbon_intensity, requests_per_region, dropped_requests_per_region, t)
 
-        batches = []
-        for region in server_manager.regions:
-            rate = region.get_requests_per_hour(t)
-            batch = RequestBatch("", rate, region)
-            batches.append(batch)
-        servers_per_region = schedule_servers(batches, server_manager, t)
-        print(servers_per_region)
-        # move servers to regions according to scheduling estimation the next hour
-        server_manager.move(servers_per_region)
+            # reset server utilization for every server before scheduling requests again
+            # we can do this as requests are managed instantaneously for each server
+            server_manager.reset()
+
+        move(server_manager, t + 1)
 
     if conf.save:
         save_file(plot)
@@ -65,14 +60,16 @@ def main():
     plot.plot()
 
 
-def update_plot(plot, t, latency, carbon_intensity, requests_per_region):
-    for i in range(len(requests_per_region)):
-        load = requests_per_region[i]
-        if load == 0:
-            continue
+def move(server_manager, t):
+    batches = []
+    for region in server_manager.regions:
+        rate = region.get_requests_per_hour(t + 1)
+        batch = RequestBatch("", rate, region)
+        batches.append(batch)
 
-        data = {"latency": latency[i], "carbon_emissions": carbon_intensity[i] * load}
-        plot.add(data, t)
+    servers_per_region = schedule_servers(batches, server_manager, t)
+    # move servers to regions according to scheduling estimation the next hour
+    server_manager.move(servers_per_region)
 
 
 if __name__ == "__main__":
