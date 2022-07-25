@@ -99,18 +99,18 @@ class ServerManager:
             count[server.region.name] += 1
 
         # Add servers to each region to satisfy the new server per region constraint
-        for region, requested_count in zip(REGION_NAMES, servers_per_region):
-            c = count[region]
+        for region, requested_count in zip(self.region, servers_per_region):
+            c = count[self.region.name]
             while c < requested_count:
                 # TODO: Set server capacity in a more generic way
-                server = Server(SERVER_CAPACITY, region)
+                server = Server(SERVER_CAPACITY, self.region)
                 self.servers.append(server)
                 c += 1
-            count[region] = c
+            count[self.region.name] = c
             assert count[region] == requested_count
 
         # Remove all abundant servers in each region
-        for region, requested_count in zip(REGION_NAMES, servers_per_region):
+        for region, requested_count in zip(self.region.name, servers_per_region):
             if count[region] > requested_count:
                 indices = [i for i, s in enumerate(self.servers) if s.region == region]
                 n = count[region] - requested_count
