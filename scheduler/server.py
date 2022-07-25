@@ -15,7 +15,7 @@ class Server:
         self.region = region
 
     def __repr__(self) -> str:
-        return f"{self.region:<15} capcity: {self.capacity:<6}"
+        return f"Server({self.region})"
 
     def utilization_left(self):
         return self.capacity - self.utilization
@@ -98,6 +98,25 @@ class ServerManager:
         for server in self.servers:
             count[server.region.name] += 1
 
+
+        # self.servers = []
+        # for region, requested_count in zip(self.regions, servers_per_region):
+        #     for _ in range(requested_count):
+        #         server = Server(SERVER_CAPACITY, region)
+        #         self.servers.append(server)
+
+
+        # Remove all abundant servers in each region
+        for region_name, requested_count in zip(REGION_NAMES, servers_per_region):
+            if count[region_name] > requested_count:
+                indices = [i for i, s in enumerate(self.servers) if s.region.name == region_name]
+                n = count[region_name] - requested_count
+                assert n >= 0, n
+                assert n <= len(indices), (n, len(indices))
+                for i in range(n - 1, -1, -1):
+                    index = indices[i]
+                    self.servers.pop(index)
+
         # Add servers to each region to satisfy the new server per region constraint
         for region, requested_count in zip(self.regions, servers_per_region):
             c = count[region.name]
@@ -107,14 +126,8 @@ class ServerManager:
                 self.servers.append(server)
                 c += 1
             count[region.name] = c
-            assert count[region.name] == requested_count
 
-        # Remove all abundant servers in each region
-        for region, requested_count in zip(self.regions.name, servers_per_region):
-            if count[region] > requested_count:
-                indices = [i for i, s in enumerate(self.servers) if s.region == region]
-                n = count[region] - requested_count
-                assert len(indices) > n
-                for i in range(n):
-                    index = indices[i]
-                    self.servers.pop(index)
+        for region, requested_count in zip(self.regions, servers_per_region):
+            s = sum([1 for s in self.servers if s.region.name == region.name])
+            assert s == requested_count, (s, requested_count, region)
+
