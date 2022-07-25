@@ -1,26 +1,20 @@
 from collections import defaultdict
 from datetime import datetime, timezone
 import pandas as pd
+import os
 
 from scheduler.constants import REGION_NAMES, REGION_OFFSETS
 
 
-def save_file(name, data):
+def save_file(plot):
     """
     Here we save the data of a file by name specified of the arguments
     """
-    columns = ["timestep", "latency", "carbon_emissions", "server_name", "server_utilization"]
-    res = defaultdict(list)
-    for i, t in enumerate(data):
-        for e in t:
-            res["timestep"].append(i)
-            res["server_name"].append(e["server"]["name"])
-            res["server_utilization"].append(e["server"]["utilization"])
-            res["latency"].append(e["latency"])
-            res["carbon_emissions"].append(e["carbon_emissions"])
-
-    df = pd.DataFrame(data=res)
-    df.to_csv(name + ".csv", index=False)
+    df_inner = plot.build_df()
+    date = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+    if not os.path.exists("saved"):
+        os.makedirs("saved")
+    df_inner.to_csv(f"saved/{date}_inner.csv", index=False)
 
 
 def load_file(name):
@@ -67,7 +61,7 @@ def load_carbon_intensity(path, offset, date="2021-01-01"):
 
     start = index[0] + offset
     # TODO: Consider more than just 24 hours ahead
-    end = start + 24
+    end = start + 24 + 24
 
     assert end < len(df), "The selected interval overflows the electricity map data"
 
@@ -90,7 +84,7 @@ def load_request_rate(path, offset, date="2021-01-01"):
 
     start = index[0] + offset
     # TODO: Consider more than just 24 hours ahead
-    end = start + 24
+    end = start + 24 + 24
     assert end < len(df), "The selected interval overflows the reqeust rate data"
 
     df = df["requests"].iloc[start:end].reset_index(drop=True)

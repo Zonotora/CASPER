@@ -39,9 +39,9 @@ def parse_arguments(argv):
 
     parser.add_argument(
         "-s",
-        "--file-to-save",
-        type=str,
+        "--save",
         help="Name of file to save and plot",
+        action="store_true",
     )
 
     parser.add_argument(

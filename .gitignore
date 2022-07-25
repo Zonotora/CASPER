@@ -1,4 +1,5 @@
 /api
+/saved
 
 *.out
 *.swp

@@ -54,7 +54,7 @@ class Plot:
     def plot(self):
         df_inner = self.build_df()
         fig = plt.figure(figsize=(18, 14))
-        dfs = [k
+        dfs = [
             df_inner["mean_latency"],
             df_inner[[f"{name}_latency" for name in REGION_NAMES]],
             df_inner["mean_carbon_emissions"],

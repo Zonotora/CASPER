@@ -16,11 +16,11 @@ def main():
     """
     random.seed(1234)
     conf = parse_arguments(sys.argv[1:])
-    if conf.file_to_load:
-        data = load_file(conf.file_to_load)
-        plot = Plot(conf, data=data)
-        plot.plot()
-        exit()
+    # if conf.file_to_load:
+    #     data = load_file(conf.file_to_load)
+    #     plot = Plot(conf, data=data)
+    #     plot.plot()
+    #     exit()
 
     plot = Plot(conf)
     server_manager = ServerManager(conf)
@@ -56,8 +56,8 @@ def main():
         # move servers to regions according to scheduling estimation the next hour
         server_manager.move(servers_per_region)
 
-    if conf.file_to_save:
-        save_file(conf.file_to_save, plot.data)
+    if conf.save:
+        save_file(plot)
 
     plot.plot()
 
