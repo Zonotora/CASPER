@@ -36,7 +36,7 @@ def main():
             # TODO: Change this to dynamic requests
             batches = []
             for region in server_manager.regions:
-                rate = region.get_requests_per_hour(t) / request_update_interval
+                rate = region.get_requests_per_hour(t) // request_update_interval
                 batch = RequestBatch("", rate, region)
                 batches.append(batch)
 
@@ -44,8 +44,8 @@ def main():
             latency, carbon_intensity, requests_per_region = schedule_requests(batches, server_manager, t)
             # send requests to servers
             server_manager.send(requests_per_region)
-            # TODO: update plots
             # update_plot(plot, t, latency, carbon_intensity, requests_per_region)
+            plot.add(latency, carbon_intensity, requests_per_region, t)
 
         batches = []
         for region in server_manager.regions:
