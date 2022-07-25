@@ -2,7 +2,7 @@ from scheduler.server import ServerManager
 from scheduler.request import RequestBatch
 from scheduler.parser import parse_arguments
 from scheduler.plot import Plot
-from scheduler.util import save_file, load_file
+from scheduler.util import save_file, load_file, ui
 from scheduler.milp_sched import schedule_requests, schedule_servers
 import sys
 import random
@@ -58,6 +58,8 @@ def main():
 
     if conf.save:
         save_file(plot)
+
+    ui(t, requests_per_region, server_manager.servers, server_manager.servers_per_region())
 
     plot.plot()
 

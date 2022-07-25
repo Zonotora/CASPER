@@ -1,5 +1,6 @@
 from collections import defaultdict
 from datetime import datetime, timezone
+from grpc import server
 import pandas as pd
 import os
 
@@ -91,5 +92,12 @@ def load_request_rate(path, offset, date="2021-01-01"):
 
     return df
 
-def ui(timestep, request_per_region, servers):
-    print("")
+def ui(timestep, request_per_region, servers, servers_per_regions_list):
+    print(f"______________________________________ \n TIMESTEP: {timestep}")
+    print("Requests per region:")
+    [print(f"{REGION_NAMES[i]} - {request[0]}") for i, request in enumerate(request_per_region)]
+    print(" \n SERVERS PER REGION: \n")
+    [print(f"{REGION_NAMES[i]} - {servers_per_region}") for i, servers_per_region in enumerate(servers_per_regions_list)]
+    print("\n Server objects in ServerManager: ")
+    print(servers)
+    print("______________________________________")
