@@ -23,36 +23,15 @@ class Region:
     #     (x2, y2) = other.location
     #     return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
 
-    def name_translator(self, name):
-        name_translator_dic = { "US-CAL-CISO" : "US-West-N.-California",
-                                "US-MIDA-PJM" : "US-East-Ohio",
-                                "US-MIDW-MISO" : "US-East-N.-Virginia",
-                                "US-TEX-ERCO" : "US-East-N.-Virginia",
-                                "DE" : "EU-Frankfurt",
-                                "FR" : "EU-Paris",
-                                "IE" : "EU-Ireland",
-                                "IT-NO" : "EU-Milan",
-                                "SE" : "EU-Stockholm" }
-        return name_translator_dic[name]
-
     def latency(self, other):
         '''
         Gathered as listed in the readme.
-        Cali = Cali
-        Mid atlantic = Ohio
-        Mid west = Virginia
-        Texas = ????????
+        Processed in misc/latency_preprocessing
         '''
-        #path = os.join.path("api", )
-
-        i = self.name_translator(self.name)
-        j = self.name_translator(other.name)
-
         df = self.latency_df
-        print(df)
-        i_index = df.columns.get_loc(i)
-        j_index = df.columns.get_loc(j)
-        return df.iloc[i_index, j_index]
+        i = df.columns.get_loc(self.name)
+        j = df.columns.get_loc(other.name)
+        return df.iloc[i, j]
 
     def __repr__(self) -> str:
         return self.name
