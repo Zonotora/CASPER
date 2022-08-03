@@ -26,6 +26,7 @@ def schedule_servers(conf, request_batches, server_manager, t, max_servers=4, ma
         logging.warning(
             f"Could not place servers! t={t} reqs: {request_rates} caps: {capacities} max_servers: {max_servers}"
         )
+        raise Exception("Could not place, look above for more info")
     # print(f"At t={t} servers placed: {servers} obj_val:{obj_val}")
     # If we never plan to schedule at a region, we set the servers in that region to 0.
     mask = np.sum(reqs, axis=0) == 0
@@ -54,6 +55,7 @@ def schedule_requests(conf, request_batches, server_manager, t, request_update_i
         logging.warning(
             f"Could not schedule requests! t={t} reqs: {request_rates} caps: {capacities} servers: {servers}"
         )
+        raise Exception("Could not schedule, look above for more info")
     # print(f"At t={t}, obj_val={obj_val:e} g C02 requests scheduled at: \n{requests}")
     return latencies, carbon_intensities, requests
 
@@ -75,7 +77,7 @@ def place_servers(request_rates, capacities, latencies, carbon_intensities, max_
         be sent to region j.
         return2: n_servers[i] is the number of servers that should be started
         in region i.
-        return3: objective value. 
+        return3: objective value.
     """
 
     opt_model = plp.LpProblem(name="model")
