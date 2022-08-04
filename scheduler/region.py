@@ -8,7 +8,19 @@ from scheduler.util import get_regions
 
 
 class Region:
+    """
+    Region object to hold and get region-specific data.
+    """
     def __init__(self, name, location, carbon_intensity, requests_per_hour) -> None:
+        """Input properties when region is instantiated
+
+        Args:
+            name: Name of region
+            location: Deprecated for estimating latency
+            carbon_intensity: Average carbon intensity during specified timeframe
+            requests_per_hour: Requests per hour during specified timeframe
+            latency_df : Replaces latency estimation with real latency data
+        """
         self.name = name
         self.location = location
         self.requests_per_hour = requests_per_hour
@@ -16,6 +28,14 @@ class Region:
         self.latency_df = pd.read_csv("api/cloudping/latency_50th.csv")
 
     def get_requests_per_hour(self, t):
+        """Get requests per hour for a timestep
+
+        Args:
+            t: timestep
+
+        Returns:
+            Integer of requests for that hour
+        """
         return self.requests_per_hour.iloc[t]
 
     # def latency(self, other):
@@ -24,10 +44,15 @@ class Region:
     #     return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
 
     def latency(self, other):
-        '''
-        Gathered as listed in the readme.
-        Processed in misc/latency_preprocessing
-        '''
+        """Gives latency from one region to another using cloudping data specified in README
+
+        Args:
+            self: Region sending a request
+            other: Region recieving request
+
+        Returns:
+            Returns round-trip latency from region "self" to region "other"
+        """
         df = self.latency_df
         i = df.columns.get_loc(self.name)
         j = df.columns.get_loc(other.name)
@@ -41,6 +66,14 @@ class Region:
 
 
 def load_regions(conf):
+    """Loads data for all regions from csv files and returns all regions
+
+    Args:
+        conf: Decides which continent of regions to load
+
+    Returns:
+        List of all region objects containing their specific data
+    """
     date = conf.start_date
     regions = []
     d = "api"
