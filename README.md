@@ -57,11 +57,19 @@ optional arguments:
                         Start date in ISO format (YYYY-MM-DD)
   -v, --verbose         Print information for every timestep
   -l LATENCY, --latency LATENCY
-                        Maximum latency allowed
+                        Maximum latency allowed in milliseconds
   -m MAX_SERVERS, --max-servers MAX_SERVERS
                         Maximum pool of servers
   --rate RATE           Specify a constant rate
 ```
+
+For **example** we could run this:
+```
+python -m scheduler -p "europe" -r 30 --latency 20 -t 48 --max-servers 15 --start-date 2021-10-22
+```
+
+In this respective order, we specify to run for the regions in europe \[^1\], schedule ever 30 minutes, where each request's round-trip must be under 20ms, for 48 hours, capping maximum server at one timestep to 15, with a starting date of 2021-10-22.  
+
 <a name="Testing"/>
 
 ## Testing ![Test](https://github.com/Zonotora/umass/workflows/Test/badge.svg?branch=main&event=push)
@@ -80,6 +88,9 @@ pytest -v
 
 ## Datasets 
 
-For latency we use [cloudping] containing average latency to AWS during one year for implemented regions. These are applied manually in the code. 
+For latency we use [cloudping][^2] containing average latency to AWS during one year for implemented regions. These are applied manually in the code. 
 
 [cloudping]: https://www.cloudping.co/grid/latency/timeframe/1Y
+
+  \[^1\] : Only includes the 6 regions of where AWS is based.
+  [^2] : https://www.cloudping.co/grid/latency/timeframe/1Y
