@@ -5,12 +5,22 @@ import logging
 
 def schedule_servers(conf, request_batches, server_manager, t, max_servers=4, max_latency=100):
     """
-    Place servers
+    Wrapper around the CAP (place_servers()).
 
     Setting max_latency to infinity makes algorithm carbon greedy.
-    Setting max_latency to 0 makes it always choose all servers in
-    the same region
+
+    Args:
+        conf: 
+        request_batches: request_batches[i] is the requests from region i
+        server_manager: server manager object
+        t: time-step
+        max_servers: Maximum number of servers. Defaults to 4.
+        max_latency: Maximum latency tolerated. Defaults to 100.
+
+    Returns:
+        server[i] - number of servers in region i.
     """
+
     carbon_intensities = [region.carbon_intensity[t] for region in server_manager.regions]
     latencies = np.array(
         [[region.latency(batch.region) for region in server_manager.regions] for batch in request_batches]
@@ -37,12 +47,22 @@ def schedule_servers(conf, request_batches, server_manager, t, max_servers=4, ma
 
 def schedule_requests(conf, request_batches, server_manager, t, request_update_interval, max_latency=100):
     """
-    Schedule requests
+    Wrapper around the CAS (sched_reqs()).
 
     Setting max_latency to infinity makes algorithm carbon greedy.
-    Setting max_latency to 0 makes it always choose all servers in
-    the same region
+
+    Args:
+        conf: 
+        request_batches: request_batches[i] is the requests from region i
+        server_manager: server manager object
+        t: time-step
+        request_update_interval: Interval in minutes in which requests are scheduled. 
+        max_latency: Maximum latency tolerated. Defaults to 100.
+
+    Returns:
+        requests[i,j] - number of requests from region i to j.
     """
+
     carbon_intensities = [region.carbon_intensity[t] for region in server_manager.regions]
     latencies = np.array(
         [[region.latency(batch.region) for region in server_manager.regions] for batch in request_batches]
@@ -62,14 +82,17 @@ def schedule_requests(conf, request_batches, server_manager, t, request_update_i
 
 def place_servers(request_rates, capacities, latencies, carbon_intensities, max_servers, max_latency):
     """
-    Schedule the requests and get where the servers should be placed.
+    This is the Carbon Aware Provisioner (CAP) where the placement of servers are determined.
+    For example if one region have a low carbon intensity for the next hours, more servers
+    should be allocated there.
+
     If problem was not solved, a negative objective value is returned
 
     Args:
-        param1: req_rates[i] is the number of requests from region i
-        param2: capacities[i] is the aggregate capacity of servers in region i
+        param1: request_rates[i] is the number of requests from region i
+        param2: capacities[i] is the average capacity per server in region i
         param3: latencies[i][j] is the latency from region i to j
-        param4: carb_intensities[i] is the carb intensity in region i
+        param4: carbon_intensities[i] is the carbon intensity in region i
         param5: max_servers is the maximum number of servers
         param6: max_latency is the maximum latency allowed
     Returns:
@@ -145,8 +168,24 @@ def place_servers(request_rates, capacities, latencies, carbon_intensities, max_
 
 def sched_reqs(request_rates, capacities, latencies, carbon_intensities, servers, max_latency):
     """
-    Given a fixed server placement, place the requests among
-    them. req_rates are the rate FROM each region.
+    This is the Carbon Aware Scheduler (CAS).
+    CAS schedules the requests given a fixed server placement that has been determined by
+    the CAP. 
+    If problem was not solved, a negative objective value is returned
+
+    Args:
+        param1: req_rates[i] is the number of requests from region i
+        param2: capacities[i] is the aggregate capacity of servers in region i
+        param3: latencies[i][j] is the latency from region i to j
+        param4: carb_intensities[i] is the carb intensity in region i
+        param5: max_servers is the maximum number of servers
+        param6: max_latency is the maximum latency allowed
+    Returns:
+        return1: x[i][j] is the number of requests from region i that should
+        be sent to region j.
+        return2: n_servers[i] is the number of servers that should be started
+        in region i.
+        return3: objective value. 
     """
 
     opt_model = plp.LpProblem(name="model")
