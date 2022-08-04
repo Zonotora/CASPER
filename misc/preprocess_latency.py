@@ -20,10 +20,10 @@ def name_translator(names):
         new_names.append(name_translator_dic[org_name])
     return new_names
 
-df = pd.read_csv("api/cloudping/latency_unprocessed.csv", index_col=None, header=None)
+df = pd.read_csv("api/cloudping/latency_unprocessed_50th.csv", index_col=None, header=None)
 df = df.applymap(lambda x: x.replace(".00", ""))
 
-cols = df.iloc[:,0]
+cols = df.iloc[:, 0]
 cols = name_translator(cols)
 df = df.iloc[:, 1:]
 df.columns = cols

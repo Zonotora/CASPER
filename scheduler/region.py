@@ -13,7 +13,7 @@ class Region:
         self.location = location
         self.requests_per_hour = requests_per_hour
         self.carbon_intensity = carbon_intensity
-        self.latency_df = pd.read_csv("api/cloudping/latency.csv")
+        self.latency_df = pd.read_csv("api/cloudping/latency_50th.csv")
 
     def get_requests_per_hour(self, t):
         return self.requests_per_hour.iloc[t]
