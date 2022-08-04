@@ -1,14 +1,17 @@
+from numpy import deprecate
+from scheduler.constants import REGION_EUROPE, REGION_NORTH_AMERICA, REGION_ORIGINAL
 from datetime import datetime, timezone
 import pandas as pd
 import os
-#import numpy as np
-
-from scheduler.constants import REGION_EUROPE, REGION_NORTH_AMERICA, REGION_ORIGINAL
 
 
 def save_file(conf, plot):
-    """
-    Here we save the data of a file by name specified of the arguments
+    """Save the data of a file by name specified of the arguments. Usefull for misc visualisations.
+
+
+    Args:
+        conf: Runtime configurations to retrieve latency, max_servers, timesteps
+        plot: Converts data from the plot object to dataframe
     """
     df = plot.build_df()
     date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
@@ -25,10 +28,15 @@ def save_file(conf, plot):
     ]
     df.to_csv(f"saved/{date}_{''.join(fingerprint)}.csv", index=False)
 
-
+@deprecate
 def load_file(name):
-    """
-    Here we load a file specified by name specified by the arguments
+    """Unused function to load saved file from save_file()
+
+    Args:
+        name: Name of file
+
+    Returns:
+        Old data from a previous run
     """
     df = pd.read_csv(name)
     n = len(df["timestep"].unique())
@@ -46,8 +54,15 @@ def load_file(name):
 
 
 def load_electricity_map_with_resample(path, metric="W"):
-    """
-    Loads electricity map data with resample to smooth out graph
+    """Loads electricity map data with resample to smooth out graph
+
+
+    Args:
+        path: Path of electricity map data
+        metric: Smooth on daily/weekly.../ basis. Defaults to "Weeks".
+
+    Returns:
+        Dataframe with all electricity map data indexed by dates
     """
     df = pd.read_csv(path)
     df.datetime = pd.to_datetime(df["datetime"], format="%Y-%m-%d %H:%M:%S.%f")
@@ -57,9 +72,17 @@ def load_electricity_map_with_resample(path, metric="W"):
 
 
 def load_carbon_intensity(path, offset, conf, date="2021-01-01"):
-    """
-    Loads carbon intensity for a Region taking time offset to california into account
-    for a certain date.
+    """Loads carbon intensity for a Region from a certain date for 24 hour interval.
+    NOTE California offset = 0.
+
+    Args:
+        path: Path of carbon intensity data
+        offset: Offset by hour of region
+        conf: Runtime configurations to retrieve current timestep
+        date: Date to begin loading from. Defaults to "2021-01-01".
+
+    Returns:
+        Returns dataframe with carbon intensity data for region, indexed by hours [0,...,24]
     """
     df = pd.read_csv(path)
     start_date = datetime.fromisoformat(date).replace(tzinfo=timezone.utc)
@@ -81,8 +104,17 @@ def load_carbon_intensity(path, offset, conf, date="2021-01-01"):
 
 
 def load_request_rate(path, offset, conf, date="2021-01-01"):
-    """
-    Loads request rate data for a region and returns its data.
+    """Loads request rate data for a region and returns its data.
+    NOTE California offset = 0.
+
+    Args:
+        path: Path of request rate data
+        offset: Offset by hour of region
+        conf: Runtime configurations to retrieve current timestep
+        date: Date to begin loading from. Defaults to "2021-01-01".
+
+    Returns:
+        Returns dataframe with request rate data for region, indexed by hours [0,...,24]
     """
     df = pd.read_csv(path)
     start_date = datetime.fromisoformat(date).replace(tzinfo=timezone.utc, year=2021)
@@ -111,6 +143,15 @@ def load_request_rate(path, offset, conf, date="2021-01-01"):
 
 
 def ui(conf, timestep, request_per_region, servers, servers_per_regions_list):
+    """Interactive UI while running for debugging
+
+    Args:
+        conf: Runtime configurations to retrieve regions
+        timestep: Timesteps
+        request_per_region: Dataframe for hourly request rate
+        servers: List of servers
+        servers_per_regions_list: List of servers per region
+    """
     region_names = get_regions(conf)
     print(f"______________________________________ \n TIMESTEP: {timestep}")
     print("Requests per region:")
@@ -126,6 +167,14 @@ def ui(conf, timestep, request_per_region, servers, servers_per_regions_list):
 
 
 def get_regions(conf):
+    """Get regions for continent specified
+
+    Args:
+        conf: Runtime configurations to get continent
+
+    Returns:
+        Returns array of regions in continent
+    """
     if conf.region_kind == "original":
         return REGION_ORIGINAL
     elif conf.region_kind == "europe":
