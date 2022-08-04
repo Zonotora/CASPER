@@ -1,3 +1,12 @@
+### Table of Contents  
+- [Description](#Description)  
+- [Installation](#Installation)
+- [Usage](#Usage)  
+- [Testing](#Testing)  
+- [Datasets](#Datasets)  
+
+<a name="Description"/>
+
 # Carbon Aware Scheduler and ProvisionER (CASPER)
 
 Using predictions of request during the next hour we calculate how the servers should be placed to handle
@@ -14,12 +23,14 @@ There are a few assumptions to consider for this implementation:
 5. We assume instantaneous communication between regions and the scheduler
 6. We ignore capacity planning, i.e. setting the maximum servers, capacities, etc such that all demand can be satisfied
 
+<a name="Installation"/>
 
 ## Installation
 Install all required packages specified in requirements.txt
 ```
 pip install -r requirements.py
 ```
+<a name="Usage"/>
 
 ## Usage
 To run the scheduler, make sure the working directory is the root folder of the repository and run the following
@@ -51,6 +62,7 @@ optional arguments:
                         Maximum pool of servers
   --rate RATE           Specify a constant rate
 ```
+<a name="Testing"/>
 
 ## Testing ![Test](https://github.com/Zonotora/umass/workflows/Test/badge.svg?branch=main&event=push)
 
@@ -64,6 +76,7 @@ Run the following command in the root folder
 ```
 pytest -v
 ```
+<a name="Datasets"/>
 
 ## Datasets 
 
