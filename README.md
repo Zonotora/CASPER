@@ -5,6 +5,15 @@ the requests while minimizing carbon and satsifying latency constraint.
 
 Once servers are placed, the scheduler distributes the request between the regions such that carbon is minimized.
 
+There are a few assumptions to consider for this implementation: 
+
+1. The properties of requests such as latency, load, and lifetime are uniform, hence requests are interchangeable
+2. Requests considered are of type web requests. 
+3. Complete knowledge of request rate for the incoming, i.e. perfect predictions. 
+4. We can boot up servers in any region. 
+5. We assume instantaneous communication between regions and the scheduler
+6. We ignore capacity planning, i.e. setting the maximum servers, capacities, etc such that all demand can be satisfied
+
 
 ## Installation
 Install all required packages specified in requirements.txt
