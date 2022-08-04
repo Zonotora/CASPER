@@ -9,10 +9,7 @@ import random
 
 
 def main():
-    """
-    Init the servers. Generate some fake workload.
-    Schedule and run the workload. Get the latency
-    and carbon footprint summary. Report it.
+    """Central function where simulation is run, plots called, requests are injected, etc.
     """
     random.seed(1234)
     conf = parse_arguments(sys.argv[1:])
@@ -26,6 +23,7 @@ def main():
     plot = Plot(conf)
     server_manager = ServerManager(conf)
 
+    #Frequency of which to create more requests
     request_update_interval = 60 // conf.request_update_interval
 
     for t in range(conf.timesteps + 1):
@@ -50,7 +48,7 @@ def main():
                 for i in range(len(batches)):
                     dropped_requests_per_region[i] = batches[i].load
 
-            # update_plot(plot, t, latency, carbon_intensity, requests_per_region)
+            # save data to plot object
             plot.add(
                 server_manager,
                 latency,
@@ -76,6 +74,17 @@ def main():
 
 
 def build_batches(conf, server_manager, t, request_update_interval=None):
+    """Adds creates batch of work to inject called by main()
+
+    Args:
+        conf: Runtime configurations to retrieve work building frequency
+        server_manager: Central server manager object that i.e. holds regions
+        t: current timestep
+        request_update_interval: Frequency at which tasks are built. Defaults to None.
+
+    Returns:
+        Batch of requests
+    """
     batches = []
     for region in server_manager.regions:
         rate = region.get_requests_per_hour(t)
@@ -90,6 +99,13 @@ def build_batches(conf, server_manager, t, request_update_interval=None):
 
 
 def move(conf, server_manager, t):
+    """_summary_
+
+    Args:
+        conf: _description_
+        server_manager: _description_
+        t: _description_
+    """
     batches = build_batches(conf, server_manager, t)
     servers_per_region = schedule_servers(
         conf, batches, server_manager, t, max_latency=conf.latency, max_servers=conf.max_servers
