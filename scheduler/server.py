@@ -5,12 +5,22 @@ import logging
 
 
 class Server:
-    """
-    An artificial server with a carbon trace,
-    latency and capacity.
+    """An artificial server with a carbon trace, latency and capacity.
+
+       NOTE:
+       In-place order used often which refers to the inherent order of regions, e.g. [cali, texas, ...]
+       which works as the same order is used everywhere.
+
     """
 
     def __init__(self, capacity: int, region: Region):
+        """
+
+        Args:
+            capacity: A servers capacity, typically same among all servers
+            region: Region server is assigned to
+            utilization : Computing units utilized in server. Same unit as capacity.
+        """
         self.capacity = capacity
         self.utilization = 0
         self.region = region
@@ -19,12 +29,17 @@ class Server:
         return f"Server({self.region}, capacity={self.capacity}, utilization={self.utilization})"
 
     def utilization_left(self):
+        """
+        Returns:
+            Utilization left for a server
+        """
         return self.capacity - self.utilization
 
     def push(self, load):
-        """
-        Push batch of requests to buffer. Batches of requests are removed
-        from the buffer when they have been completed.
+        """Push batch of requests to buffer. Remove when batch is completed
+
+        Args:
+            load: Load of a batch of requests
         """
         assert self.utilization + load <= self.capacity, (
             self.utilization + load,
@@ -34,11 +49,22 @@ class Server:
         self.utilization += load
 
     def reset_utilization(self):
+        """Resets the utilization of utilization if restarting simulation. Not applied.
+        """
         self.utilization = 0
 
 
 class ServerManager:
+    """Central manager keeping check of all regions and servers, handles request sourcing to servers etc.
+    """
     def __init__(self, conf, regions=None):
+        """
+
+        Args:
+            conf: Runtime configurations
+            regions: Only set to not None if running tests. Defaults to None.
+            servers: List of server objects
+        """
         self.conf = conf
         self.region_names = get_regions(conf)
         if regions is None:
@@ -55,6 +81,11 @@ class ServerManager:
             server.reset_utilization()
 
     def utilization_left_regions(self):
+        """Iterates servers and utilization of their respective region
+
+        Returns:
+            List of utilization of all regions, in-place order
+        """
         utilization_left = {region: 0 for region in self.region_names}
 
         for server in self.servers:
@@ -63,6 +94,11 @@ class ServerManager:
         return [utilization_left[region] for region in self.region_names]
 
     def servers_per_region(self):
+        """
+
+        Returns:
+            Number of servers in each region, in-place order
+        """
         count = {region: 0 for region in self.region_names}
 
         for server in self.servers:
@@ -71,15 +107,19 @@ class ServerManager:
         return [count[region] for region in self.region_names]
 
     def capacity_per_region(self):
+        """Calculates the regional capacity using a static integer set in runtime configurations.
+
+        Returns:
+            Regional capacity, in-place order
+        """
         servers = np.array(self.servers_per_region())
         return servers * self.conf.server_capacity
 
     def send(self, requests_per_region):
-        """
-        Distributes requests to each server for each region
+        """ Distributes requests to each server for each region
 
-        requests_per_region: the number of requests that should be
-        distributed across servers in a region
+        Args:
+            requests_per_region: the n.o. requests to be distributed across servers in a region, in-place.
         """
         for i in range(len(self.region_names)):
             region = self.region_names[i]
@@ -94,6 +134,15 @@ class ServerManager:
                 server.push(load)
 
     def build_server_loads(self, servers, requests):
+        """Places load from requests at servers. The servers are region-specific.
+
+        Args:
+            servers: All servers for a region where load is to be placed
+            requests: Number of requests sent to a region. NOTE that load of request is 1 unit.
+
+        Returns:
+            List of (server, load) for servers in region with their respective load
+        """
         initial_requests = requests
         loads = []
         for server in servers:
@@ -111,11 +160,10 @@ class ServerManager:
         return loads
 
     def move(self, servers_per_region):
-        """
-        We should only move the minimum amount of servers to satisfy the
-        number of servers per region
+        """Moves the minimum amount of servers to satisfy the number of requests per region
 
-        servers_per_region: specifies the number of servers per region
+        Args:
+            servers_per_region: Specifies the number of servers per region
         """
         count = {region: 0 for region in self.region_names}
 
