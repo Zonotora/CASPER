@@ -5,7 +5,21 @@ from scheduler.util import get_regions
 
 
 class Plot:
+    """
+    Holds data during runtime and plots it at end of simulation.
+    """
     def __init__(self, conf) -> None:
+        """_summary_
+
+        Args:
+            conf: Runtime configurations
+
+        Attributes:
+            region_names: Which continent to load (containing several regions)
+            columns : Column labels for dataframe to simplify plotting
+            data : Data for plotting, appended during runtime
+
+        """
         self.conf = conf
         self.region_names = get_regions(conf)
         self.columns = [
@@ -39,6 +53,18 @@ class Plot:
         interval,
         request_update_interval,
     ):
+        """Adds data during runtime to data
+
+        Args:
+            server_manager: _description_
+            latency: _description_
+            carbon_intensity: _description_
+            requests_per_region: _description_
+            dropped_requests_per_region: _description_
+            t: _description_
+            interval: _description_
+            request_update_interval: _description_
+        """
         total_requests_to_region = np.sum(requests_per_region, axis=0)
         total_requests_from_region = np.sum(requests_per_region, axis=1)
 
@@ -84,12 +110,30 @@ class Plot:
         self.data.append(frame)
 
     def get(self, dt: int):
+        """Return data for a timestep
+
+        Args:
+            dt: Timestep
+
+        Returns:
+            Data for a timestep
+        """
         return self.data[dt]
 
     def build_df(self):
+        """Build DataFrame from data we've gathered during runtime.
+
+        Returns:
+            Returns a dataframe with the data gathered.
+        """
         return pd.DataFrame(self.data, columns=self.columns)
 
     def plot(self, df=None):
+        """Displays region-specific data aswell as averages of regions for the plot
+
+        Args:
+            df: Data for regions. Defaults to None.
+        """
         if df is None:
             df = self.build_df()
         df = df.groupby("timestep")
