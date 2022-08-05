@@ -19,6 +19,7 @@ def save_file(conf, plot):
         os.makedirs("saved")
 
     fingerprint = [
+        str(conf.type_scheduler),
         "_latency_",
         str(conf.latency),
         "_max_servers_",
