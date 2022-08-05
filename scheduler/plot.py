@@ -159,7 +159,8 @@ class Plot:
         fig = plt.figure(figsize=(14, 9))
         fig.tight_layout()
         fig.suptitle(
-            [
+            [   "start_date: ",
+                self.conf.start_date,
                 "greedy_w.r.t.:",
                 self.conf.type_scheduler,
                 "latency:",
