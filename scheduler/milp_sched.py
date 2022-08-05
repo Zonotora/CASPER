@@ -10,7 +10,7 @@ def schedule_servers(conf, request_batches, server_manager, t, max_servers=4, ma
     Setting max_latency to infinity makes algorithm carbon greedy.
 
     Args:
-        conf: 
+        conf:
         request_batches: request_batches[i] is the requests from region i
         server_manager: server manager object
         t: time-step
@@ -44,6 +44,12 @@ def schedule_servers(conf, request_batches, server_manager, t, max_servers=4, ma
 
     return servers
 
+def place_servers(conf, request_batches, server_manager, t, request_update_interval, max_latency=100):
+    if:
+        place_servers_carbon_greedy(conf, request_batches, server_manager, t, request_update_interval, max_latency=100)
+
+    else:
+        place_servers_latency_greedy(conf, request_batches, server_manager, t, request_update_interval, max_latency=100)
 
 def schedule_requests(conf, request_batches, server_manager, t, request_update_interval, max_latency=100):
     """
@@ -52,11 +58,11 @@ def schedule_requests(conf, request_batches, server_manager, t, request_update_i
     Setting max_latency to infinity makes algorithm carbon greedy.
 
     Args:
-        conf: 
+        conf:
         request_batches: request_batches[i] is the requests from region i
         server_manager: server manager object
         t: time-step
-        request_update_interval: Interval in minutes in which requests are scheduled. 
+        request_update_interval: Interval in minutes in which requests are scheduled.
         max_latency: Maximum latency tolerated. Defaults to 100.
 
     Returns:
@@ -79,8 +85,72 @@ def schedule_requests(conf, request_batches, server_manager, t, request_update_i
     # print(f"At t={t}, obj_val={obj_val:e} g C02 requests scheduled at: \n{requests}")
     return latencies, carbon_intensities, requests
 
+def place_servers_latency_greedy(request_rates, capacities, latencies, carbon_intensities, max_servers, max_latency):
 
-def place_servers(request_rates, capacities, latencies, carbon_intensities, max_servers, max_latency):
+    opt_model = plp.LpProblem(name="model")
+    n_regions = len(carbon_intensities)
+    set_R = range(n_regions)  # Region set
+    x_vars = {(i, j): plp.LpVariable(cat=plp.LpInteger, lowBound=0, name=f"x_{i}_{j}") for i in set_R for j in set_R}
+    s_vars = {i: plp.LpVariable(cat=plp.LpInteger, lowBound=0, name=f"s_{i}") for i in set_R}
+
+    # Cap the number of servers
+    opt_model.addConstraint(
+        plp.LpConstraint(
+            e=plp.lpSum(s_vars[i] for i in set_R), sense=plp.LpConstraintLE, rhs=max_servers, name="max_server"
+        )
+    )
+
+    # Per server max capacity
+    for j in set_R:
+        opt_model.addConstraint(
+            plp.LpConstraint(
+                e=plp.lpSum(x_vars[i, j] for i in set_R) - s_vars[j] * capacities[j],
+                sense=plp.LpConstraintLE,
+                rhs=0,
+                name=f"capacity_const{j}",
+            )
+        )
+
+    # All requests from a region must go somewhere.
+    for i in set_R:
+        opt_model.addConstraint(
+            plp.LpConstraint(
+                e=plp.lpSum(x_vars[i, j] for j in set_R),
+                sense=plp.LpConstraintEQ,
+                rhs=request_rates[i],
+                name=f"sched_all_reqs_const{i}",
+            )
+        )
+
+    # # Latency constraint
+    # for i in set_R:
+    #     for j in set_R:
+    #         opt_model.addConstraint(
+    #             plp.LpConstraint(
+    #                 e=x_vars[i, j] * (latencies[i][j] - max_latency),
+    #                 sense=plp.LpConstraintLE,
+    #                 rhs=0,
+    #                 name=f"latency_const{i}_{j}",
+    #             )
+    #         )
+
+    objective = plp.lpSum(request_rates[i] * x_vars[i, j] for i in set_R for j in set_R)  # + plp.lpSum(
+    #        s_vars[i] for i in set_R
+    #    )
+    opt_model.setObjective(objective)
+    opt_model.solve(plp.PULP_CBC_CMD(msg=0))
+    requests = np.zeros((len(set_R), len(set_R)), dtype=int)
+    for i, j in x_vars.keys():
+        requests[i, j] = int(x_vars[i, j].varValue)
+
+    if opt_model.sol_status != 1:
+        #        print("[x] Did not find a server placement! Returning all 0's")
+        return np.zeros(n_regions), requests, -10000
+
+    return np.array([int(s.varValue) for s in s_vars.values()]), requests, objective.value()
+
+
+def place_servers_carbon_greedy(request_rates, capacities, latencies, carbon_intensities, max_servers, max_latency):
     """
     This is the Carbon Aware Provisioner (CAP) where the placement of servers are determined.
     For example if one region have a low carbon intensity for the next hours, more servers
@@ -170,7 +240,7 @@ def sched_reqs(request_rates, capacities, latencies, carbon_intensities, servers
     """
     This is the Carbon Aware Scheduler (CAS).
     CAS schedules the requests given a fixed server placement that has been determined by
-    the CAP. 
+    the CAP.
     If problem was not solved, a negative objective value is returned
 
     Args:
@@ -185,7 +255,7 @@ def sched_reqs(request_rates, capacities, latencies, carbon_intensities, servers
         be sent to region j.
         return2: n_servers[i] is the number of servers that should be started
         in region i.
-        return3: objective value. 
+        return3: objective value.
     """
 
     opt_model = plp.LpProblem(name="model")
