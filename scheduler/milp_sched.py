@@ -29,8 +29,9 @@ def schedule_servers(conf, request_batches, server_manager, t, max_servers=4, ma
     request_rates = [batch.load for batch in request_batches]
 
     # reqs are the tentative requests
+    scheduler = conf.type_scheduler
     servers, reqs, obj_val = place_servers(
-        request_rates, capacities, latencies, carbon_intensities, max_servers, max_latency
+        scheduler, request_rates, capacities, latencies, carbon_intensities, max_servers, max_latency
     )
     if obj_val < 0:
         logging.warning(
@@ -44,12 +45,26 @@ def schedule_servers(conf, request_batches, server_manager, t, max_servers=4, ma
 
     return servers
 
-def place_servers(conf, request_batches, server_manager, t, request_update_interval, max_latency=100):
-    if:
-        place_servers_carbon_greedy(conf, request_batches, server_manager, t, request_update_interval, max_latency=100)
+def place_servers(scheduler, request_rates, capacities, latencies, carbon_intensities, max_servers, max_latency):
+    """Organizes choice of scheduler
 
-    else:
-        place_servers_latency_greedy(conf, request_batches, server_manager, t, request_update_interval, max_latency=100)
+    Args:
+        scheduler: To which respect scheduler is greedy
+        request_rates: _description_
+        capacities: _description_
+        latencies: _description_
+        carbon_intensities: _description_
+        max_servers: _description_
+        max_latency: _description_
+
+    Returns:
+        _description_
+    """
+    assert str(scheduler) in ["latency", "carbon"], scheduler
+    if scheduler == "carbon":
+        return place_servers_carbon_greedy(request_rates, capacities, latencies, carbon_intensities, max_servers, max_latency)
+    elif scheduler == "latency":
+        return place_servers_latency_greedy(request_rates, capacities, latencies, carbon_intensities, max_servers, max_latency)
 
 def schedule_requests(conf, request_batches, server_manager, t, request_update_interval, max_latency=100):
     """
