@@ -110,6 +110,23 @@ class Plot:
         )
         self.data.append(frame)
 
+    def calculate_cumulative_avg_latency(self, df):
+        """Gets the cumulative avg latency for ALL requests
+
+        Args:
+            df: Dataframe with request and latency data
+
+        Returns:
+            Average latency
+        """
+        # Total request for each timestep
+        df_requests = df["total_requests"].sum()
+        # Average latencies for each timestep
+        df_latencies = df["mean_latency"].mean()
+        # Sum of all requests
+        df_all_requests = df_requests.sum()
+        return np.dot(df_requests, df_latencies)/ df_all_requests
+
 
     def get(self, dt: int):
         """Return data for a timestep
@@ -153,7 +170,9 @@ class Plot:
                 self.conf.server_capacity,
             ]
         )
-        print("Mean latency among all regions is: " + str(df["mean_latency"].mean().mean()))
+        avg_latency = self.calculate_cumulative_avg_latency(df)
+        print("Mean latency among all regions is: " + str(avg_latency))
+
         dfs = [
             df["total_requests"].sum(),
             df[[f"{name}_requests_from" for name in self.region_names]].sum(),
