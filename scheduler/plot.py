@@ -143,6 +143,8 @@ class Plot:
         fig.tight_layout()
         fig.suptitle(
             [
+                "greedy_w.r.t.:",
+                self.conf.type_scheduler,
                 "latency:",
                 self.conf.latency,
                 "max_servers:",
