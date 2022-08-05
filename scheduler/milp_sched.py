@@ -47,18 +47,6 @@ def schedule_servers(conf, request_batches, server_manager, t, max_servers=4, ma
 
 def place_servers(scheduler, request_rates, capacities, latencies, carbon_intensities, max_servers, max_latency):
     """Organizes choice of scheduler
-
-    Args:
-        scheduler: To which respect scheduler is greedy
-        request_rates: request_rates[i] is the number of requests from region i
-        capacities: capacities[i] is the average capacity per server in region i
-        latencies: latencies[i][j] is the latency from region i to j
-        carbon_intensities: carbon_intensities[i] is the carbon intensity in region i
-        max_servers: max_servers is the maximum number of servers
-        max_latency: Maximum latency allowed
-
-    Returns:
-        _description_
     """
     assert str(scheduler) in ["latency", "carbon"], scheduler
     if scheduler == "carbon":
@@ -101,7 +89,26 @@ def schedule_requests(conf, request_batches, server_manager, t, request_update_i
     return latencies, carbon_intensities, requests
 
 def place_servers_latency_greedy(request_rates, capacities, latencies, carbon_intensities, max_servers):
+    """
+    This is the latency greedy scheduler to compare with the Carbon Aware Scheduler. The placement
+    of servers are determined by latency rather than by carbon.
 
+    If problem was not solved, a negative objective value is returned
+
+    Args:
+        request_rates: request_rates[i] is the number of requests from region i
+        capacities: capacities[i] is the average capacity per server in region i
+        latencies: latencies[i][j] is the latency from region i to j
+        carbon_intensities: carbon_intensities[i] is the carbon intensity in region i
+        max_servers: max_servers is the maximum number of servers
+        max_latency: max_latency is the maximum latency allowed
+    Returns:
+        return1: x[i][j] is the number of requests from region i that should
+        be sent to region j.
+        return2: n_servers[i] is the number of servers that should be started
+        in region i.
+        return3: objective value.
+    """
     opt_model = plp.LpProblem(name="model")
     n_regions = len(carbon_intensities)
     set_R = range(n_regions)  # Region set
@@ -137,21 +144,8 @@ def place_servers_latency_greedy(request_rates, capacities, latencies, carbon_in
             )
         )
 
-    # # Latency constraint
-    # for i in set_R:
-    #     for j in set_R:
-    #         opt_model.addConstraint(
-    #             plp.LpConstraint(
-    #                 e=x_vars[i, j] * (latencies[i][j] - max_latency),
-    #                 sense=plp.LpConstraintLE,
-    #                 rhs=0,
-    #                 name=f"latency_const{i}_{j}",
-    #             )
-    #         )
+    objective = plp.lpSum(latencies[i][j] * x_vars[i, j] for i in set_R for j in set_R)
 
-    objective = plp.lpSum(request_rates[i] * x_vars[i, j] for i in set_R for j in set_R)  # + plp.lpSum(
-    #        s_vars[i] for i in set_R
-    #    )
     opt_model.setObjective(objective)
     opt_model.solve(plp.PULP_CBC_CMD(msg=0))
     requests = np.zeros((len(set_R), len(set_R)), dtype=int)
@@ -159,7 +153,6 @@ def place_servers_latency_greedy(request_rates, capacities, latencies, carbon_in
         requests[i, j] = int(x_vars[i, j].varValue)
 
     if opt_model.sol_status != 1:
-        #        print("[x] Did not find a server placement! Returning all 0's")
         return np.zeros(n_regions), requests, -10000
 
     return np.array([int(s.varValue) for s in s_vars.values()]), requests, objective.value()
@@ -174,12 +167,12 @@ def place_servers_carbon_greedy(request_rates, capacities, latencies, carbon_int
     If problem was not solved, a negative objective value is returned
 
     Args:
-        param1: request_rates[i] is the number of requests from region i
-        param2: capacities[i] is the average capacity per server in region i
-        param3: latencies[i][j] is the latency from region i to j
-        param4: carbon_intensities[i] is the carbon intensity in region i
-        param5: max_servers is the maximum number of servers
-        param6: max_latency is the maximum latency allowed
+        request_rates: request_rates[i] is the number of requests from region i
+        capacities: capacities[i] is the average capacity per server in region i
+        latencies: latencies[i][j] is the latency from region i to j
+        carbon_intensities: carbon_intensities[i] is the carbon intensity in region i
+        max_servers: max_servers is the maximum number of servers
+        max_latency: max_latency is the maximum latency allowed
     Returns:
         return1: x[i][j] is the number of requests from region i that should
         be sent to region j.
@@ -235,9 +228,8 @@ def place_servers_carbon_greedy(request_rates, capacities, latencies, carbon_int
                 )
             )
 
-    objective = plp.lpSum(x_vars[i, j] * carbon_intensities[j] for i in set_R for j in set_R)  # + plp.lpSum(
-    #        s_vars[i] for i in set_R
-    #    )
+    objective = plp.lpSum(x_vars[i, j] * carbon_intensities[j] for i in set_R for j in set_R)
+
     opt_model.setObjective(objective)
     opt_model.solve(plp.PULP_CBC_CMD(msg=0))
     requests = np.zeros((len(set_R), len(set_R)), dtype=int)
@@ -245,7 +237,6 @@ def place_servers_carbon_greedy(request_rates, capacities, latencies, carbon_int
         requests[i, j] = int(x_vars[i, j].varValue)
 
     if opt_model.sol_status != 1:
-        #        print("[x] Did not find a server placement! Returning all 0's")
         return np.zeros(n_regions), requests, -10000
 
     return np.array([int(s.varValue) for s in s_vars.values()]), requests, objective.value()
