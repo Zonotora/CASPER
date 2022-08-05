@@ -1,4 +1,4 @@
-### Table of Contents  
+## Table of Contents  
 - [Description](#Description)  
 - [Installation](#Installation)
 - [Usage](#Usage)  
@@ -16,8 +16,8 @@ Once servers are placed, the scheduler distributes the request between the regio
 
 There are a few assumptions to consider for this implementation: 
 
-1. The requests within a time-slot is are treated as interchangeable
-2. The type of requests considered are short-lived, e.g. web requests. 
+1. The requests within a time-slot are treated as interchangeable.
+2. The type of requests considered are short-lived, e.g. web requests.
 3. Complete knowledge of incoming request rate for next time-slot, i.e. perfect predictions. 
 4. Instantaneous communication between regions and the scheduler.
 5. We ignore capacity planning, i.e. setting the maximum servers, capacities, etc such that all demand can be satisfied
@@ -87,7 +87,8 @@ pytest -v
 
 ## Datasets 
 
-- _Latency_ uses [cloudping] [<sup id="a2">[2](#latency_cloudping)</sup>] containing inter-regional 50th percentile latency data for AWS during one year. These are processed and applied in the code. 
+- _Latency_ uses [cloudping] [<sup id="a2">[2](#latency_cloudping)</sup>] containing inter-regional 50th percentile latency data for
+AWS during one year. These are processed and applied in the code. 
 
 - _Carbon Intensity_ uses [electricity map] [<sup id="a3">[3](#electricity_map)</sup>] for carbon metrics during decision making. We focus on the metric _average carbon intensity_ for regions.
 
