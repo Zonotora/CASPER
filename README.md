@@ -88,20 +88,30 @@ pytest -v
 
 ## Datasets 
 
-For latency we use [cloudping] [<sup id="a2">[2](#latency_cloudping)</sup>] containing average latency to AWS during one year for implemented regions. These are applied manually in the code. 
+- _Latency_ uses [cloudping] [<sup id="a2">[2](#latency_cloudping)</sup>] containing inter-regional 50th percentile latency data for AWS during one year. These are processed and applied in the code. 
+
+- _Carbon Intensity_ uses [electricity map] [<sup id="a3">[3](#electricity_map)</sup>] for carbon metrics during decision making. We focus on the metric _average carbon intensity_ for regions.
 
 [cloudping]: https://www.cloudping.co/grid/latency/timeframe/1Y
+[electricity map]: https://electricitymaps.com/
 
 ## Footnotes
-  [<a id="1">1</a>] : Only includes the 6 regions of where AWS is based. See [<sup>[3](#aws_regions_eu)</sup>] for the whole list.
+  [<a id="1">1</a>]
+Only includes the 6 regions of where AWS is based. See [<sup id="a4">[4](#aws_regions)</sup>] for the whole list.
+<b id="a1"></b> [↩](#a1)
 
 ## References
-[<a id="2">2</a>] :  <a name="latency_cloudping">1</a>  https://www.cloudping.co/grid/latency/timeframe/1Y   <b id="a1"></b> [↩](#a1)
+[<a id="2">2</a>] :
+<a name="latency_cloudping"></a>
+https://www.cloudping.co/grid/latency/timeframe/1Y
+<b id="a1"></b> [↩](#a2)
 
-<a id="3">[3]</a> 
-<a name="aws_regions">1</a>
+<a id="electricity_map">[3]</a>
+<a name="electricity_map"></a>
+https://electricitymaps.com/
+<b id="a1"></b> [↩](#a3)
+
+<a id="4">[4]</a>
+<a name="aws_regions"></a>
 https://aws.amazon.com/about-aws/global-infrastructure/regions_az/
-
-
-
-
+<b id="a1"></b> [↩](#a4)
