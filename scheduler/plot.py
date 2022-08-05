@@ -41,6 +41,7 @@ class Plot:
             *[f"{name}_servers" for name in self.region_names],
         ]
         self.data = []
+        self.mean_latency = 0
 
     def add(
         self,
@@ -109,6 +110,7 @@ class Plot:
         )
         self.data.append(frame)
 
+
     def get(self, dt: int):
         """Return data for a timestep
 
@@ -149,6 +151,7 @@ class Plot:
                 self.conf.server_capacity,
             ]
         )
+        print("Mean latency among all regions is: " + str(df["mean_latency"].mean().mean()))
         dfs = [
             df["total_requests"].sum(),
             df[[f"{name}_requests_from" for name in self.region_names]].sum(),
