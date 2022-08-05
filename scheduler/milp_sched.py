@@ -50,12 +50,12 @@ def place_servers(scheduler, request_rates, capacities, latencies, carbon_intens
 
     Args:
         scheduler: To which respect scheduler is greedy
-        request_rates: _description_
-        capacities: _description_
-        latencies: _description_
-        carbon_intensities: _description_
-        max_servers: _description_
-        max_latency: _description_
+        request_rates: request_rates[i] is the number of requests from region i
+        capacities: capacities[i] is the average capacity per server in region i
+        latencies: latencies[i][j] is the latency from region i to j
+        carbon_intensities: carbon_intensities[i] is the carbon intensity in region i
+        max_servers: max_servers is the maximum number of servers
+        max_latency: Maximum latency allowed
 
     Returns:
         _description_
@@ -64,7 +64,7 @@ def place_servers(scheduler, request_rates, capacities, latencies, carbon_intens
     if scheduler == "carbon":
         return place_servers_carbon_greedy(request_rates, capacities, latencies, carbon_intensities, max_servers, max_latency)
     elif scheduler == "latency":
-        return place_servers_latency_greedy(request_rates, capacities, latencies, carbon_intensities, max_servers, max_latency)
+        return place_servers_latency_greedy(request_rates, capacities, latencies, carbon_intensities, max_servers)
 
 def schedule_requests(conf, request_batches, server_manager, t, request_update_interval, max_latency=100):
     """
@@ -100,7 +100,7 @@ def schedule_requests(conf, request_batches, server_manager, t, request_update_i
     # print(f"At t={t}, obj_val={obj_val:e} g C02 requests scheduled at: \n{requests}")
     return latencies, carbon_intensities, requests
 
-def place_servers_latency_greedy(request_rates, capacities, latencies, carbon_intensities, max_servers, max_latency):
+def place_servers_latency_greedy(request_rates, capacities, latencies, carbon_intensities, max_servers):
 
     opt_model = plp.LpProblem(name="model")
     n_regions = len(carbon_intensities)
