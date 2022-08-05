@@ -92,11 +92,14 @@ pytest -v
 
 - _Carbon Intensity_ uses [electricity map] [<sup id="a3">[3](#electricity_map)</sup>] for carbon metrics during decision making. We focus on the metric _average carbon intensity_ for regions.
 
+
+<!-- THIS IS FOR HYPERLINKS -->
 [cloudping]: https://www.cloudping.co/grid/latency/timeframe/1Y
 [electricity map]: https://electricitymaps.com/
 
+
 ## Footnotes
-  [<a id="1">1</a>]
+[<a id="1">1</a>]
 Only includes the 6 regions of where AWS is based. See [<sup id="a4">[4](#aws_regions)</sup>] for the whole list.
 <b id="a1"></b> [↩](#a1)
 
