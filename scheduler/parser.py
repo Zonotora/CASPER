@@ -90,10 +90,10 @@ def parse_arguments(argv):
 
     parser.add_argument(
         "-ty",
-        "--type-of-scheduler",
+        "--type-scheduler",
         type=str,
         help="Define what you wish to minimize: carbon/latency",
-        default="latency"
+        default="carbon"
     )
 
     return parser.parse_args(argv)
