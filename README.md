@@ -16,12 +16,11 @@ Once servers are placed, the scheduler distributes the request between the regio
 
 There are a few assumptions to consider for this implementation: 
 
-1. The properties of requests such as latency, load, and lifetime are uniform, hence requests are interchangeable
-2. Requests considered are of type web requests. 
-3. Complete knowledge of request rate for the incoming, i.e. perfect predictions. 
-4. We can boot up servers in any region. 
-5. We assume instantaneous communication between regions and the scheduler
-6. We ignore capacity planning, i.e. setting the maximum servers, capacities, etc such that all demand can be satisfied
+1. The requests within a time-slot is are treated as interchangeable
+2. The type of requests considered are short-lived, e.g. web requests. 
+3. Complete knowledge of incoming request rate for next time-slot, i.e. perfect predictions. 
+4. Instantaneous communication between regions and the scheduler.
+5. We ignore capacity planning, i.e. setting the maximum servers, capacities, etc such that all demand can be satisfied
 
 <a name="Installation"/>
 
@@ -100,7 +99,7 @@ pytest -v
 
 ## Footnotes
 [<a id="1">1</a>]
-Only includes the 6 regions of where AWS is based. See [<sup id="a4">[4](#aws_regions)</sup>] for the whole list.
+Only includes the 6 regions of where AWS is present. See [<sup id="a4">[4](#aws_regions)</sup>] for the whole list.
 <b id="a1"></b> [↩](#a1)
 
 ## References
