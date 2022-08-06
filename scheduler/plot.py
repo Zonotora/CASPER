@@ -147,6 +147,12 @@ class Plot:
         return pd.DataFrame(self.data, columns=self.columns)
 
     def plot_total_carbon(self, group_df, labels):
+        """Plots total carbon, called from notebook to compare
+
+        Args:
+            group_df: A dataframe grouped by timesteps, see notebook
+            labels: Labels the type of scheduler used
+        """
         fig, axs = plt.subplots(1, 1, figsize=(15,6))
 
         for i, df in enumerate(group_df):
