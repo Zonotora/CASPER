@@ -146,20 +146,15 @@ class Plot:
         """
         return pd.DataFrame(self.data, columns=self.columns)
 
-    def plot_total_carbon(self, df1, df2):
+    def plot_total_carbon(self, group_df, labels):
         fig, axs = plt.subplots(1, 1, figsize=(15,6))
 
-        latencies = ["0_latency", "25_latency", "50_latency"]
-        carbon_emissions = []
+        for i, df in enumerate(group_df):
+            carbon = (df["total_carbon_emissions"].sum().sum())
+            axs.bar(labels[i], carbon)
 
-
-        df1_carbon = df1["total_carbon_emissions"].sum().sum()
-        df2_carbon = df2["total_carbon_emissions"].sum().sum()
-        axs.bar(["name1", "name2"],[df1, df2])
-        exit()
-
-        axs.set_title("Total increase of carbon for each latency")
-        fig.legend(["Carbon greedy", "Latency greedy"]);
+        axs.set_title("Total carbon for each scheduler type")
+        fig.legend([labels[0], labels[1]]);
 
     def plot(self, df=None):
         """Displays region-specific data aswell as averages of regions for the plot
