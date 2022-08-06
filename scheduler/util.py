@@ -14,11 +14,12 @@ def save_file(conf, plot):
         plot: Converts data from the plot object to dataframe
     """
     df = plot.build_df()
-    date = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    date_created = datetime.now().strftime("%Y-%m-%d")
     if not os.path.exists("saved"):
         os.makedirs("saved")
 
     fingerprint = [
+        str(conf.start_date) + "_",
         str(conf.type_scheduler),
         "_latency_",
         str(conf.latency),
@@ -27,7 +28,7 @@ def save_file(conf, plot):
         "_timesteps_",
         str(conf.timesteps),
     ]
-    df.to_csv(f"saved/{date}_{''.join(fingerprint)}.csv", index=False)
+    df.to_csv(f"saved/{date_created}_{''.join(fingerprint)}.csv", index=False)
 
 @deprecate
 def load_file(name):
