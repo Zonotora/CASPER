@@ -60,6 +60,8 @@ optional arguments:
   -m MAX_SERVERS, --max-servers MAX_SERVERS
                         Maximum pool of servers
   --rate RATE           Specify a constant rate
+  -ty TYPE OF SCHEDULER, --type-scheduler TYPE OF SCHEDULER
+                        Type of scheduler says to which respect we minimize, carbon/latency
 ```
 
 For **example** we could run this:
