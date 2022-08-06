@@ -127,7 +127,6 @@ class Plot:
         df_all_requests = df_requests.sum()
         return np.dot(df_requests, df_latencies)/ df_all_requests
 
-
     def get(self, dt: int):
         """Return data for a timestep
 
@@ -146,6 +145,21 @@ class Plot:
             Returns a dataframe with the data gathered.
         """
         return pd.DataFrame(self.data, columns=self.columns)
+
+    def plot_total_carbon(self, df1, df2):
+        fig, axs = plt.subplots(1, 1, figsize=(15,6))
+
+        latencies = ["0_latency", "25_latency", "50_latency"]
+        carbon_emissions = []
+
+
+        df1_carbon = df1["total_carbon_emissions"].sum().sum()
+        df2_carbon = df2["total_carbon_emissions"].sum().sum()
+        axs.bar(["name1", "name2"],[df1, df2])
+        exit()
+
+        axs.set_title("Total increase of carbon for each latency")
+        fig.legend(["Carbon greedy", "Latency greedy"]);
 
     def plot(self, df=None):
         """Displays region-specific data aswell as averages of regions for the plot
