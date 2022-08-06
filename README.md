@@ -32,6 +32,8 @@ pip install -r requirements.py
 <a name="Usage"/>
 
 ## Usage
+
+# Running
 To run the scheduler, make sure the working directory is the root folder of the repository and run the following
 
 ```
@@ -70,6 +72,13 @@ python -m scheduler -p "europe" -r 30 --latency 20 -t 48 --max-servers 15 --star
 ```
 
 In this respective order, we specify to run for the regions in europe [<sup id="a1">[1](#1)</sup>], schedule ever 30 minutes, where each request's round-trip must be under 20ms, for 48 hours, capping maximum server at one timestep to 15, with a starting date of 2021-10-22.  
+
+# Loading
+
+To load saved files from previous runs, you locate the __latency_vs_carbon_plot.ipynb__ file and specifiy which files you intend to load. This gives you one graph for each run which could look something like this (note this is the same output as per a normal run) : INPUT IMG
+
+And one graph for comparing the total difference in carbon for both methods, which could look like this: INPUT IMG
+
 
 <a name="Testing"/>
 
