@@ -155,12 +155,15 @@ class Plot:
         """
         fig, axs = plt.subplots(1, 1, figsize=(15,6))
 
+        carbon = []
         for i, df in enumerate(group_df):
-            carbon = (df["total_carbon_emissions"].sum().sum())
-            axs.bar(labels[i], carbon)
+            carbon.append(df["total_carbon_emissions"].sum().sum())
+            axs.bar(labels[i], carbon[i])
 
         axs.set_title("Total carbon for each scheduler type")
         fig.legend([labels[0], labels[1]]);
+
+        return (carbon[0], carbon[1])
 
     def plot(self, df=None):
         """Displays region-specific data aswell as averages of regions for the plot
