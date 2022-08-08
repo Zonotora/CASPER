@@ -1,9 +1,14 @@
+from numpy import deprecate
+
+
+#Defines the scope of regions in continents which we use, due to data limitations and relevance
 REGION_ORIGINAL = ["US-CAL-CISO", "US-MIDA-PJM", "US-MIDW-MISO", "US-TEX-ERCO"]
 REGION_EUROPE = ["DE", "FR", "GB", "IE"
 #, "IS"
 , "IT-NO", "SE"]
 REGION_NORTH_AMERICA = ["CA-ON", "CA-QC", "US-CAL-CISO", "US-MIDA-PJM", "US-NE-ISNE", "US-NW-PACW", "US-NY-NYIS"]
 
+#Deprecated. Applied when latency was assumed linear to distance
 REGION_LOCATIONS = {
     "US-CAL-CISO": (-120, 30),
     "US-MIDA-PJM": (-75, 40),
@@ -23,6 +28,7 @@ REGION_LOCATIONS = {
     "CA-ON": (0, 0),
 }
 
+#Regional time offsets. Offset of 0 indicates e.g. time 19:00 corresponds to 19:00 for that region.
 REGION_OFFSETS = {
     "US-CAL-CISO": -7,
     "US-MIDA-PJM": -2,

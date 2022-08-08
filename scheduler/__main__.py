@@ -64,6 +64,7 @@ def main():
             # we can do this as requests are managed instantaneously for each server
             server_manager.reset()
 
+        # If parser specified to output a runtime UI
         if conf.verbose:
             ui(conf, t, requests_per_region, server_manager.servers, server_manager.servers_per_region())
 
