@@ -79,14 +79,25 @@ def schedule_requests(conf, request_batches, server_manager, t, request_update_i
     capacities = [conf.server_capacity // request_update_interval] * len(server_manager.regions)
     request_rates = [batch.load for batch in request_batches]
     servers = server_manager.servers_per_region()
-    requests, obj_val = sched_reqs(request_rates, capacities, latencies, carbon_intensities, servers, max_latency)
+
+    obj_val = 0
+    if conf.type_scheduler == "carbon":
+        requests, obj_val = sched_reqs_carbon_greedy(request_rates, capacities, latencies, carbon_intensities, servers, max_latency)
+        check_obj_valid(obj_val)
+        return latencies, carbon_intensities, requests
+
+    elif conf.type_scheduler == "latency":
+        requests, obj_val = sched_reqs_latency_greedy(request_rates, capacities, latencies, carbon_intensities, servers)
+        check_obj_valid(obj_val)
+        return latencies, carbon_intensities, requests
+    # print(f"At t={t}, obj_val={obj_val:e} g C02 requests scheduled at: \n{requests}")
+
+def check_obj_valid(obj_val):
     if obj_val < 0:
         logging.warning(
             f"Could not schedule requests! t={t} reqs: {request_rates} caps: {capacities} servers: {servers}"
         )
         raise Exception("Could not schedule, look above for more info")
-    # print(f"At t={t}, obj_val={obj_val:e} g C02 requests scheduled at: \n{requests}")
-    return latencies, carbon_intensities, requests
 
 def place_servers_latency_greedy(request_rates, capacities, latencies, carbon_intensities, max_servers):
     """
@@ -242,7 +253,7 @@ def place_servers_carbon_greedy(request_rates, capacities, latencies, carbon_int
     return np.array([int(s.varValue) for s in s_vars.values()]), requests, objective.value()
 
 
-def sched_reqs(request_rates, capacities, latencies, carbon_intensities, servers, max_latency):
+def sched_reqs_carbon_greedy(request_rates, capacities, latencies, carbon_intensities, servers, max_latency):
     """
     This is the Carbon Aware Scheduler (CAS).
     CAS schedules the requests given a fixed server placement that has been determined by
@@ -304,6 +315,67 @@ def sched_reqs(request_rates, capacities, latencies, carbon_intensities, servers
             )
 
     objective = plp.lpSum(x_vars[i, j] * carbon_intensities[j] for i in set_R for j in set_R)
+    opt_model.setObjective(objective)
+    opt_model.solve(plp.PULP_CBC_CMD(msg=0))
+    requests = np.zeros((len(set_R), len(set_R)), dtype=int)
+    for i, j in x_vars.keys():
+        requests[i, j] = int(x_vars[i, j].varValue)
+
+    if opt_model.sol_status != 1:
+        #        print("[x] Did not find a request schedule! Returning all 0's")
+        return np.zeros((n_regions, n_regions)), -10000
+    return requests, objective.value()
+
+def sched_reqs_latency_greedy(request_rates, capacities, latencies, carbon_intensities, servers):
+    """
+    This is the Carbon Aware Scheduler (CAS).
+    CAS schedules the requests given a fixed server placement that has been determined by
+    the CAP.
+    If problem was not solved, a negative objective value is returned
+
+    Args:
+        param1: req_rates[i] is the number of requests from region i
+        param2: capacities[i] is the aggregate capacity of servers in region i
+        param3: latencies[i][j] is the latency from region i to j
+        param4: carb_intensities[i] is the carb intensity in region i
+        param5: max_servers is the maximum number of servers
+        param6: max_latency is the maximum latency allowed
+    Returns:
+        return1: x[i][j] is the number of requests from region i that should
+        be sent to region j.
+        return2: n_servers[i] is the number of servers that should be started
+        in region i.
+        return3: objective value.
+    """
+
+    opt_model = plp.LpProblem(name="model")
+    n_regions = len(carbon_intensities)
+    set_R = range(n_regions)  # Region set
+    x_vars = {(i, j): plp.LpVariable(cat=plp.LpInteger, lowBound=0, name=f"x_{i}_{j}") for i in set_R for j in set_R}
+
+    for j in set_R:
+        opt_model.addConstraint(
+            plp.LpConstraint(
+                e=plp.lpSum(x_vars[i, j] for i in set_R) - servers[j] * capacities[j],
+                sense=plp.LpConstraintLE,
+                rhs=0,
+                name=f"capacity_const{j}",
+            )
+        )
+
+    # Sum of request rates lambda must be equal to number of
+    # requests scheduled
+    for i in set_R:
+        opt_model.addConstraint(
+            plp.LpConstraint(
+                e=plp.lpSum(x_vars[i, j] for j in set_R),
+                sense=plp.LpConstraintEQ,
+                rhs=request_rates[i],
+                name=f"sched_all_reqs_const{i}",
+            )
+        )
+
+    objective = plp.lpSum(x_vars[i, j] * latencies[i][j] for i in set_R for j in set_R)
     opt_model.setObjective(objective)
     opt_model.solve(plp.PULP_CBC_CMD(msg=0))
     requests = np.zeros((len(set_R), len(set_R)), dtype=int)
