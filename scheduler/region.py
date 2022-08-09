@@ -1,16 +1,17 @@
 from fnmatch import translate
 import os
 import pandas as pd
+import math
 from scheduler.util import load_carbon_intensity, load_request_rate
 from scheduler.constants import REGION_LOCATIONS, REGION_OFFSETS
 from scheduler.util import get_regions
-
 
 
 class Region:
     """
     Region object to hold and get region-specific data.
     """
+
     def __init__(self, name, location, carbon_intensity, requests_per_hour) -> None:
         """Input properties when region is instantiated
 
@@ -43,7 +44,7 @@ class Region:
     #     (x2, y2) = other.location
     #     return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
 
-    def latency(self, other):
+    def latency_cloudping(self, other):
         """Gives latency from one region to another using cloudping data specified in README
 
         Args:
@@ -58,11 +59,34 @@ class Region:
         j = df.columns.get_loc(other.name)
         return df.iloc[i, j]
 
-    def __repr__(self) -> str:
-        return self.name
+    #  def __repr__(self) -> str:
+    #      return self.name
 
     def __format__(self, __format_spec: str) -> str:
         return format(self.name, __format_spec)
+
+    # def haversine_latency(self, other):
+    def latency(self, other):
+        """
+            Uses the haversine distance d [km] between two points
+            and calculates latency as L=0.022*0.62*d+m [ms]. 
+
+            TODO: Add random fluctuations sd=2.5 ms ?
+        Args:
+            other: The other region we want to calculate distance to
+        """
+        assert isinstance(other, Region)
+
+        lat1 = self.location[0] * math.pi / 180
+        lat2 = other.location[0] * math.pi / 180
+        dlat = lat2 - lat1
+        dlon = (other.location[1] - self.location[1]) * math.pi / 180
+
+        a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+        d = 6371 * c
+
+        return 0.022 * 0.62 * d + 4.862
 
 
 def load_regions(conf):
