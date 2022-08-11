@@ -1,12 +1,4 @@
-from datetime import datetime, timezone, timedelta
-from operator import index
-from posixpath import relpath
 import pandas as pd
-import pytz
-import os
-import json
-import numpy as np
-import time
 
 provider = "azure"
 path = "api\\azure\\"
