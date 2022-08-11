@@ -30,6 +30,17 @@ REGION_LOCATIONS = {
 
 #Regional time offsets. Offset of 0 indicates e.g. time 19:00 corresponds to 19:00 for that region.
 REGION_OFFSETS = {
+    "Arizona"  : -7 ,
+    "California" : -7  ,
+    "Illinois" : -5 ,
+    "Iowa" : -5  ,
+    "Ontario" : -4 ,
+    "Texas" : -5 ,
+    "Virginia" : -4 ,
+    "Washington"  : -4 ,
+    "Wyoming" : -6 ,
+    "Quebe" : -4 ,
+
     "US-CAL-CISO": -7,
     "US-MIDA-PJM": -2,
     "US-MIDW-MISO": -5,
