@@ -23,7 +23,8 @@ for df, region in zip(dfs, na_regions):
     df.columns = [
         #"timestamp",
         "datetime", "carbon_intensity_avg"]
-
+    if region not in {"California","Ontario"}:
+        df.drop(df.head(1).index,inplace=True)
     if region == "California":
         df.drop(df.tail(2).index,inplace=True)
     if region == "Ontario":
