@@ -136,6 +136,14 @@ AWS during one year. These are processed and applied in the code.
 
 ## Workflow diagram 
 
+A few colors to signal configurations or states
+- ![#D5E8D4](https://via.placeholder.com/15/D5E8D4/D5E8D4.png) `Start of simulation`
+- ![#DAE8FC](https://via.placeholder.com/15/DAE8FC/DAE8FC.png) `Basic steps for simulation`
+- ![#FFF2CC](https://via.placeholder.com/15/FFF2CC/FFF2CC.png) `True/False condition`
+- ![#E1D5E7](https://via.placeholder.com/15/E1D5E7/E1D5E7.png) `Type: carbon greedy`
+- ![#B0E3E6](https://via.placeholder.com/15/B0E3E6/B0E3E6.png) `Type: latency greedy`
+- ![#F8CECC](https://via.placeholder.com/15/F8CECC/F8CECC.png) `End of simulation`
+
 <img src="https://github.com/Zonotora/umass/blob/main/Workflow%20diagram.jpg" width="500">
 
 
