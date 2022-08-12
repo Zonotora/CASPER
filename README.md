@@ -4,6 +4,7 @@
 - [Usage](#Usage)  
 - [Testing](#Testing)  
 - [Datasets](#Datasets)  
+- [Workflow diagram](#Workflow)
 
 <a name="Description"/></a>
 # Carbon Aware Scheduler and ProvisionER (CASPER)
@@ -12,7 +13,6 @@ Using predictions of request during the next hour we calculate how the servers s
 the requests while minimizing carbon and satsifying latency constraint.
 
 Once servers are placed, the scheduler distributes the request between the regions such that carbon is minimized.
-
 
 ## Idea and Overview
 Space is divided into regions. Each region have attributes such as
@@ -131,6 +131,12 @@ pytest -v
 AWS during one year. These are processed and applied in the code. 
 
 - _Carbon Intensity_ uses [electricity map] [<sup id="a3">[3](#electricity_map)</sup>] for carbon metrics during decision making. We focus on the metric _average carbon intensity_ for regions.
+
+<a name="Workflow"/></a>
+
+## Workflow diagram 
+
+<img src="https://github.com/Zonotora/umass/blob/main/Workflow%20diagram.jpg" width="500">
 
 
 <!-- THIS IS FOR HYPERLINKS -->
