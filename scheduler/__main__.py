@@ -88,7 +88,8 @@ def build_batches(conf, server_manager, t, request_update_interval=None):
     """
     batches = []
     for region in server_manager.regions:
-        rate = region.get_requests_per_hour(t)
+        #Gets per hour
+        rate = region.get_requests_per_interval(t)
         if conf.rate:
             rate = conf.rate
         if request_update_interval:

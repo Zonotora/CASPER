@@ -23,11 +23,11 @@ class Region:
         """
         self.name = name
         self.location = location
-        self.requests_per_hour = requests_per_hour
+        self.requests_per_interval = requests_per_hour
         self.carbon_intensity = carbon_intensity
         self.latency_df = pd.read_csv("api/cloudping/latency_50th.csv")
 
-    def get_requests_per_hour(self, t):
+    def get_requests_per_interval(self, t):
         """Get requests per hour for a timestep
 
         Args:
@@ -36,7 +36,7 @@ class Region:
         Returns:
             Integer of requests for that hour
         """
-        return self.requests_per_hour.iloc[t]
+        return self.requests_per_interval.iloc[t]
 
     # def latency(self, other):
     #     (x1, y1) = self.location
