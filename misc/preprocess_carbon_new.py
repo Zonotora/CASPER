@@ -1,5 +1,6 @@
 from turtle import forward
 import pandas as pd
+import numpy as np
 
 provider = "azure"
 path = "api\\azure\\"
@@ -40,5 +41,8 @@ for df, region in zip(dfs, na_regions):
 
     df["carbon_intensity_avg"] = df["carbon_intensity_avg"].interpolate(
         method ='linear', axis = 0, direction = "forward")
+
+    timestamps = df.datetime.values.astype(np.int64) // 10 ** 9
+    df.insert(loc=0, column="timestamps", value= timestamps)
 
     df.to_csv(f"api\\north_america\\{region}.csv", index=False)
