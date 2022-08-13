@@ -1,6 +1,8 @@
 import numpy as np
 import pulp as plp
 import logging
+from scheduler.util import load_request_matrix
+
 
 
 def schedule_servers(conf, request_batches, server_manager, t, max_servers=4, max_latency=100):
@@ -90,6 +92,11 @@ def schedule_requests(conf, request_batches, server_manager, t, request_update_i
         requests, obj_val = sched_reqs_latency_greedy(request_rates, capacities, latencies, carbon_intensities, servers)
         check_obj_valid(obj_val)
         return latencies, carbon_intensities, requests
+
+    elif conf.type_scheduler == "replay":
+        requests = load_request_matrix()
+        return latencies, carbon_intensities, requests
+
     # print(f"At t={t}, obj_val={obj_val:e} g C02 requests scheduled at: \n{requests}")
 
 def check_obj_valid(obj_val):

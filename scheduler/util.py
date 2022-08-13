@@ -183,3 +183,11 @@ def get_regions(conf):
         return REGION_EUROPE
     elif conf.region_kind == "north_america":
         return REGION_NORTH_AMERICA
+
+def servers_distributed(path):
+    return pd.read_csv(path)
+
+def load_request_matrix(path = "api/requests/....."):
+    ### RETURN NXN MATRIX SPECIFYING WHERE REGIONS GO FROM AND TO
+    pd.read_csv(path)
+    return requests
