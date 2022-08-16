@@ -27,6 +27,7 @@ the regions to allow for even more carbon savings. We call this the Carbon Aware
 
 The high-level architecture of the CAS is illustrated in the following diagram which can be read from left to right.
 I.e. each region's outgoing requests are proxied through the "scheduler" which decides what region to send the request to.
+
 ![diagram](https://user-images.githubusercontent.com/43207511/184157966-3a8c8033-b34c-49cf-bc98-338ea4a8106f.png)
 
 The scheduler is implemented in `scheduler/milp_sched.py`.
