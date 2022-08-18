@@ -24,7 +24,7 @@ REGION_NORTH_AMERICA = [
     "Virginia",
     "Washington",
     "Wyoming",
-    "Quebe",
+    "Quebec",
 ]
 
 # Deprecated. Applied when latency was assumed linear to distance
@@ -38,7 +38,7 @@ REGION_LOCATIONS = {
     "Virginia": (0, 0),
     "Washington": (0, 0),
     "Wyoming": (0, 0),
-    "Quebe": (0, 0),
+    "Quebec": (0, 0),
     "US-CAL-CISO": (30, -120),
     "US-MIDA-PJM": (40, -75),
     "US-MIDW-MISO": (40, -80),
@@ -68,7 +68,7 @@ REGION_OFFSETS = {
     "Virginia": -4,
     "Washington": -4,
     "Wyoming": -6,
-    "Quebe": -4,
+    "Quebec": -4,
     "US-CAL-CISO": -7,
     "US-MIDA-PJM": -2,
     "US-MIDW-MISO": -5,
