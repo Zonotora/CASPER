@@ -8,8 +8,9 @@ def parse_arguments(argv):
         "-p",
         "--region-kind",
         type=str,
-        choices=["original", "europe", "north_america"],
-        help="The type of data we want to load. Original: 2021-01-02, Europe: 2021-10-21, North America: 2022-04-22",
+        choices=["original", "europe", "north_america", "north_america_old"],
+        help="The type of data we want to load. Original: 2021-01-02, Europe: 2021-10-21,"
+        "North America: 2022-08-03, North America (OLD): 2022-04-22",
         default="original",
     )
 
