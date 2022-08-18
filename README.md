@@ -1,2 +1,2 @@
 # casper
-CASPER - Carbon-Aware Scheduler and Provisioner
+CASPER - Carbon-Aware Scheduler and ProvisionER
