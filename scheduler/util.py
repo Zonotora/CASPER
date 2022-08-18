@@ -1,5 +1,5 @@
 from numpy import deprecate
-from scheduler.constants import REGION_EUROPE, REGION_NORTH_AMERICA, REGION_ORIGINAL
+from scheduler.constants import REGION_EUROPE, REGION_NORTH_AMERICA, REGION_ORIGINAL, REGION_NORTH_AMERICA_OLD
 from datetime import datetime, timezone
 import pandas as pd
 import os
@@ -29,6 +29,7 @@ def save_file(conf, plot):
         str(conf.timesteps),
     ]
     df.to_csv(f"saved/{date_created}_{''.join(fingerprint)}.csv", index=False)
+
 
 @deprecate
 def load_file(name):
@@ -135,6 +136,7 @@ def load_request_rate(path, offset, conf, date="2021-01-01"):
 
     return df
 
+
 # NOT RELEVANT, BACKUP
 # def latencies_per_regions(latency, requests):
 #     # [i][:] sum latencies from one region
@@ -183,11 +185,15 @@ def get_regions(conf):
         return REGION_EUROPE
     elif conf.region_kind == "north_america":
         return REGION_NORTH_AMERICA
+    elif conf.region_kind == "north_america_old":
+        return REGION_NORTH_AMERICA_OLD
+
 
 def servers_distributed(path):
     return pd.read_csv(path)
 
-def load_request_matrix(path = "api/requests/....."):
+
+def load_request_matrix(path="api/requests/....."):
     ### RETURN NXN MATRIX SPECIFYING WHERE REGIONS GO FROM AND TO
     pd.read_csv(path)
     return requests

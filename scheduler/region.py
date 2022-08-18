@@ -108,6 +108,8 @@ def load_regions(conf):
         kind = "europe"
     elif conf.region_kind == "north_america":
         kind = "north_america"
+    elif conf.region_kind == "north_america_old":
+        kind = "north_america_old"
     d = os.path.join(d, kind)
 
     for name in get_regions(conf):
