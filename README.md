@@ -145,7 +145,7 @@ A few colors to signal configurations or states
 - ![#B0E3E6](https://via.placeholder.com/15/B0E3E6/B0E3E6.png) `Type: latency greedy`
 - ![#F8CECC](https://via.placeholder.com/15/F8CECC/F8CECC.png) `End of simulation`
 
-<img src="https://github.com/Zonotora/umass/blob/main/Workflow%20diagram.jpg" width="500">
+<img src="https://github.com/umassos/casper/blob/main/Workflow-Diagram.jpg" width="500">
 
 
 <!-- THIS IS FOR HYPERLINKS -->
