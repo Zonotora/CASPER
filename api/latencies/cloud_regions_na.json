@@ -14,25 +14,27 @@
         "Us-south1" : "Texas",
 
 
-
-        "Us-east1 2" : "South Carolina",
-        "Us-central1 2" : "Iowa",
-
-        "CanadaCentral": "",
-        "Chicago": "",
-        "Dallas-DAL01": "",
-        "Dallas": "",
-        "Montreal-MON01": "",
-        "NorthVirginia": "",
-        "Seattle": "",
-        "Toronto-TOR01": "",
-        "USEastNVirginia": "",
-        "USEastOhio": "",
-        "USWestNCalifornia": "",
-        "USWestOregon": "",
-        "Washington-WDC01" : "",
-        "northamerica-northeast1" : "",
-        "us-phoenix" : "",
-
+        "CanadaCentral": ["Ontario", "Quebec"],
+        "Chicago": "Illinois",
+        "Dallas-DAL01": "Texas",
+        "Dallas": "Texas",
+        "Montreal-MON01": "Quebec",
+        "NorthVirginia": "North Virginia",
+        "Seattle-SEA01": "Washington",
+        "Toronto-TOR01": "Ontario",
+        "USEastNVirginia": "Virginia",
+        "USEastOhio": "Ohio",
+        "USWestNCalifornia": "California",
+        "USWestOregon": "Oregon",
+        "Us-central1 2": "Iowa",
+        "Us-east1 2": "South Carolina",
+        "Washington-WDC01" : "Washington D.C.",
+        "northamerica-northeast1" : "Quebec",
+        "us-ashburn": "Virginia",
+        "us-central1": "Iowa",
+        "us-east1": "South Carolina",
+        "us-east4": "Virginia",
+        "us-phoenix" : "Arizona",
+        "us-west1": "Oregon"
     }
 }
