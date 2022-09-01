@@ -1,0 +1,38 @@
+
+{
+    "locations": {
+        "northamerica-northeast1" : "Quebec",
+        "northamerica-northeast2" : "Ontario",
+        "us-central1" : "Iowa",
+        "us-east1" : "South Carolina",
+        "us-east4" : "Virginia",
+        "Us-east5" : "Ohio",
+        "us-west1" : "Oregon",
+        "Us-west2" : "California",
+        "Us-west3" : "Utah",
+        "Us-west4" : "Nevada",
+        "Us-south1" : "Texas",
+
+
+
+        "Us-east1 2" : "South Carolina",
+        "Us-central1 2" : "Iowa",
+
+        "CanadaCentral": "",
+        "Chicago": "",
+        "Dallas-DAL01": "",
+        "Dallas": "",
+        "Montreal-MON01": "",
+        "NorthVirginia": "",
+        "Seattle": "",
+        "Toronto-TOR01": "",
+        "USEastNVirginia": "",
+        "USEastOhio": "",
+        "USWestNCalifornia": "",
+        "USWestOregon": "",
+        "Washington-WDC01" : "",
+        "northamerica-northeast1" : "",
+        "us-phoenix" : "",
+
+    }
+}
