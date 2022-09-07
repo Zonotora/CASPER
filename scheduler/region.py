@@ -69,7 +69,7 @@ class Region:
     def latency(self, other):
         """
             Uses the haversine distance d [km] between two points
-            and calculates latency as L=0.022*0.62*d+m [ms]. 
+            and calculates latency as L=0.022*0.62*d+m [ms].
 
             TODO: Add random fluctuations sd=2.5 ms ?
         Args:
@@ -112,6 +112,9 @@ def load_regions(conf):
         kind = "north_america_old"
     d = os.path.join(d, kind)
 
+    # request_path = f"api/requests/requests_{kind}_df.csv"
+    # requests_per_hour_df = pd.read_csv(request_path)
+
     for name in get_regions(conf):
         file = f"{name}.csv"
         path = os.path.join(d, file)
@@ -121,6 +124,12 @@ def load_regions(conf):
 
         request_path = "api/requests.csv"
         requests_per_hour = load_request_rate(request_path, offset, conf, date)
+        # requests_per_hour = 0
+        # if name == "IT-NO":
+        #     requests_per_hour = requests_per_hour_df["IT"].head(48).reset_index(drop=True)
+        # else:
+        #     requests_per_hour = requests_per_hour_df[name].head(48).reset_index(drop=True)
+
         carbon_intensity = load_carbon_intensity(path, offset, conf, date)
         region = Region(name, location, carbon_intensity, requests_per_hour)
         regions.append(region)
