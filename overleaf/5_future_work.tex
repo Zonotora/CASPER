@@ -1,0 +1,7 @@
+We have come to a state where the simulation makes sense under different circumstances. However, more analysis is needed to verify the correctness of the simulation. This includes reviewing the source code as well as performing data analysis on the outputs of the simulation. The current assumptions may be too limited and general. It could be useful to reflect if any changes are needed.
+
+The latency between regions is calculated as the euclidean distance. Better results can be achieved by using a more accurate model for latency, especially if we are considering North America and Europe together.
+
+It would be interesting to analyze our approach with more regions than 4. We currently have a dataset for Europe and a dataset for North America (with more regions), but with worse quality. The final work will contain more rigorous analysis for each of these datasets.
+
+Finally, the assumptions should be inspected to be reduced where applicable in order to improve the accuracy of our results.  

@@ -1,0 +1,77 @@
+As the improvements in power efficiency of hardware no longer can keep up with the exponential computational growth, today's researchers find themselves in a new position where efforts in reducing carbon emissions related to distributed data-centers needs a new approach. Various papers during recent years have suggested that more work needs to be focused on reducing carbon footprint of computations[C][C]. Especially when considering data center makes up $1-2\%$ of the world's carbon usage[C].  
+
+
+
+%As the power efficiency of hardware has ceased to grow exponentially 
+
+%We have an exponential projection of compute, and power efficieny in hardware is no longer getting exponentially better (end of Dennard scaling, moore’s law) hence we must start considering the footprint of computation.
+
+The intermittent nature of renewable energy and the lack of green large-scale energy storage makes it difficult for a data-center to fully rely on renewables. Therefore it is beneficial to move computations to data-centers with low carbon footprint.
+A carbon aware scheduler (CAS) can do this while controlling the amount of extra latency introduced contrary to traditional schedulers that only consider latency. 
+%This can be done with a scheduler that bases its scheduling of work on carbon footprint with some respect to latency, contrary to modern systems which typically only considers performance factors such a latency [C].
+A provision step can be added that moves the compute-resources to low-carbon regions using predictons, which we will refer to as a carbon aware provisioner (CAP).
+
+
+%Moving computations on a network of servers warrants a scheduler that bases its distribution of work on carbon footprint with some respect to latency, contrary to modern systems which typically only considers performance factors such a latency [C]. Such a scheduler is formally known as a \textit{carbon aware scheduler} (CAS) in the literature. 
+
+%The intermittent nature of renewable energy and the lack of green large-scale energy storage makes it difficult for a data-center to fully rely on renewables. Therefore it is beneficial to move computations to data-centers with low carbon footprint.Since to move computations on network of servers warrants a scheduler that bases its distribution of work on carbon footprint with some respect to latency, contrary to modern systems which typically only considers performance factors such a latency [C]. Such a scheduler is formally known as a \textit{carbon aware scheduler} (CAS) in the literature. 
+
+%The intermittent nature of renewable energy and the possibility to move computations to energy instead of the reverse allows for a carbon aware scheduler (CAS). 
+
+
+%Data center’s power difference between maximum and minimum states are only a few percent, hence curtailments is a problem.
+
+Using a CAS to shift workload towards regions with low carbon intensity to reduce present emissions, also entails a positive second-order effect as it incentives new data centers to be built in areas with more renewable resources; given that these schedulers are applied as intended. Data-centers in polluted areas would be underutilized and thus unprofitable, having a direct impact on the amounts of brown energy produced in the region.    
+
+%Many works consider temporal workload shifting \cite{wiesnerLetWaitAwhile2021, }
+ 
+%The intermittent nature of renewable energy and the lack of green large-scale energy storage makes it difficult for a data center to fully rely on renewables. Since data transfer is efficient, it is better to move the data and compute to renewables instead of the converse. 
+
+
+In general, compute-tasks can have two degrees of freedom: space and time. Compute intensive tasks e.g., ML and batch-processing can often utilize both. While time sensitive tasks such as web requests, have strict latency constraints that limit improvement possibilities in the time dimension. Instead the carbon intensity differential over space dictate the possible gains from moving computations across space.
+
+\subsection{Architecture}
+
+
+%The fundamental property that allows a scheduler to reduce total carbon spending is the carbon intensity gradient over space. 
+%As long as there is a sufficient differential across space
+%hence only moving in space is possible.
+
+%A carbon
+
+\subsection{Assumptions}
+
+%This is a segue to our first limitation, the predictive limitation. The word scheduler suggests it is a time-based entity using some heuristic to appropriately schedule works at different regions to satisfy the constraints while minimizing our function. But as the minimizing function can easily extended to take this into account, we avoid this for now.
+
+%Secondly, all tasks are assumed allocate the same fixed number of resources. The resources are modelled by an integer, representing the total share of resources acquired by a task during its lifetime which can vary; it currently follows a normal distribution. 
+
+%Thirdly, we assume instantaneous communication between schedulers and the servers. Although this disregards the distributed aspects of the system e.g. consistency, in this initial phase it allows us to focus on the technical aspect of scheduling.
+
+%We also limit the scope by ignoring the problem of capacity planning, i.e. setting the maximum servers, capacities, etc such that all demand can be satisfied.
+
+
+1. The properties of requests such as latency, load, and lifetime are uniform, hence requests are interchangeable. This simplifies the knapsack aspect of loading a server with partial loads, and produces more interpretable results, while staying realistic to some types of requests. This eases the constraints by refraining from considering properties on an application to application basis. 
+
+2. Requests considered are of type web requests. This puts latencies in the ballpark of between tens to hundreds nanoseconds. Note that this tightens the latency constrain compared to more extensive tasks such as model training in AI.     
+%puts a constrain on latency
+
+%sent as a group together, meaning they are "interchangeable". 
+
+3. Complete knowledge of request rate for the incoming. By doing so, we can provide an implementation to showcase the potential of carbon loading without getting entangled in request rate predictions. Hence, we assume perfect predictions an hour ahead of all regions. As have been shown in "" by ..., this assumption is not far from reality. 
+
+4. We can start up computing units in any data-center. The big cloud providers are in principle never limited by the hardware resources at the data-centers[]. %But to avoid being presumptuous with respect to these resources we inflict a global constraint, being the maximum amount of computing units (Constraint 5). As a result of assumption 3, we can then dismiss the migration time for computing units. 
+
+%3. Same latency on all applications.
+
+%5. To develop an environment for testing of our initial scheduler we define a few limitations. One of which may lead our use of the word scheduler to be misused, as it disregards future prediction of carbon intensity of regions; entailing load balancer to be a more appropriate term. However, we refrain from changing the terminology. 
+
+%This is a segue to our first limitation, the predictive limitation. The word scheduler suggests it is a time-based entity using some heuristic to appropriately schedule works at different regions to satisfy the constraints while minimizing our function. But as the minimizing function can easily extended to take this into account, we avoid this for now.
+
+%Secondly, all tasks are assumed allocate the same fixed number of resources. The resources are modelled by an integer, representing the total share of resources acquired by a task during its lifetime which can vary; it currently follows a normal distribution. 
+
+%Thirdly, we assume instantaneous communication between schedulers and the servers. Although this disregards the distributed aspects of the system e.g. consistency, in this initial phase it allows us to focus on the technical aspect of scheduling.
+
+5. We assume instantaneous communication between regions and the scheduler. Although this disregards the distributed aspects of the system e.g. consistency, in this initial phase it allows us to focus on the technical aspect of scheduling. We consider this a solved problem for now and note that the additional latency for such a system is negligible. 
+
+6. We also limit the scope by ignoring the problem of capacity planning, i.e. setting the maximum servers, capacities, etc such that all demand can be satisfied.
+

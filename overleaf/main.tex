@@ -1,0 +1,112 @@
+\documentclass[a4paper, twocolumn]{article}
+
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[hidelinks]{hyperref}
+\usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[nottoc,numbib]{tocbibind}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage[pass]{geometry}
+\usepackage{multicol}
+\usepackage{amssymb}
+\usepackage{lipsum}
+\usepackage{tikz-cd}
+\usepackage{svg}
+
+\definecolor{gray}{rgb}{0.99,0.99,0.95}
+\definecolor{green}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\RequirePackage[T1]{fontenc} \RequirePackage[tt=false, type1=true]{libertine} \RequirePackage[varqu]{zi4} \RequirePackage[libertine]{newtxmath}
+
+
+
+\newcommand{\hlinetext}[0]{\noindent\rule{\linewidth}{0.2pt}}
+
+\lstset{frame=tb,
+ language=Python,
+ aboveskip=3mm,
+ belowskip=3mm,
+ showstringspaces=false,
+ columns=flexible,
+ basicstyle={\small\ttfamily},
+ numbers=none,
+ numberstyle=\tiny\color{gray},
+ keywordstyle=\color{blue},
+ commentstyle=\color{green},
+ stringstyle=\color{mauve},
+ breaklines=true,
+ breakatwhitespace=true,
+ tabsize=3
+}
+
+\title{A Carbon Aware Scheduler and Provisioner}
+
+\author{Alexander Bridgwater\textsuperscript{\textdagger} \quad
+  %  \small{Chalmers University of Technology} \\
+   % \small{\texttt{alebri@chalmers.se}}
+    %\and 
+    Axel Lundberg\textsuperscript{\textdagger} \quad
+    %\small{Chalmers University of Technology} \\
+    %\small{\texttt{axelund@chalmers.se}}
+    %\and
+    Filip Skogh\textsuperscript{\textdagger} \quad ...\\
+    %\small{Chalmers University of Technology} \\
+    %\small{\texttt{filipsk@chalmers.se}}
+    \textdagger Chalmers University of Technology \\
+    \small\texttt{\{ alebri, axelund, filipsk \} @ chalmers.se}
+    }
+\date{}
+
+\bibliographystyle{plain}
+%\setcounter{secnumdepth}{0}
+
+\begin{document}
+%\savegeometry{original}
+\newgeometry{left=40pt, right=40pt, top=50pt, bottom=50pt}
+
+\maketitle
+
+% \tableofcontents
+%\begin{abstract}
+%\input{0_abstract}
+%\end{abstract}
+
+
+\section{Introduction}
+\input{1_introduction}
+
+
+\section{Model}
+\input{2_optimization}
+
+\section{Simulation}
+\input{3_simulation}
+
+\section{Results}
+\input{4_results}
+
+\section{Future Work}
+\input{5_future_work}
+
+\section{Conclusion}
+\input{6_conclusion}
+
+\bibliography{refs.bib}
+
+
+\newpage
+
+%\section{Related Work}
+%\input{9_papers}
+
+
+\end{document}

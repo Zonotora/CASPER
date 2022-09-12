@@ -1,0 +1,301 @@
+@misc{electricity_map,
+  author       = {ElectricityMap},
+  title        = {ElectricityMap},
+  howpublished = {\url{https://electricitymaps.com/}},
+  year         = {2022},
+}
+
+@misc{simpy,
+  author       = {SimPy},
+  title        = {SimPy},
+  howpublished = {\url{https://gitlab.com/team-simpy/simpy}},
+  year         = {2022},
+}
+
+@misc{mininet,
+  author       = {Mininet},
+  title        = {Mininet},
+  howpublished = {\url{http://mininet.org/}},
+  year         = {2022},
+}
+
+
+@misc{pytest,
+  author       = {pytest},
+  title        = {pytest},
+  howpublished = {\url{https://docs.pytest.org/en/7.1.x/}},
+  year         = {2022},
+}
+
+
+@misc{acunCarbonExplorerHolistic2022,
+  title = {Carbon {{Explorer}}: {{A Holistic Approach}} for {{Designing Carbon Aware Datacenters}}},
+  shorttitle = {Carbon {{Explorer}}},
+  author = {Acun, Bilge and Lee, Benjamin and Kazhamiaka, Fiodar and Maeng, Kiwan and Chakkaravarthy, Manoj and Gupta, Udit and Brooks, David and Wu, Carole-Jean},
+  year = {2022},
+  month = may,
+  number = {arXiv:2201.10036},
+  eprint = {2201.10036},
+  eprinttype = {arxiv},
+  primaryclass = {cs, eess},
+  publisher = {{arXiv}},
+  abstract = {Technology companies have been leading the way to a renewable energy transformation, by investing in renewable energy sources to reduce the carbon footprint of their datacenters. In addition to helping build new solar and wind farms, companies make power purchase agreements or purchase carbon offsets, rather than relying on renewable energy every hour of the day, every day of the week (24/7). Relying on renewable energy 24/7 is challenging due to the intermittent nature of wind and solar energy. Inherent variations in solar and wind energy production causes excess or lack of supply at different times. To cope with the fluctuations of renewable energy generation, multiple solutions must be applied. These include: capacity sizing with a mix of solar and wind power, energy storage options, and carbon aware workload scheduling. However, depending on the region and datacenter workload characteristics, the carbon-optimal solution varies. Existing work in this space does not give a holistic view of the trade-offs of each solution and often ignore the embodied carbon cost of the solutions.},
+  archiveprefix = {arXiv},
+  langid = {english},
+  keywords = {2,load shifting},
+  file = {/home/akke/Documents/umass/papers/load_balancing/carbon_explorer.pdf}
+}
+
+@inproceedings{ambatiWaitingGameOptimally2020,
+  title = {Waiting {{Game}}: {{Optimally Provisioning Fixed Resources}} for {{Cloud-Enabled Schedulers}}},
+  shorttitle = {Waiting {{Game}}},
+  booktitle = {{{SC20}}: {{International Conference}} for {{High Performance Computing}}, {{Networking}}, {{Storage}} and {{Analysis}}},
+  author = {Ambati, Pradeep and Bashir, Noman and Irwin, David and Shenoy, Prashant},
+  year = {2020},
+  month = nov,
+  pages = {1--14},
+  publisher = {{IEEE}},
+  address = {{Atlanta, GA, USA}},
+  doi = {10.1109/SC41405.2020.00071},
+  abstract = {While cloud platforms enable users to rent computing resources on demand to execute their jobs, buying fixed resources is still much cheaper than renting if their utilization is high. Thus, optimizing cloud costs requires users to determine how many fixed resources to buy versus rent based on their workload. In this paper, we introduce the concept of a waiting policy for cloud-enabled schedulers, which is the dual of a scheduling policy, and show that the optimal cost depends on it. We define multiple waiting policies and develop simple analytical models to reveal their tradeoff between fixed resource provisioning, cost, and job waiting time. We evaluate the impact of these waiting policies on a year-long production batch workload consisting of 14M jobs run on a 14.3k-core cluster, and show that a compound waiting policy decreases the cost (by 5\%) and mean job waiting time (by 7\texttimes ) compared to a fixed cluster of the current size.},
+  isbn = {978-1-72819-998-6},
+  langid = {english},
+  keywords = {extra,prashant},
+  file = {/home/akke/Documents/umass/papers/load_balancing/sc20-waiting.pdf}
+}
+
+@misc{andersonTreehouseCaseCarbonAware2022,
+  title = {Treehouse: {{A Case For Carbon-Aware Datacenter Software}}},
+  shorttitle = {Treehouse},
+  author = {Anderson, Thomas and Belay, Adam and Chowdhury, Mosharaf and Cidon, Asaf and Zhang, Irene},
+  year = {2022},
+  month = jan,
+  number = {arXiv:2201.02120},
+  eprint = {2201.02120},
+  eprinttype = {arxiv},
+  primaryclass = {cs},
+  publisher = {{arXiv}},
+  abstract = {The end of Dennard scaling and the slowing of Moore's Law has put the energy use of datacenters on an unsustainable path. Datacenters are already a significant fraction of worldwide electricity use, with application demand scaling at a rapid rate. We argue that substantial reductions in the carbon intensity of datacenter computing are possible with a software-centric approach: by making energy and carbon visible to application developers on a fine-grained basis, by modifying system APIs to make it possible to make informed trade offs between performance and carbon emissions, and by raising the level of application programming to allow for flexible use of more energy efficient means of compute and storage. We also lay out a research agenda for systems software to reduce the carbon footprint of datacenter computing.},
+  archiveprefix = {arXiv},
+  langid = {english},
+  keywords = {1,load shifting},
+  file = {/home/akke/Documents/umass/papers/load_balancing/treehouse.pdf}
+}
+
+@misc{bashirEnablingSustainableClouds2021,
+  title = {Enabling {{Sustainable Clouds}}: {{The Case}} for {{Virtualizing}} the {{Energy System}}},
+  shorttitle = {Enabling {{Sustainable Clouds}}},
+  author = {Bashir, Noman and Guo, Tian and Hajiesmaili, Mohammad and Irwin, David and Shenoy, Prashant and Sitaraman, Ramesh and Souza, Abel and Wierman, Adam},
+  year = {2021},
+  month = jun,
+  number = {arXiv:2106.08872},
+  eprint = {2106.08872},
+  eprinttype = {arxiv},
+  primaryclass = {cs},
+  publisher = {{arXiv}},
+  abstract = {Cloud platforms' growing energy demand and carbon emissions are raising concern about their environmental sustainability. The current approach to enabling sustainable clouds focuses on improving energy-efficiency and purchasing carbon offsets. These approaches have limits: many cloud data centers already operate near peak efficiency, and carbon offsets cannot scale to near zero carbon where there is little carbon left to offset. Instead, enabling sustainable clouds will require applications to adapt to when and where unreliable low-carbon energy is available. Applications cannot do this today because their energy use and carbon emissions are not visible to them, as the energy system provides the rigid abstraction of a continuous, reliable energy supply. This vision paper instead advocates for a ``carbon first'' approach to cloud design that elevates carbon-efficiency to a first-class metric. To do so, we argue that cloud platforms should virtualize the energy system by exposing visibility into, and software-defined control of, it to applications, enabling them to define their own abstractions for managing energy and carbon emissions based on their own requirements.},
+  archiveprefix = {arXiv},
+  langid = {english},
+  keywords = {2,load shifting,prashant},
+  file = {/home/akke/Documents/umass/papers/load_balancing/enabling_sustainable_clouds.pdf}
+}
+
+@inproceedings{bhattacharyaDoesLeanImply2012,
+  title = {Does Lean Imply Green?: A Study of the Power Performance Implications of {{Java}} Runtime Bloat},
+  shorttitle = {Does Lean Imply Green?},
+  booktitle = {Proceedings of the 12th {{ACM SIGMETRICS}}/{{PERFORMANCE}} Joint International Conference on {{Measurement}} and {{Modeling}} of {{Computer Systems}} - {{SIGMETRICS}} '12},
+  author = {Bhattacharya, Suparna and Rajamani, Karthick and Gopinath, K. and Gupta, Manish},
+  year = {2012},
+  pages = {259},
+  publisher = {{ACM Press}},
+  address = {{London, England, UK}},
+  doi = {10.1145/2254756.2254789},
+  abstract = {The presence of software bloat in large flexible software systems can hurt energy efficiency. However, identifying and mitigating bloat is fairly effort intensive. To enable such efforts to be directed where there is a substantial potential for energy savings, we investigate the impact of bloat on power consumption under different situations.},
+  isbn = {978-1-4503-1097-0},
+  langid = {english},
+  keywords = {1,debloating},
+  file = {/home/akke/Documents/umass/papers/debloating/java_runtime_bloat.pdf}
+}
+
+@article{bovornkeeratirojPeakTKOpenSource2022,
+  title = {{{PeakTK}}: {{An Open Source Toolkit}} for {{Peak Forecasting}} in {{Energy Systems}}},
+  author = {Bovornkeeratiroj, Phuthipong and Wamburu, John and Irwin, David and Shenoy, Prashant},
+  year = {2022},
+  pages = {16},
+  abstract = {As the electric grid undergoes the transition to a carbon free future, many new techniques for optimizing the grid's energy usage and carbon footprint are being designed. A common technique used by many approaches is to reduce the energy usage of the grid's peak demand periods since doing so is beneficial for reducing the carbon usage of the grid. Consequently, the design of peak forecasting methods that predict when and how much peak demand will be seen is at the heart of many energy optimization approaches. In this paper, we present PeakTK, an open-source toolkit and reference datasets for peak forecasting in energy systems. PeakTK implements a range of peak forecasting methods that have been proposed recently and exposes them through well-defined interfaces and library modules. Our goal is to improve reproducibility of energy systems research by providing a common framework for evaluating and comparing new peak forecasting algorithms. Further, PeakTK provides libraries to enable researchers and practitioners to easily incorporate peak forecasting methods into their research when implementing higher level grid optimizations. We discuss the design and implementation of PeakTK and present case studies to demonstrate how PeakTK can be used for forecasting or quantitative comparisons of energy optimization methods.},
+  langid = {english},
+  keywords = {extra,prashant},
+  file = {/home/akke/Documents/umass/papers/load_balancing/PeakTK.pdf}
+}
+
+@article{huTimeCostEfficient2018,
+  title = {Time- and {{Cost- Efficient Task Scheduling}} across {{Geo-Distributed Data Centers}}},
+  author = {Hu, Zhiming and Li, Baochun and Luo, Jun},
+  year = {2018},
+  month = mar,
+  journal = {IEEE Transactions on Parallel and Distributed Systems},
+  volume = {29},
+  number = {3},
+  pages = {705--718},
+  issn = {1045-9219},
+  doi = {10.1109/TPDS.2017.2773504},
+  abstract = {Typically called big data processing, analyzing large volumes of data from geographically distributed regions with machine learning algorithms has emerged as an important analytical tool for governments and multinational corporations. The traditional wisdom calls for the collection of all the data across the world to a central data center location, to be processed using data-parallel applications. This is neither efficient nor practical as the volume of data grows exponentially. Rather than transferring data, we believe that computation tasks should be scheduled near the data, while data should be processed with a minimum amount of transfers across data centers. In this paper, we design and implement Flutter, a new task scheduling algorithm that reduces both the completion times and the network costs of big data processing jobs across geographically distributed data centers. To cater to the specific characteristics of data-parallel applications, in the case of optimizing the job completion times only, we first formulate our problem as a lexicographical min-max integer linear programming (ILP) problem, and then transform the ILP problem into a nonlinear program problem with a separable convex objective function and a totally unimodular constraint matrix, which can be further solved using a standard linear programming solver efficiently in an online fashion. In the case of improving both time- and cost- efficiency, we formulate the general problem as an ILP problem and we find out that solving an LP problem can achieve the same goal in the real practice. Our implementation of Flutter is based on Apache Spark, a modern framework popular for big data processing. Our experimental results have shown convincing evidence that Flutter can shorten both job completion times and network costs by a substantial margin.},
+  langid = {english},
+  keywords = {extra,load shifting},
+  file = {/home/akke/Documents/umass/extra/Time-_and_Cost-_Efficient_Task_Scheduling_across_Geo-Distributed_Data_Centers.pdf}
+}
+
+@inproceedings{jhaEmissionawareEnergyStorage2020,
+  title = {Emission-Aware {{Energy Storage Scheduling}} for a {{Greener Grid}}},
+  booktitle = {Proceedings of the {{Eleventh ACM International Conference}} on {{Future Energy Systems}}},
+  author = {Jha, Rishikesh and Lee, Stephen and Iyengar, Srinivasan and Hajiesmaili, Mohammad H. and Irwin, David and Shenoy, Prashant},
+  year = {2020},
+  month = jun,
+  pages = {363--373},
+  publisher = {{ACM}},
+  address = {{Virtual Event Australia}},
+  doi = {10.1145/3396851.3397755},
+  abstract = {Reducing our reliance on carbon-intensive energy sources is vital for reducing the carbon footprint of the electric grid. Although the grid is seeing increasing deployments of clean, renewable sources of energy, a significant portion of the grid demand is still met using traditional carbon-intensive energy sources. In this paper, we study the problem of using energy storage deployed in the grid to reduce the grid's carbon emissions. While energy storage has previously been used for grid optimizations such as peak shaving and smoothing intermittent sources, our insight is to use distributed storage to enable utilities to reduce their reliance on their less efficient and most carbon-intensive power plants and thereby reduce their overall emission footprint. We formulate the problem of emissionaware scheduling of distributed energy storage as an optimization problem, and use a robust optimization approach that is well-suited for handling the uncertainty in load predictions, especially in the presence of intermittent renewables such as solar and wind. We evaluate our approach using a state of the art neural network load forecasting technique and real load traces from a distribution grid with 1,341 homes. Our results show a reduction of {$>$}0.5 million kg in annual carbon emissions \textemdash{} equivalent to a drop of 23.3\% in our electric grid emissions.},
+  isbn = {978-1-4503-8009-6},
+  langid = {english},
+  keywords = {extra,prashant},
+  file = {/home/akke/Documents/umass/papers/load_balancing/eEnergy20-storage.pdf}
+}
+
+@article{kuoSetConfigurationHeart2020,
+  title = {Set the {{Configuration}} for the {{Heart}} of the {{OS}}: {{On}} the {{Practicality}} of {{Operating System Kernel Debloating}}},
+  shorttitle = {Set the {{Configuration}} for the {{Heart}} of the {{OS}}},
+  author = {Kuo, Hsuan-Chi and Chen, Jianyan and Mohan, Sibin and Xu, Tianyin},
+  year = {2020},
+  month = may,
+  journal = {Proceedings of the ACM on Measurement and Analysis of Computing Systems},
+  volume = {4},
+  number = {1},
+  pages = {1--27},
+  issn = {2476-1249},
+  doi = {10.1145/3379469},
+  abstract = {This paper presents a study on the practicality of operating system (OS) kernel debloating---reducing kernel code that is not needed by the target applications---in real-world systems. Despite their significant benefits regarding security (attack surface reduction) and performance (fast boot times and reduced memory footprints), the state-of-the-art OS kernel debloating techniques are seldom adopted in practice, especially in production systems. We identify the limitations of existing kernel debloating techniques that hinder their practical adoption, including both accidental and essential limitations. To understand these limitations, we build an advanced debloating framework named \textbackslash tool which enables us to conduct a number of experiments on different types of OS kernels (including Linux and the L4 microkernel) with a wide variety of applications (including HTTPD, Memcached, MySQL, NGINX, PHP and Redis). Our experimental results reveal the challenges and opportunities towards making kernel debloating techniques practical for real-world systems. The main goal of this paper is to share these insights and our experiences to shed light on addressing the limitations of kernel debloating in future research and development efforts.},
+  langid = {english},
+  keywords = {1,debloating},
+  file = {/home/akke/Documents/umass/papers/debloating/kernel_debloating.pdf}
+}
+
+@misc{lindbergGuideReducingCarbon2021,
+  title = {A {{Guide}} to {{Reducing Carbon Emissions}} through {{Data Center Geographical Load Shifting}}},
+  author = {Lindberg, Julia and Abdennadher, Yasmine and Chen, Jiaqi and Lesieutre, Bernard C. and Roald, Line},
+  year = {2021},
+  month = may,
+  number = {arXiv:2105.09120},
+  eprint = {2105.09120},
+  eprinttype = {arxiv},
+  primaryclass = {cs, eess},
+  publisher = {{arXiv}},
+  abstract = {Recent computing needs have lead technology companies to develop large scale, highly optimized data centers. These data centers represent large loads on electric power networks which have the unique flexibility to shift load both geographically and temporally. This paper focuses on how data centers can use their geographic load flexibility to reduce carbon emissions through clever interactions with electricity markets. Because electricity market clearing accounts for congestion and power flow physics in the electric grid, the carbon emissions associated with electricity use varies between (potentially geographically close) locations. Using our knowledge about this process, we propose a new and improved metric to guide geographic load shifting, which we refer to as the locational marginal carbon emission {$\lambda$}CO2 . We compare this and three other shifting metrics on their ability to reduce carbon emissions and generation costs throughout the course of a year. Our analysis demonstrates that {$\lambda$}CO2 is more effective in reducing carbon emissions than more commonly proposed metrics that do not account for the specifics of the power grid.},
+  archiveprefix = {arXiv},
+  langid = {english},
+  keywords = {1,load shifting},
+  file = {/home/akke/Documents/umass/papers/load_balancing/geographical_load_shifting.pdf}
+}
+
+@article{majiDACFDayaheadCarbon2022,
+  title = {{{DACF}}: {{Day-ahead Carbon Intensity Forecasting}} of {{Power Grids}} Using {{Machine Learning}}},
+  author = {Maji, Diptyaroop and Sitaraman, Ramesh K and Shenoy, Prashant},
+  year = {2022},
+  pages = {5},
+  abstract = {Electricity usage is a substantial source of carbon emissions worldwide. There has been significant interest in reducing the carbon impact of energy usage through supply-side shifts to cleaner generation sources and through demand-side optimizations to reduce carbon usage. An essential building block for these optimizations is future knowledge of the carbon intensity of the supplied electricity. In this paper, we present a Day-Ahead Carbon Forecasting system (DACF) that predicts the carbon intensity from scope 2 emissions in the power grids using machine learning. DACF first computes production forecasts for all the electricity-generating sources and then combines them with the carbon-emission rate of each source to generate a carbon intensity forecast. DACF provides a general approach that works well across a range of geographically distributed regions. DACF has a mean MAPE of 6.4\% across the regions. It also achieves an average decrease of 6.4\% and a maximum decrease of 8.6\% in MAPE compared to the state-of-the-art. We plan to release DACF as an open-source tool easily accessible to researchers.},
+  langid = {english},
+  keywords = {extra,prashant},
+  file = {/home/akke/Documents/umass/papers/load_balancing/dacf.pdf}
+}
+
+@inproceedings{wangLaSSRunningLatency2021,
+  title = {{{LaSS}}: {{Running Latency Sensitive Serverless Computations}} at the {{Edge}}},
+  shorttitle = {{{LaSS}}},
+  booktitle = {Proceedings of the 30th {{International Symposium}} on {{High-Performance Parallel}} and {{Distributed Computing}}},
+  author = {Wang, Bin and {Ali-Eldin}, Ahmed and Shenoy, Prashant},
+  year = {2021},
+  month = jun,
+  eprint = {2104.14087},
+  eprinttype = {arxiv},
+  primaryclass = {cs},
+  pages = {239--251},
+  doi = {10.1145/3431379.3460646},
+  abstract = {Serverless computing has emerged as a new paradigm for running short-lived computations in the cloud. Due to its ability to handle IoT workloads, there has been considerable interest in running serverless functions at the edge. However, the constrained nature of the edge and the latency sensitive nature of workloads result in many challenges for serverless platforms. In this paper, we present LaSS, a platform that uses model-driven approaches for running latency-sensitive serverless computations on edge resources. LaSS uses principled queuing-based methods to determine an appropriate allocation for each hosted function and auto-scales the allocated resources in response to workload dynamics. LaSS uses a fair-share allocation approach to guarantee a minimum of allocated resources to each function in the presence of overload. In addition, it utilizes resource reclamation methods based on container deflation and termination to reassign resources from over-provisioned functions to under-provisioned ones. We implement a prototype of our approach on an OpenWhisk serverless edge cluster and conduct a detailed experimental evaluation. Our results show that LaSS can accurately predict the resources needed for serverless functions in the presence of highly dynamic workloads, and reprovision container capacity within hundreds of milliseconds while maintaining fair share allocation guarantees. CCS Concepts \textbullet{} Computer systems organization \textrightarrow{} Cloud computing; \textbullet{} Theory of computation \textrightarrow{} Scheduling algorithms.},
+  archiveprefix = {arXiv},
+  langid = {english},
+  keywords = {Computer Science - Distributed; Parallel; and Cluster Computing},
+  file = {/home/akke/Documents/umass/papers/load_balancing/lass.pdf}
+}
+
+@inproceedings{wiesnerLetWaitAwhile2021,
+  title = {Let's {{Wait Awhile}}: {{How Temporal Workload Shifting Can Reduce Carbon Emissions}} in the {{Cloud}}},
+  shorttitle = {Let's {{Wait Awhile}}},
+  booktitle = {Proceedings of the 22nd {{International Middleware Conference}}},
+  author = {Wiesner, Philipp and Behnke, Ilja and Scheinert, Dominik and Gontarska, Kordian and Thamsen, Lauritz},
+  year = {2021},
+  month = dec,
+  eprint = {2110.13234},
+  eprinttype = {arxiv},
+  primaryclass = {cs},
+  pages = {260--272},
+  doi = {10.1145/3464298.3493399},
+  abstract = {Depending on energy sources and demand, the carbon intensity of the public power grid fluctuates over time. Exploiting this variability is an important factor in reducing the emissions caused by data centers. However, regional differences in the availability of lowcarbon energy sources make it hard to provide general best practices for when to consume electricity. Moreover, existing research in this domain focuses mostly on carbon-aware workload migration across geo-distributed data centers, or addresses demand response purely from the perspective of power grid stability and costs.},
+  archiveprefix = {arXiv},
+  langid = {english},
+  keywords = {2,load shifting},
+  file = {/home/akke/Documents/umass/papers/load_balancing/temporal_workload_shifting.pdf}
+}
+
+@inproceedings{xuCADRECarbonAwareData2015,
+  title = {{{CADRE}}: {{Carbon-Aware Data Replication}} for {{Geo-Diverse Services}}},
+  shorttitle = {{{CADRE}}},
+  booktitle = {2015 {{IEEE International Conference}} on {{Autonomic Computing}}},
+  author = {Xu, Zichen and Deng, Nan and Stewart, Christopher and Wang, Xiaorui},
+  year = {2015},
+  month = jul,
+  pages = {177--186},
+  publisher = {{IEEE}},
+  address = {{Grenoble, France}},
+  doi = {10.1109/ICAC.2015.15},
+  abstract = {Internet services replicate data to geo-diverse sites around the world, often via consistent hashing. Collectively, these sites span multiple power authorities that independently control carbon emissions at each site. Serving data from a carbon-heavy site increases the service's carbon footprint, but it is hard to place data at sites that will have low emission rates without replicating to too many sites. We present CADRE, a carbon-aware data replication approach. CADRE forecasts emission rates at each site and replicates data to sites that combine together to yield low carbon footprints. It makes replication decisions online, i.e., when data is created, and thus avoids emissions caused by moving data frequently in response to changing emission rates. CADRE uses the multiple-choice secretary algorithm to replicate objects with large footprints to low emission sites. It models carbon footprints for each object using the footprint-replication curve, a graph that maps replication factors to expected carbon footprints. CADRE also achieves availability goals, respects storage capacity limits and balances data across sites. Compared to consistent hashing, our approach reduces carbon footprints by 70\%. It also supports and enhances the state-of-the-art green load balancing, reducing the carbon footprint by an additional 21\%.},
+  isbn = {978-1-4673-6971-8},
+  langid = {english},
+  keywords = {1,load shifting},
+  file = {/home/akke/Documents/umass/papers/load_balancing/cadre.pdf}
+}
+
+@inproceedings{xuElasticGeodistributedRAFT2019,
+  title = {Elastic, Geo-Distributed {{RAFT}}},
+  booktitle = {Proceedings of the {{International Symposium}} on {{Quality}} of {{Service}}},
+  author = {Xu, Zichen and Stewart, Christopher and Huang, Jiacheng},
+  year = {2019},
+  month = jun,
+  pages = {1--9},
+  publisher = {{ACM}},
+  address = {{Phoenix Arizona}},
+  doi = {10.1145/3326285.3329046},
+  abstract = {Raft is a protocol to maintain strong consistency across data replicas in cloud. It is widely used, especially by workloads that span geographically distributed sites. As these workloads grow, Raft's costs should grow, as least proportionally. However, auto scaling approaches for Raft inflate costs by provisioning at all sites when one site exhausts its local resources. This paper presents Geo-Raft, a scale-out mechanism that enables precise auto scaling for Raft. Geo-Raft extends Raft with the following abstractions: (1) secretaries which takes log processing for the leader and (2) observers which process read requests for followers. These abstractions are stateless, allowing for elastic auto scaling, even on unreliable spot instances. Geo-Raft provably preserves strong consistency guarantees provided by Raft. We implemented and evaluated Geo-Raft with multiple auto scaling techniques on Amazon EC2. Geo-Raft scales in resource footprint increments 5-7X smaller than Multi-Raft, the state of the art. Using spot instances, Geo-Raft reduces costs by 84.5\% compared to Multi-Raft. Geo-Raft improves goodput of 95thpercentile SLO by 9X.Geo-Raft operates key-value services for 6 months without losing data or crash.},
+  isbn = {978-1-4503-6778-3},
+  langid = {english},
+  keywords = {extra,load shifting},
+  file = {/home/akke/Documents/umass/extra/elastic_geo_distributed_raft.pdf}
+}
+
+@inproceedings{zhouCarbonAwareLoadBalancing2013,
+  title = {Carbon-{{Aware Load Balancing}} for {{Geo-distributed Cloud Services}}},
+  booktitle = {2013 {{IEEE}} 21st {{International Symposium}} on {{Modelling}}, {{Analysis}} and {{Simulation}} of {{Computer}} and {{Telecommunication Systems}}},
+  author = {Zhou, Zhi and Liu, Fangming and Xu, Yong and Zou, Ruolan and Xu, Hong and Lui, John C.S. and Jin, Hai},
+  year = {2013},
+  month = aug,
+  pages = {232--241},
+  publisher = {{IEEE}},
+  address = {{San Francisco, CA, USA}},
+  doi = {10.1109/MASCOTS.2013.31},
+  abstract = {Recently, datacenter carbon emission has become an emerging concern for the cloud service providers. Previous works are limited on cutting down the power consumption of the datacenters to defuse such a concern. In this paper, we show how the spatial and temporal variabilities of the electricity carbon footprint can be fully exploited to further green the cloud running on top of geographically distributed datacenters. We jointly consider the electricity cost, service level agreement (SLA) requirement, and emission reduction budget. To navigate such a three-way tradeoff, we take advantage of Lyapunov optimization techniques to design and analyze a carbon-aware control framework, which makes online decisions on geographical load balancing, capacity right-sizing, and server speed scaling. Results from rigorous mathematical analyses and real-world trace-driven empirical evaluation demonstrate its effectiveness in both minimizing electricity cost and reducing carbon emission.},
+  isbn = {978-0-7695-5102-9},
+  langid = {english},
+  keywords = {extra,load shifting},
+  file = {/home/akke/Documents/umass/papers/load_balancing/carbon_aware_load_balancing.pdf}
+}
+
+

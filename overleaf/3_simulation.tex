@@ -1,0 +1,100 @@
+The simulation aims to be simplistic and tries to capture the essence without 
+%going into too much detail 
+expatiating about the level of abstraction the actual implementation of scheduler will be in. A central approach and a distributed approach have been considered, and the work has shifted between these two abstractions the last couple of weeks. The distributed approach considered is not a fully fledged simulation of a distributed system, but considers multiple scheduling algorithms deterministically. Figure \ref{fig:scheduling_approach} shows an overview each approach.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+\[\begin{tikzcd}
+	{\textbf A} & {\textbf B} & {\textbf C} \\
+	& {s}
+	\arrow[from=2-2, to=1-1]
+	\arrow[from=2-2, to=1-2]
+	\arrow[from=2-2, to=1-3]
+\end{tikzcd}\]
+        \caption{Central scheduler}
+        \label{fig:central_scheduler}
+    \end{subfigure}%
+    ~ 
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+\[\begin{tikzcd}
+	{\textbf A} & {\textbf B} & {\textbf C} \\
+	{s_1} & {s_2} & {s_3}
+	\arrow[from=2-2, to=1-1]
+	\arrow[from=2-2, to=1-2]
+	\arrow[from=2-2, to=1-3]
+	\arrow[from=2-1, to=1-1]
+	\arrow[from=2-1, to=1-2]
+	\arrow[from=2-1, to=1-3]
+	\arrow[from=2-3, to=1-1]
+	\arrow[from=2-3, to=1-2]
+	\arrow[from=2-3, to=1-3]
+\end{tikzcd}\]
+        \caption{Distributed scheduler}
+        \label{fig:distrbuted_scheduler}
+    \end{subfigure}
+    \caption{Illustration of a central versus a distributed scheduler. }
+    \label{fig:scheduling_approach}
+\end{figure}
+
+The scheduling scheme is updated every hour with the Carbon Aware Provisioning Model, see Section \ref{sec:capm}. Changing the scheduling scheme is equivalent to virtually ``moving'' computing units to different regions. Moving computing units to different regions is interchangeable to starting up computing units at one region and turning off computing units at another. 
+As this is done only once every hour, the time it usually takes to start up computing units at another region is negligible. 
+
+To simulate this behavior in a simplistic manner, a ``central'' computing manager creates computing objects at different regions. The computing manager keeps track of regional data and the number of computing units as well as abstracting the delegation of requests to each computing unit. 
+ 
+
+
+\subsection{Datasets}
+
+\textbf{1. Carbon intensity}.
+\label{sec:datasets}
+%Where do the request data set come from?
+ElectricityMap \cite{electricity_map} provides a diverse set of metric related to carbon for regions around the world. At this state of the project we shift the focus to four US-based regions during 2021. The regions can be seen in Table \ref{tab:region_data}.
+
+\begin{table}[H]
+    \centering
+    
+    \caption{Regions used in the simulation.}
+    \begin{tabular}{|c|}
+        \hline
+        \textbf{U.S Regions} \\
+        \hline
+        California \\
+        \hline
+        Texas \\
+        \hline
+        Mid-Atlantic \\
+        \hline
+        Mid-West \\
+        \hline
+    \end{tabular}
+    \label{tab:region_data}
+\end{table}
+
+%The dataset by ElectricityMap contains samples for each hour 
+The data metrics are depicted on an hourly basis. Since these carbon metrics are our primary decision variable (1b), the scheduling scheme is updated in hourly accordance to this data. 
+%The idea is therefore to update the scheduling scheme every hour and schedule incoming requests accordingly. 
+%Moreover, we inject requests periodically over every hourly timestep to imitate realtime behaviour. Subsequently, the accuracy of the simulation increases. 
+
+%Moreover, we need to ``generate'' requests many times within each 1 hour timestep to simulate realtime behaviour in some sense --- increase the accuracy.
+
+\textbf{2. Request rate}. We inject requests periodically over every hourly timestep to imitate realtime behaviour. Moreover, as the number of request tend to expand during the day and shrink during the night, the request load at a given time may differ substantially for closely located regions. Hence, we avoid using a static rate and base the rate of injections on a dataset supplied through our colleague containing request rates during 2011 on an hourly basis. Although request rates have surged in recent years, the daily distribution should persist. 
+%Additionally, 
+%To further improve the accuracy, using dynamic instead of static request data is useful. As the number of request tend to expand during the day and shrink during the night, the request load at a given time may differ substantially for closely located regions. A dataset containing request rates for the year 2011 is used. Even though the request rates may have gone up significantly the last couple of years, the request rate pattern will likely remain the same (even though this is not certain, big batch jobs could be set to run during the night \ref{}).
+
+
+
+
+
+\subsection{Testing}
+We use a test framework in Python called pytest \cite{pytest}. 
+Github allows us to use workflows to control how and when different types of actions should run depending on some event criteria. We have adopted a CI pipeline that automatically tests our code when commits are pushed to the main branch. This is very useful to identify breaking commits, and makes the development more test driven.  
+
+
+
+
+
+
+

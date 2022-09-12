@@ -1,0 +1,77 @@
+
+The results are given for 1 day, namely the following date \texttt{2021-03-24}. Figure \ref{fig:requests_carbon} shows the number of requests and the carbon intensity for each region during this day. We can see that the combined number of requests is peaks at timestep $\sim 3$ and $\sim 20$. Timestep 0 corresponds to \texttt{00:00} UTC. We can also see that the regions with lowest carbon intensity are California and Texas while the highest are Mid West and Mid Atlantic. Texas has quite large carbon intensity between $0 - 8$. There is also a quite large differential between these regions, implying that there may be large gains to move computations from Mid West, Mid Atlantic and Texas to California.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.23\textwidth}
+        \centering
+        \includesvg[width=1\textwidth]{images/number_of_requests}
+        \caption{Number of requests.}    
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.23\textwidth}  
+        \centering 
+        \includesvg[width=1\textwidth]{images/carbon_intensity}
+        \caption{Carbon intensity.}    
+    \end{subfigure}
+    \caption{The figure shows the number of requests and carbon intensity for each region.}
+    \label{fig:requests_carbon}
+\end{figure}
+
+The simulation has been run three times with different latency constraints. One simulating infinite latency denoted as \texttt{50 latency}, one simulating no latency denoted as \texttt{0 latency}, and one that is a trade-off between latency and carbon intensity denoted as \texttt{25 latency}.
+
+\begin{figure}[H]
+        \centering
+        \begin{subfigure}[b]{0.23\textwidth}
+            \centering
+            \includesvg[width=1\textwidth]{images/carbon_emissions}
+            \caption{Carbon emissions.}   
+            \label{fig:mean and std of net14}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.23\textwidth}  
+            \centering 
+            \includesvg[width=1\textwidth]{images/latency}
+            \caption{Latency.}   
+            \label{fig:mean and std of net24}
+        \end{subfigure}
+        \vskip\baselineskip
+        \begin{subfigure}[b]{0.23\textwidth}   
+            \centering 
+            \includesvg[width=1\textwidth]{images/utilization}
+            \caption{Utilization (percentage).}      
+            \label{fig:mean and std of net34}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}[b]{0.23\textwidth}   
+            \centering 
+            \includesvg[width=1\textwidth]{images/servers}
+            \caption{Number of servers.}       
+            \label{fig:mean and std of net44}
+        \end{subfigure}
+        \caption{The figure shows each attribute with regards to a latency constraint of 0, 25 and 50.}
+        \label{fig:mean and std of nets}
+    \end{figure}
+    
+    
+    
+    
+    
+    
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.23\textwidth}
+        \centering
+        \includesvg[width=1\textwidth]{images/carbon_comparison}
+        \caption{Carbon emissions.}    
+        \label{fig:mean and std of net14}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.23\textwidth}  
+        \centering 
+        \includesvg[width=1\textwidth]{images/latency_comparison}
+        \caption{Latency.}    
+        \label{fig:mean and std of net24}
+    \end{subfigure}
+    \caption{The figure shows a comparison between carbon emissions and latency for each latency constraint.}
+\end{figure}

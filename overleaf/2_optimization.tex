@@ -1,0 +1,71 @@
+To formalize the scheduling and provisioning problems we device two mixed-integer quadratically constrained programs (MIQCP) as seen in Eq. \ref{provEq}-\ref{casEq}.
+The server provisioner uses a carbon and request forecast for the next hour for the regions.
+
+In the following problem definition all indices are in the set of regions, $\mathcal{R}$. We let $\bar{x}\in\{\,0,1\,\}$ be a indicator variable for when no requests are sent to a region $j$, i.e. when $\sum_j x_{ij}=0$.
+
+\subsection{Decision variables}
+\begin{equation*}
+\begin{aligned}
+x_{ij} &:= \text{Requests from region $i$ to region $j$} \\
+s_i &:= \text{Number of servers in region $i$}
+\end{aligned}
+\end{equation*}
+
+
+\subsection{Parameters}
+\begin{equation*}
+\begin{aligned}
+I_j &:= \text{Carbon intensity in region $j$}\\
+\lambda_i &:= \text{Request rate from region $i$}\\
+\ell_{ij} &:= \text{Latency from region $i$ to $j$}  \\
+c_j &:= \text{Capacity for each server in region } j \\
+L_{i} &:= \text{Maximum tolerated latency from region $i$}  \\
+K &:= \text{Maximum number of servers } \\
+\end{aligned}
+\end{equation*}
+
+\subsection{Carbon Aware Provisioning Model}
+\label{sec:capm}
+
+\begin{subequations}
+    \begin{align}
+    \underset{x}{\min} \quad & \sum_j I_j\sum_i x_{ij} \\
+    \text{s.t.}  \quad & \sum_i x_{ij} \leq s_jc_j \\
+    & \sum_j s_j \leq K \\
+    & x_{ij}\left(\ell_{ij}-L_i\right) \leq 0 \\
+    & \sum_j x_{ij} = \lambda_i \\
+    & \bar{x}_js_j=0 \\
+    & x_{ij},s_j \in\mathbb{Z}_{\geq 0}
+    \end{align}
+    \label{provEq}
+\end{subequations}
+
+
+\subsection{CAS Model}
+    \begin{subequations}
+    \begin{align}
+    \underset{x}{\min} \quad & \sum_j I_j\sum_i x_{ij} \\
+    \text{s.t.}  \quad & \sum_i x_{ij} \leq s_jc_j \\
+    & x_{ij}\left(\ell_{ij}-L_i\right) \leq 0 \\
+    & \sum_j x_{ij} = \lambda_i \\
+    & \bar{x}_js_j=0 \\
+    & x_{ij},s_j \in\mathbb{Z}_{\geq 0}
+    \end{align}
+    \label{casEq}
+\end{subequations}
+
+To solve the two MILPs we use the library \texttt{PuLP} which is a Python interface to the Coin-or branch and cut (CBC) solver. the relaxed MILP is solved quickly. 
+%The integer constraint can be relaxed, so the problem becomes a simple LP.
+To solve minimization problems \ref{casEq} and \ref{provEq} we relax them to MILP problems by removing the quadratic constraints 1f and 2e. 
+
+
+%$$
+%    \begin{align}
+%    \underset{x}{\min} \quad & \sum_j I_j\sum_i x_{ij} & \text{(1a)}\\
+%    \text{s.t.}  \quad & \sum_i x_{ij} \leq s_jc_j & \text{(1b)}\\
+%    & x_{ij}\left(\ell_{ij}-L_i\right) \leq 0 & \text{(1c)} \\
+%    & \sum_j x_{ij} = \lambda_i & \text{(1d)}\\
+%    & \bar{x}_j s_j=0 & \text{(1e)}\\
+%    & x_{ij} ,s_j \in\mathbb{Z}_{\geq 0}& \text{(1f)}
+%    \end{align}
+%$$
