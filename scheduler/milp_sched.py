@@ -26,9 +26,11 @@ def schedule_servers(conf, request_batches, server_manager, t, max_servers=4, ma
     latencies = np.array(
         [[region.latency(batch.region) for region in server_manager.regions] for batch in request_batches]
     )
+    # TODO: We should not allow nans
+    latencies[np.isnan(latencies)] = 1
+
     capacities = [conf.server_capacity] * len(server_manager.regions)
     request_rates = [batch.load for batch in request_batches]
-
     # reqs are the tentative requests
     scheduler = conf.type_scheduler
     servers, reqs, obj_val = place_servers(
@@ -77,6 +79,9 @@ def schedule_requests(conf, request_batches, server_manager, t, request_update_i
     latencies = np.array(
         [[region.latency(batch.region) for region in server_manager.regions] for batch in request_batches]
     )
+    # TODO: We should not allow nans
+    latencies[np.isnan(latencies)] = 1
+
     capacities = [conf.server_capacity // request_update_interval] * len(server_manager.regions)
     request_rates = [batch.load for batch in request_batches]
     servers = server_manager.servers_per_region()
