@@ -48,7 +48,7 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
-        "-m", "--max-servers", type=int, help="Maximum pool of servers", default=4,
+        "-m", "--max-servers", type=int, help="Maximum pool of servers", default=15,
     )
 
     parser.add_argument(
@@ -56,7 +56,7 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
-        "-c", "--server-capacity", type=int, help="The capacity of each server", default=100_000,
+        "-c", "--server-capacity", type=int, help="The capacity of each server", default=1000_000,
     )
 
     parser.add_argument(

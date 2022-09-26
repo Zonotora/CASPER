@@ -14,7 +14,7 @@ class Region:
         self.name = name
         self.request = request
         self.carbon_intensity = carbon_intensity
-        self.latency = latency
+        self._latency = latency
         self.offset = offset
 
     def __repr__(self):
@@ -24,11 +24,12 @@ class Region:
         return format(self.name, __format_spec)
 
     def get_requests_per_interval(self, t):
-        return self.request.iloc[t + self.offset]
+        return self.request[t + self.offset]
 
-    def latency(self, other):
-        assert isinstance(other, Region)
-        return 0
+
+    def latency(self, region):
+        assert isinstance(region, Region)
+        return self._latency[region.name].values[0]
 
     def haversine_latency(self, other):
         """
@@ -71,9 +72,9 @@ def load_regions(conf):
 
     for name in region_names(conf):
         latency = latency_df.loc[latency_df.iloc[:, 0] == name]
-        request = request_df[name]
+        request = request_df[name].to_numpy()
         carbon_intensity = carbon_intensity_df[name]
-        offset = offset_df[name]
+        offset = offset_df[name].values[0]
 
         region = Region(name, carbon_intensity, request, latency, offset)
         regions.append(region)
