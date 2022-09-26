@@ -2,9 +2,7 @@ from fnmatch import translate
 import os
 import pandas as pd
 import math
-from scheduler.util import load_carbon_intensity, load_request_rate
-from scheduler.constants import REGION_LOCATIONS, REGION_OFFSETS
-from scheduler.util import get_regions
+from scheduler.util import load_carbon_intensity, load_request, load_latency, load_offset, region_names
 
 
 class Region:
@@ -12,61 +10,27 @@ class Region:
     Region object to hold and get region-specific data.
     """
 
-    def __init__(self, name, location, carbon_intensity, requests_per_hour) -> None:
-        """Input properties when region is instantiated
-
-        Args:
-            name: Name of region
-            location: Deprecated for estimating latency
-            carbon_intensity: Average carbon intensity during specified timeframe
-            requests_per_hour: Requests per hour during specified timeframe
-            latency_df : Replaces latency estimation with real latency data
-        """
+    def __init__(self, name, carbon_intensity, request, latency, offset) -> None:
         self.name = name
-        self.location = location
-        self.requests_per_interval = requests_per_hour
+        self.request = request
         self.carbon_intensity = carbon_intensity
-        self.latency_df = pd.read_csv("api/cloudping/latency_50th.csv")
+        self.latency = latency
+        self.offset = offset
 
-    def get_requests_per_interval(self, t):
-        """Get requests per hour for a timestep
-
-        Args:
-            t: timestep
-
-        Returns:
-            Integer of requests for that hour
-        """
-        return self.requests_per_interval.iloc[t]
-
-    # def latency(self, other):
-    #     (x1, y1) = self.location
-    #     (x2, y2) = other.location
-    #     return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
-
-    def latency_cloudping(self, other):
-        """Gives latency from one region to another using cloudping data specified in README
-
-        Args:
-            self: Region sending a request
-            other: Region recieving request
-
-        Returns:
-            Returns round-trip latency from region "self" to region "other"
-        """
-        df = self.latency_df
-        i = df.columns.get_loc(self.name)
-        j = df.columns.get_loc(other.name)
-        return df.iloc[i, j]
-
-    #  def __repr__(self) -> str:
-    #      return self.name
+    def __repr__(self):
+        return f"Region({self.name})"
 
     def __format__(self, __format_spec: str) -> str:
         return format(self.name, __format_spec)
 
-    # def haversine_latency(self, other):
+    def get_requests_per_interval(self, t):
+        return self.request.iloc[t + self.offset]
+
     def latency(self, other):
+        assert isinstance(other, Region)
+        return 0
+
+    def haversine_latency(self, other):
         """
             Uses the haversine distance d [km] between two points
             and calculates latency as L=0.022*0.62*d+m [ms].
@@ -98,39 +62,19 @@ def load_regions(conf):
     Returns:
         List of all region objects containing their specific data
     """
-    date = conf.start_date
     regions = []
-    d = "api"
-    kind = ""
-    if conf.region_kind == "original":
-        kind = "original"
-    elif conf.region_kind == "europe":
-        kind = "europe"
-    elif conf.region_kind == "north_america":
-        kind = "north_america"
-    elif conf.region_kind == "north_america_old":
-        kind = "north_america_old"
-    d = os.path.join(d, kind)
 
-    # request_path = f"api/requests/requests_{kind}_df.csv"
-    # requests_per_hour_df = pd.read_csv(request_path)
+    carbon_intensity_df = load_carbon_intensity(conf)
+    latency_df = load_latency(conf)
+    request_df = load_request(conf)
+    offset_df = load_offset(conf)
 
-    for name in get_regions(conf):
-        file = f"{name}.csv"
-        path = os.path.join(d, file)
-        location = REGION_LOCATIONS[name]
-        # hardcoded offsets
-        offset = REGION_OFFSETS[name]
+    for name in region_names(conf):
+        latency = latency_df.loc[latency_df.iloc[:, 0] == name]
+        request = request_df[name]
+        carbon_intensity = carbon_intensity_df[name]
+        offset = offset_df[name]
 
-        request_path = "api/requests.csv"
-        requests_per_hour = load_request_rate(request_path, offset, conf, date)
-        # requests_per_hour = 0
-        # if name == "IT-NO":
-        #     requests_per_hour = requests_per_hour_df["IT"].head(48).reset_index(drop=True)
-        # else:
-        #     requests_per_hour = requests_per_hour_df[name].head(48).reset_index(drop=True)
-
-        carbon_intensity = load_carbon_intensity(path, offset, conf, date)
-        region = Region(name, location, carbon_intensity, requests_per_hour)
+        region = Region(name, carbon_intensity, request, latency, offset)
         regions.append(region)
     return regions

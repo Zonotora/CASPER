@@ -1,5 +1,3 @@
-from numpy import deprecate
-from scheduler.constants import REGION_EUROPE, REGION_NORTH_AMERICA, REGION_ORIGINAL, REGION_NORTH_AMERICA_OLD
 from datetime import datetime, timezone
 import pandas as pd
 import os
@@ -30,122 +28,6 @@ def save_file(conf, plot):
     ]
     df.to_csv(f"saved/{date_created}_{''.join(fingerprint)}.csv", index=False)
 
-
-@deprecate
-def load_file(name):
-    """Unused function to load saved file from save_file()
-
-    Args:
-        name: Name of file
-
-    Returns:
-        Old data from a previous run
-    """
-    df = pd.read_csv(name)
-    n = len(df["timestep"].unique())
-
-    data = [[] for _ in range(n)]
-    for index, row in df.iterrows():
-        obj = {}
-        obj["latency"] = row["latency"]
-        obj["carbon_emissions"] = row["carbon_emissions"]
-        obj["server"] = {"name": row["server_name"], "utilization": row["server_utilization"]}
-        timestep = int(row["timestep"])
-        data[timestep].append(obj)
-
-    return data
-
-
-def load_electricity_map_with_resample(path, metric="W"):
-    """Loads electricity map data with resample to smooth out graph
-
-
-    Args:
-        path: Path of electricity map data
-        metric: Smooth on daily/weekly.../ basis. Defaults to "Weeks".
-
-    Returns:
-        Dataframe with all electricity map data indexed by dates
-    """
-    df = pd.read_csv(path)
-    df.datetime = pd.to_datetime(df["datetime"], format="%Y-%m-%d %H:%M:%S.%f")
-    df.set_index(["datetime"], inplace=True)
-    df = df.resample(metric)
-    return df
-
-
-def load_carbon_intensity(path, offset, conf, date="2021-01-01"):
-    """Loads carbon intensity for a Region from a certain date for 24 hour interval.
-    NOTE California offset = 0.
-
-    Args:
-        path: Path of carbon intensity data
-        offset: Offset by hour of region
-        conf: Runtime configurations to retrieve current timestep
-        date: Date to begin loading from. Defaults to "2021-01-01".
-
-    Returns:
-        Returns dataframe with carbon intensity data for region, indexed by hours [0,...,24]
-    """
-    df = pd.read_csv(path)
-    start_date = datetime.fromisoformat(date).replace(tzinfo=timezone.utc)
-    timestamp = int(start_date.timestamp())
-
-    index = df.index[df["timestamp"] == timestamp]
-    assert len(index) > 0, f"Date [{start_date}] does not exist in electricity map data"
-
-    start = index[0] + offset
-    assert start > 0, start
-
-    end = start + conf.timesteps + 24
-    assert end < len(df), "The selected interval overflows the electricity map data"
-
-    # TODO: Consider whether avg or take everything
-    df = df["carbon_intensity_avg"].iloc[start:end].reset_index(drop=True)
-
-    return df
-
-
-def load_request_rate(path, offset, conf, date="2021-01-01"):
-    """Loads request rate data for a region and returns its data.
-    NOTE California offset = 0.
-
-    Args:
-        path: Path of request rate data
-        offset: Offset by hour of region
-        conf: Runtime configurations to retrieve current timestep
-        date: Date to begin loading from. Defaults to "2021-01-01".
-
-    Returns:
-        Returns dataframe with request rate data for region, indexed by hours [0,...,24]
-    """
-    df = pd.read_csv(path)
-    start_date = datetime.fromisoformat(date).replace(tzinfo=timezone.utc, year=2021)
-    timestamp = int(start_date.timestamp())
-
-    index = df.index[df["timestamp"] == timestamp]
-    assert len(index) > 0, f"Date [{start_date}] does not exist in request rate data"
-
-    start = index[0] + offset
-    assert start > 0, start
-
-    end = start + conf.timesteps + 24
-    assert end < len(df), "The selected interval overflows the reqeust rate data"
-
-    df = df["requests"].iloc[start:end].reset_index(drop=True)
-
-    return df
-
-
-# NOT RELEVANT, BACKUP
-# def latencies_per_regions(latency, requests):
-#     # [i][:] sum latencies from one region
-#     outgoing_requests_per_region = requests.T[:]
-#     outgoing_latencies_per_region = latency.T[:]
-#     latencies_per_region = [np.dot(l, r)/ len(r) for (l, r) in zip(outgoing_latencies_per_region, outgoing_requests_per_region)]
-#     return latencies_per_region
-
-
 def ui(conf, timestep, request_per_region, servers, servers_per_regions_list):
     """Interactive UI while running for debugging
 
@@ -169,31 +51,63 @@ def ui(conf, timestep, request_per_region, servers, servers_per_regions_list):
     print(servers)
     print("______________________________________")
 
+def required_files(conf):
+    region_dir = __region_dir(conf)
+    names = [
+        "carbon_intensity.csv",
+        "latency.csv",
+        "request.csv",
+        "offset.csv",
+    ]
+    print("These files must exist:")
+    print(region_dir)
+    for name in names:
+        print(f"\t{name}")
 
-def get_regions(conf):
-    """Get regions for continent specified
+def __region_dir(conf):
+    scheduler_dir = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.abspath(os.path.join(scheduler_dir, "../data"))
+    return os.path.join(data_dir, conf.region_kind)
 
-    Args:
-        conf: Runtime configurations to get continent
+def load_region_df(conf, file_name):
+    try:
+        region_dir = __region_dir(conf)
+        file_path = os.path.join(region_dir, file_name)
+        return pd.read_csv(file_path)
+    except:
+        print(f"Failed to load file: {file_name}")
+        required_files(conf)
 
-    Returns:
-        Returns array of regions in continent
-    """
-    if conf.region_kind == "original":
-        return REGION_ORIGINAL
-    elif conf.region_kind == "europe":
-        return REGION_EUROPE
-    elif conf.region_kind == "north_america":
-        return REGION_NORTH_AMERICA
-    elif conf.region_kind == "north_america_old":
-        return REGION_NORTH_AMERICA_OLD
+def valid_date(conf, file_name):
+    df = load_region_df(conf, file_name)
+    start_date = datetime.fromisoformat(conf.start_date).replace(tzinfo=timezone.utc)
+    timestamp = int(start_date.timestamp())
 
+    index = df.index[df["timestamp"] == timestamp]
+    assert len(index) > 0, f"Date [{start_date}] does not exist in file: {file_name}"
 
-def servers_distributed(path):
-    return pd.read_csv(path)
+    start = index[0]
+    assert start > 0, start
 
+    end = start + conf.timesteps + 24
+    assert end < len(df), f"The selected interval overflows in file: {file_name}"
 
-def load_request_matrix(path="api/requests/....."):
-    ### RETURN NXN MATRIX SPECIFYING WHERE REGIONS GO FROM AND TO
-    pd.read_csv(path)
-    return requests
+    return df, start, end
+
+def load_carbon_intensity(conf):
+    df, start, end = valid_date(conf, "carbon_intensity.csv")
+    return df.iloc[start:end].reset_index(drop=True)
+
+def load_request(conf):
+    df, start, end = valid_date(conf, "request.csv")
+    return df.iloc[start:end].reset_index(drop=True)
+
+def load_latency(conf):
+    return load_region_df(conf, "latency.csv")
+
+def load_offset(conf):
+    return load_region_df(conf, "offset.csv")
+
+def region_names(conf):
+    df = load_offset(conf)
+    return df.columns

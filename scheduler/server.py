@@ -1,5 +1,5 @@
 from scheduler.region import Region, load_regions
-from scheduler.util import get_regions
+from scheduler.util import region_names
 import numpy as np
 import logging
 
@@ -66,7 +66,7 @@ class ServerManager:
             servers: List of server objects
         """
         self.conf = conf
-        self.region_names = get_regions(conf)
+        self.region_names = region_names(conf)
         if regions is None:
             self.regions = load_regions(conf)
         else:

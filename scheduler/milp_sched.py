@@ -1,7 +1,6 @@
 import numpy as np
 import pulp as plp
 import logging
-from scheduler.util import load_request_matrix
 
 
 
@@ -94,8 +93,9 @@ def schedule_requests(conf, request_batches, server_manager, t, request_update_i
         return latencies, carbon_intensities, requests
 
     elif conf.type_scheduler == "replay":
-        requests = load_request_matrix()
-        return latencies, carbon_intensities, requests
+        # requests = load_request_matrix()
+        # return latencies, carbon_intensities, requests
+        pass
 
     # print(f"At t={t}, obj_val={obj_val:e} g C02 requests scheduled at: \n{requests}")
 

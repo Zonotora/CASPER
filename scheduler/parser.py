@@ -8,10 +8,9 @@ def parse_arguments(argv):
         "-p",
         "--region-kind",
         type=str,
-        choices=["original", "europe", "north_america", "north_america_old"],
-        help="The type of data we want to load. Original: 2021-01-02, Europe: 2021-10-21,"
-        "North America: 2022-08-03, North America (OLD): 2022-04-22",
-        default="original",
+        choices=["na", "eu"],
+        help="The region we want to load our data from",
+        default="na",
     )
 
     parser.add_argument(
@@ -37,7 +36,7 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
-        "-d", "--start-date", type=str, help="Start date in ISO format (YYYY-MM-DD)", default="2021-01-01",
+        "-d", "--start-date", type=str, help="Start date in ISO format (YYYY-MM-DD)", default="2022-08-04",
     )
 
     parser.add_argument(

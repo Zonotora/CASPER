@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from scheduler.util import get_regions
+from scheduler.util import region_names
 
 
 class Plot:
@@ -21,7 +21,7 @@ class Plot:
 
         """
         self.conf = conf
-        self.region_names = get_regions(conf)
+        self.region_names = region_names(conf)
         self.columns = [
             "timestep",
             "interval",
