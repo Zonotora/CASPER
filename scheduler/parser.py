@@ -44,11 +44,11 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
-        "-l", "--latency", type=int, help="Maximum latency allowed", default=50,
+        "-l", "--latency", type=int, help="Maximum latency allowed", default=100000,
     )
 
     parser.add_argument(
-        "-m", "--max-servers", type=int, help="Maximum pool of servers", default=15,
+        "-m", "--max-servers", type=int, help="Maximum pool of servers", default=1000,
     )
 
     parser.add_argument(
@@ -56,12 +56,19 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
-        "-c", "--server-capacity", type=int, help="The capacity of each server", default=1000_000,
+        "-c", "--server-capacity", type=int, help="The capacity of each server", default=1000_000_000,
     )
 
     parser.add_argument(
         "-ty", "--type-scheduler", type=str, help="Define what you wish to minimize: carbon/latency", default="carbon"
     )
+
+    parser.add_argument(
+        "--verbose-milp",
+        action="store_true",
+        help="Print the log from the MILP scheduler",
+    )
+
 
     return parser.parse_args(argv)
 

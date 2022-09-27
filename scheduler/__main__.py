@@ -94,8 +94,7 @@ def build_batches(conf, server_manager, t, request_update_interval=None):
             rate = conf.rate
         if request_update_interval:
             rate //= request_update_interval
-        # TODO: Add id to request batch
-        batch = RequestBatch("", rate, region)
+        batch = RequestBatch(region.name, rate, region)
         batches.append(batch)
     return batches
 
