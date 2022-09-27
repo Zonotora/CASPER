@@ -14,7 +14,11 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
-        "-t", "--timesteps", type=int, help="The total number of hours", default=24,
+        "-t",
+        "--timesteps",
+        type=int,
+        help="The total number of hours",
+        default=24,
     )
 
     parser.add_argument(
@@ -28,39 +32,67 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
-        "--load", type=str, help="Name of file to load and plot",
+        "--load",
+        type=str,
+        help="Name of file to load and plot",
     )
 
     parser.add_argument(
-        "--save", help="Save file to /saved with the following format YYYY-MM-DD_hh:mm:ss", action="store_true",
+        "--save",
+        help="Save file to /saved with the following format YYYY-MM-DD_hh:mm:ss",
+        action="store_true",
     )
 
     parser.add_argument(
-        "-d", "--start-date", type=str, help="Start date in ISO format (YYYY-MM-DD)", default="2022-08-04",
+        "-d",
+        "--start-date",
+        type=str,
+        help="Start date in ISO format (YYYY-MM-DD)",
+        default="2022-08-04",
     )
 
     parser.add_argument(
-        "-v", "--verbose", help="Print information for every timestep", action="store_true",
+        "-v",
+        "--verbose",
+        help="Print information for every timestep",
+        action="store_true",
     )
 
     parser.add_argument(
-        "-l", "--latency", type=int, help="Maximum latency allowed", default=100000,
+        "-l",
+        "--latency",
+        type=int,
+        help="Maximum latency allowed",
+        default=100000,
     )
 
     parser.add_argument(
-        "-m", "--max-servers", type=int, help="Maximum pool of servers", default=1000,
+        "-m",
+        "--max-servers",
+        type=int,
+        help="Maximum pool of servers",
+        default=1000,
     )
 
     parser.add_argument(
-        "--rate", type=int, help="Specify a constant request rate per hour",
+        "--rate",
+        type=int,
+        help="Specify a constant request rate per hour",
     )
 
     parser.add_argument(
-        "-c", "--server-capacity", type=int, help="The capacity of each server", default=1000_000_000,
+        "-c",
+        "--server-capacity",
+        type=int,
+        help="The capacity of each server",
+        default=1000_000_000,
     )
 
     parser.add_argument(
-        "-ty", "--type-scheduler", type=str, help="Define what you wish to minimize: carbon/latency", default="carbon"
+        "--scheduler",
+        type=str,
+        help="Define what you wish to minimize: carbon/latency",
+        default="carbon",
     )
 
     parser.add_argument(
@@ -69,6 +101,4 @@ def parse_arguments(argv):
         help="Print the log from the MILP scheduler",
     )
 
-
     return parser.parse_args(argv)
-

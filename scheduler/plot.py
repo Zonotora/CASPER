@@ -8,6 +8,7 @@ class Plot:
     """
     Holds data during runtime and plots it at end of simulation.
     """
+
     def __init__(self, conf) -> None:
         """_summary_
 
@@ -125,7 +126,7 @@ class Plot:
         df_latencies = df["mean_latency"].mean()
         # Sum of all requests
         df_all_requests = df_requests.sum()
-        return np.dot(df_requests, df_latencies)/ df_all_requests
+        return np.dot(df_requests, df_latencies) / df_all_requests
 
     def get(self, dt: int):
         """Return data for a timestep
@@ -153,7 +154,7 @@ class Plot:
             group_df: A dataframe grouped by timesteps, see notebook
             labels: Labels the type of scheduler used
         """
-        fig, axs = plt.subplots(1, 1, figsize=(15,6))
+        fig, axs = plt.subplots(1, 1, figsize=(15, 6))
 
         carbon = []
         for i, df in enumerate(group_df):
@@ -161,7 +162,7 @@ class Plot:
             axs.bar(labels[i], carbon[i])
 
         axs.set_title("Total carbon for each scheduler type")
-        fig.legend([labels[0], labels[1]]);
+        fig.legend([labels[0], labels[1]])
 
         return (carbon[0], carbon[1])
 
@@ -177,10 +178,11 @@ class Plot:
         fig = plt.figure(figsize=(14, 9))
         fig.tight_layout()
         fig.suptitle(
-            [   "start_date: ",
+            [
+                "start_date: ",
                 self.conf.start_date,
                 "greedy_w.r.t.:",
-                self.conf.type_scheduler,
+                self.conf.scheduler,
                 "latency:",
                 self.conf.latency,
                 "max_servers:",
