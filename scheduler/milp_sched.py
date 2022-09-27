@@ -27,7 +27,8 @@ def schedule_servers(conf, request_batches, server_manager, t, max_servers, max_
         [[region.latency(batch.region) for region in server_manager.regions] for batch in request_batches]
     )
     # TODO: We should not allow nans
-    latencies[np.isnan(latencies)] = 1
+    latencies[np.isnan(latencies)] = 10**6
+    logging.warning(f"Detected NaN value in latency adjacency matrix. Converted to 10^6 as penalty.")
 
     capacities = [conf.server_capacity] * len(server_manager.regions)
     request_rates = np.array([batch.load for batch in request_batches], dtype=np.int64)
@@ -88,7 +89,8 @@ def schedule_requests(conf, request_batches, server_manager, t, request_update_i
         [[region.latency(batch.region) for region in server_manager.regions] for batch in request_batches]
     )
     # TODO: We should not allow nans
-    latencies[np.isnan(latencies)] = 1
+    latencies[np.isnan(latencies)] = 10**6
+    logging.warning(f"Detected NaN value in latency adjacency matrix. Converted to 10^6 as penalty.")
 
     capacities = [conf.server_capacity // request_update_interval] * len(server_manager.regions)
     request_rates = np.array([batch.load for batch in request_batches], dtype=np.int64)
