@@ -2,7 +2,7 @@ from fnmatch import translate
 import os
 import pandas as pd
 import math
-from scheduler.util import load_carbon_intensity, load_request, load_latency, load_offset, region_names
+from casper.util import load_carbon_intensity, load_request, load_latency, load_offset, region_names
 
 
 class Region:
@@ -25,7 +25,6 @@ class Region:
 
     def get_requests_per_interval(self, t):
         return self.request[t + self.offset]
-
 
     def latency(self, region):
         assert isinstance(region, Region)

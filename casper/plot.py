@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from scheduler.util import region_names
+from casper.util import region_names
 
 
 class Plot:

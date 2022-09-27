@@ -1,15 +1,15 @@
-from scheduler.server import ServerManager
-from scheduler.request import RequestBatch
-from scheduler.parser import parse_arguments
-from scheduler.plot import Plot
-from scheduler.util import save_file, ui, servers_distributed
-from scheduler.milp_scheduler import schedule_requests, schedule_servers
+from casper.server import ServerManager
+from casper.request import RequestBatch
+from casper.parser import parse_arguments
+from casper.plot import Plot
+from casper.util import save_file, ui, servers_distributed
+from casper.milp_scheduler import schedule_requests, schedule_servers
 import sys
 import random
 
+
 def main_replay():
-    """Central function where simulation is run, plots called, requests are injected, etc.
-    """
+    """Central function where simulation is run, plots called, requests are injected, etc."""
     random.seed(1234)
     conf = parse_arguments(sys.argv[1:])
 
@@ -22,7 +22,7 @@ def main_replay():
     plot = Plot(conf)
     server_manager = ServerManager(conf)
 
-    #Frequency of which to create more requests
+    # Frequency of which to create more requests
     request_update_interval = 60 // 5
     interval_stepper = 0
 
@@ -32,7 +32,9 @@ def main_replay():
 
         for i in range(request_update_interval):
             # get number of requests for timeframe
-            batches = build_batches(conf, server_manager, interval_stepper, request_update_interval=request_update_interval)
+            batches = build_batches(
+                conf, server_manager, interval_stepper, request_update_interval=request_update_interval
+            )
 
             # call the scheduling algorithm
             latency, carbon_intensity, requests_per_region = schedule_requests(
@@ -95,7 +97,9 @@ def build_batches(conf, server_manager, t, request_update_interval=None):
         batches.append(batch)
     return batches
 
-    #RENAME FUNCTIONS
+    # RENAME FUNCTIONS
+
+
 def move(conf, server_manager, t):
     """_summary_
 
@@ -107,6 +111,6 @@ def move(conf, server_manager, t):
     servers_per_region = servers_distributed("path_to_requests")
 
     batches = build_batches(conf, server_manager, t)
-    #servers_per_region = schedule_servers(
+    # servers_per_region = schedule_servers(
     # move servers to regions according to scheduling estimation the next hour
     server_manager.move(servers_per_region)

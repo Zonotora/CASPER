@@ -1,5 +1,5 @@
-from scheduler.region import Region, load_regions
-from scheduler.util import region_names
+from casper.region import Region, load_regions
+from casper.util import region_names
 import numpy as np
 import logging
 
@@ -7,9 +7,9 @@ import logging
 class Server:
     """An artificial server with a carbon trace, latency and capacity.
 
-       NOTE:
-       In-place order used often which refers to the inherent order of regions, e.g. [cali, texas, ...]
-       which works as the same order is used everywhere.
+    NOTE:
+    In-place order used often which refers to the inherent order of regions, e.g. [cali, texas, ...]
+    which works as the same order is used everywhere.
 
     """
 
@@ -49,14 +49,13 @@ class Server:
         self.utilization += load
 
     def reset_utilization(self):
-        """Resets the utilization of utilization if restarting simulation. Not applied.
-        """
+        """Resets the utilization of utilization if restarting simulation. Not applied."""
         self.utilization = 0
 
 
 class ServerManager:
-    """Central manager keeping check of all regions and servers, handles request sourcing to servers etc.
-    """
+    """Central manager keeping check of all regions and servers, handles request sourcing to servers etc."""
+
     def __init__(self, conf, regions=None):
         """
 
@@ -116,7 +115,7 @@ class ServerManager:
         return servers * self.conf.server_capacity
 
     def send(self, requests_per_region):
-        """ Distributes requests to each server for each region
+        """Distributes requests to each server for each region
 
         Args:
             requests_per_region: the n.o. requests to be distributed across servers in a region, in-place.

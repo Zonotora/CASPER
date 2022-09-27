@@ -1,16 +1,15 @@
-from scheduler.server import ServerManager
-from scheduler.request import RequestBatch
-from scheduler.parser import parse_arguments
-from scheduler.plot import Plot
-from scheduler.util import save_file, ui
-from scheduler.milp_scheduler import schedule_requests, schedule_servers
+from casper.server import ServerManager
+from casper.request import RequestBatch
+from casper.parser import parse_arguments
+from casper.plot import Plot
+from casper.util import save_file, ui
+from casper.milp_scheduler import schedule_requests, schedule_servers
 import sys
 import random
 
 
 def main():
-    """Central function where simulation is run, plots called, requests are injected, etc.
-    """
+    """Central function where simulation is run, plots called, requests are injected, etc."""
     random.seed(1234)
     conf = parse_arguments(sys.argv[1:])
 
@@ -23,7 +22,7 @@ def main():
     plot = Plot(conf)
     server_manager = ServerManager(conf)
 
-    #Frequency of which to create more requests
+    # Frequency of which to create more requests
     request_update_interval = 60 // conf.request_update_interval
 
     for t in range(conf.timesteps + 1):
@@ -88,7 +87,7 @@ def build_batches(conf, server_manager, t, request_update_interval=None):
     """
     batches = []
     for region in server_manager.regions:
-        #Gets per hour
+        # Gets per hour
         rate = region.get_requests_per_interval(t)
         if conf.rate:
             rate = conf.rate
