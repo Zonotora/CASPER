@@ -5,13 +5,14 @@ import os
 
 ts = 1375315200
 ts_end = 1375401600
-PREFIX = "../akamai_data/ECORGeoLoad/"
+PREFIX = r"data/na/akamai_data/ECORGeoLoad/ECORGeoLoad_"
+
 n_rows = (ts_end - ts) // 600
 idx = pd.date_range(1375315200 * 1000 ** 3, periods=n_rows, freq="10T")
+t_stamps = idx.astype(np.int64) // 10 ** 9
 
 l = []
 for i in range(n_rows):
-    df = pd.read_csv(f"{PREFIX}{ts+600*i}_data.dat", skiprows=[1])
     try:
         df = pd.read_csv(f"{PREFIX}{ts+600*i}_data.dat", skiprows=[1])
     except FileNotFoundError:
@@ -30,7 +31,8 @@ for i in range(n_rows):
     df3 = df2["sum_hits"].sum()
     l.append(df3.to_dict())
 
-full_df = pd.DataFrame(l, index=idx)
+
+full_df = pd.DataFrame(l)
 
 # Drop regions that dont really have any data
 full_df = full_df.drop(
@@ -48,10 +50,10 @@ print(full_df.isna().sum())
 # interpolate the missing values due to emptry files/holes in data
 
 complete_df = full_df.interpolate(axis=0)
+complete_df.insert(0, "timestamps", t_stamps)
+complete_df.insert(1, "datetime", idx)
 
 print(full_df)
 print(f"Filled {full_df.isna().sum().sum()-complete_df.isna().sum().sum()} NaNs")
 
-complete_df.to_csv(r"..\requests\request_df.csv")
-
-print("lol")
+complete_df.to_csv(r"data/na/request_df.csv", index= False)
