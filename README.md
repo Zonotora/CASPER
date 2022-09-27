@@ -3,9 +3,8 @@
 - [Installation](#Installation)
 - [Usage](#Usage)
 - [Datasets](#Datasets)
-- [Workflow diagram](#Workflow)
+- [Workflow diagram](#Workflow-diagram)
 
-<a name="Description"/></a>
 # Carbon Aware Scheduler and ProvisionER (CASPER)
 
 Using predictions of request during the next hour we calculate how the servers should be placed to handle
@@ -38,88 +37,6 @@ A more zoomed in version of when the requests coming from the scheduer goes into
 
 The `ServerManager` resides in `scheduler/server.py`.
 
-### Assumptions and limitations
-
-With this implementation there are a few assumptions to consider:
-
-1. The requests within a time-slot are treated as interchangeable.
-2. The type of requests considered are short-lived, e.g. web requests.
-3. Complete knowledge of incoming request rate for next time-slot, i.e. perfect predictions.
-4. Instantaneous communication between regions and the scheduler.
-5. We ignore capacity planning, i.e. setting the maximum servers, capacities, etc such that all demand can be satisfied
-
-
-
-
-<a name="Installation"/></a>
-
-## Installation
-Install all required packages specified in requirements.txt
-```
-pip install -r requirements.py
-```
-<a name="Usage"/></a>
-
-## Usage
-
-To run the scheduler, make sure the working directory is the root folder of the repository. To display the help menu, run the following
-
-```
-python -m casper --help
-```
-
-```
-usage: __main__.py [-h] [-p {na,eu}] [-t TIMESTEPS] [-r [0-60]] [--load LOAD] [--save] [-d START_DATE] [-v] [-l LATENCY] [-m MAX_SERVERS] [--rate RATE] [-c SERVER_CAPACITY] [--scheduler SCHEDULER] [--verbose-milp]
-
-options:
-  -h, --help            show this help message and exit
-  -p {na,eu}, --region-kind {na,eu}
-                        The region we want to load our data from
-  -t TIMESTEPS, --timesteps TIMESTEPS
-                        The total number of hours
-  -r [0-60], --request-update-interval [0-60]
-                        The number of minutes between each scheduling
-  --load LOAD           Name of file to load and plot
-  --save                Save file to /saved with the following format YYYY-MM-DD_hh:mm:ss
-  -d START_DATE, --start-date START_DATE
-                        Start date in ISO format (YYYY-MM-DD)
-  -v, --verbose         Print information for every timestep
-  -l LATENCY, --latency LATENCY
-                        Maximum latency allowed
-  -m MAX_SERVERS, --max-servers MAX_SERVERS
-                        Maximum pool of servers
-  --rate RATE           Specify a constant request rate per hour
-  -c SERVER_CAPACITY, --server-capacity SERVER_CAPACITY
-                        The capacity of each server
-  --scheduler SCHEDULER
-                        Define what you wish to minimize: carbon/latency
-  --verbose-milp        Print the log from the MILP scheduler
-```
-
-For **example** we could run this:
-```
-python -m casper -p "europe" -r 30 --latency 20 -t 48 --max-servers 15 --start-date 2021-10-22
-```
-
-In this respective order, we specify to run for the regions in europe [<sup id="a1">[1](#1)</sup>], schedule ever 30 minutes, where each request's round-trip must be under 20ms, for 48 hours, capping maximum server at one timestep to 15, with a starting date of 2021-10-22.
-
-### Loading data into notebooks
-
-To load saved files from previous runs, you locate the __latency_vs_carbon_plot.ipynb__ file and specifiy which files you intend to load. This gives you one graph for each run which could look something like this (note this is the same output as per a normal run) : INPUT IMG
-
-And one graph for comparing the total difference in carbon for both methods, which could look like this: INPUT IMG
-
-<a name="Datasets"/></a>
-
-## Datasets
-
-- _Latency_ uses [cloudping] [<sup id="a2">[2](#latency_cloudping)</sup>] containing inter-regional 50th percentile latency data for
-AWS during one year. These are processed and applied in the code.
-
-- _Carbon Intensity_ uses [electricity map] [<sup id="a3">[3](#electricity_map)</sup>] for carbon metrics during decision making. We focus on the metric _average carbon intensity_ for regions.
-
-<a name="Workflow"/></a>
-
 ## Workflow diagram
 
 A few colors to signal configurations or states
@@ -131,6 +48,76 @@ A few colors to signal configurations or states
 - ![#F8CECC](https://via.placeholder.com/15/F8CECC/F8CECC.png) `End of simulation`
 
 <img src="https://github.com/umassos/casper/blob/main/images/Workflow-Diagram.jpg" width="500">
+
+### Assumptions and limitations
+
+With this implementation there are a few assumptions to consider:
+
+1. The requests within a time-slot are treated as interchangeable.
+2. The type of requests considered are short-lived, e.g. web requests.
+3. Complete knowledge of incoming request rate for next time-slot, i.e. perfect predictions.
+4. Instantaneous communication between regions and the scheduler.
+5. We ignore capacity planning, i.e. setting the maximum servers, capacities, etc such that all demand can be satisfied
+
+## Installation
+Install all required packages specified in requirements.txt
+```
+pip install -r requirements.py
+```
+
+## Usage
+
+To run the scheduler, make sure the working directory is the root folder of the repository. To display the help menu, run the following
+
+```
+python -m casper --help
+```
+
+```
+usage: __main__.py [-h] [-t TIMESTEPS] [-u [0-60]] [-r REQUEST_RATE] [--save] [--load LOAD] [-d START_DATE] [--max-latency MAX_LATENCY] [--max-servers MAX_SERVERS] [--server-capacity SERVER_CAPACITY] [--region {na,eu}]
+                   [--scheduler {carbon,latency}] [-v] [--verbose-milp]
+
+options:
+  -h, --help            show this help message and exit
+  -t TIMESTEPS, --timesteps TIMESTEPS
+                        The total number of hours
+  -u [0-60], --request-update-interval [0-60]
+                        The number of minutes between each scheduling
+  -r REQUEST_RATE, --request-rate REQUEST_RATE
+                        Specify a constant request rate per hour
+  --save                Save file to /saved with the following format YYYY-MM-DD_hh:mm:ss
+  --load LOAD           Name of file to load and plot
+  -d START_DATE, --start-date START_DATE
+                        Start date in ISO format (YYYY-MM-DD)
+  --max-latency MAX_LATENCY
+                        Maximum latency allowed
+  --max-servers MAX_SERVERS
+                        Maximum pool of servers
+  --server-capacity SERVER_CAPACITY
+                        The capacity of each server
+  --region {na,eu}      The region we want to load our data from
+  --scheduler {carbon,latency}
+                        Define what you wish to minimize: carbon/latency
+  -v, --verbose         Print information for every timestep
+  --verbose-milp        Print the log from the MILP scheduler
+
+
+```
+
+For **example** we could run this:
+```
+python -m casper --region na -u 30 -t 48 --max-latency 200 --max-servers 150 --start-date 2022-08-05
+```
+
+In this respective order, we specify to run for the regions in north america, schedule ever 30 minutes, where each request's round-trip must be below 200ms, for 48 hours, capping maximum servers within one hour to 150, with a starting date of 2022-00-05.
+
+## Datasets
+
+- _Latency_ uses [cloudping] [<sup id="a2">[2](#latency_cloudping)</sup>] containing inter-regional 50th percentile latency data for
+AWS during one year. These are processed and applied in the code.
+
+- _Carbon Intensity_ uses [electricity map] [<sup id="a3">[3](#electricity_map)</sup>] for carbon metrics during decision making. We focus on the metric _average carbon intensity_ for regions.
+
 
 
 <!-- THIS IS FOR HYPERLINKS -->
@@ -144,7 +131,7 @@ Only includes the 6 regions of where AWS is present. See [<sup id="a4">[4](#aws_
 <b id="a1"></b> [↩](#a1)
 
 ## References
-[<a id="2">2</a>] :
+[<a id="2">2</a>]
 <a name="latency_cloudping"></a>
 https://www.cloudping.co/grid/latency/timeframe/1Y
 <b id="a1"></b> [↩](#a2)

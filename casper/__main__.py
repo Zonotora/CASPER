@@ -22,7 +22,7 @@ def main():
     plot = Plot(conf)
     server_manager = ServerManager(conf)
 
-    # Frequency of which to create more requests
+    # How many times we update the servers within one hour
     request_update_interval = 60 // conf.request_update_interval
 
     for t in range(conf.timesteps + 1):
@@ -35,7 +35,7 @@ def main():
 
             # call the scheduling algorithm
             latency, carbon_intensity, requests_per_region = schedule_requests(
-                conf, batches, server_manager, t, request_update_interval, max_latency=conf.latency
+                conf, batches, server_manager, t, request_update_interval, max_latency=conf.max_latency
             )
 
             # send requests to servers
@@ -89,8 +89,8 @@ def build_batches(conf, server_manager, t, request_update_interval=None):
     for region in server_manager.regions:
         # Gets per hour
         rate = region.get_requests_per_interval(t)
-        if conf.rate:
-            rate = conf.rate
+        if conf.request_rate:
+            rate = conf.request_rate
         if request_update_interval:
             rate //= request_update_interval
         batch = RequestBatch(region.name, rate, region)
@@ -108,7 +108,7 @@ def move(conf, server_manager, t):
     """
     batches = build_batches(conf, server_manager, t)
     servers_per_region = schedule_servers(
-        conf, batches, server_manager, t, max_latency=conf.latency, max_servers=conf.max_servers
+        conf, batches, server_manager, t, max_latency=conf.max_latency, max_servers=conf.max_servers
     )
     # move servers to regions according to scheduling estimation the next hour
     server_manager.move(servers_per_region)

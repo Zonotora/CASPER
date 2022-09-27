@@ -5,15 +5,6 @@ def parse_arguments(argv):
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "-p",
-        "--region-kind",
-        type=str,
-        choices=["na", "eu"],
-        help="The region we want to load our data from",
-        default="na",
-    )
-
-    parser.add_argument(
         "-t",
         "--timesteps",
         type=int,
@@ -22,7 +13,7 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
-        "-r",
+        "-u",
         "--request-update-interval",
         type=int,
         help="The number of minutes between each scheduling",
@@ -32,15 +23,22 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
-        "--load",
-        type=str,
-        help="Name of file to load and plot",
+        "-r",
+        "--request-rate",
+        type=int,
+        help="Specify a constant request rate per hour",
     )
 
     parser.add_argument(
         "--save",
         help="Save file to /saved with the following format YYYY-MM-DD_hh:mm:ss",
         action="store_true",
+    )
+
+    parser.add_argument(
+        "--load",
+        type=str,
+        help="Name of file to load and plot",
     )
 
     parser.add_argument(
@@ -52,22 +50,13 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
-        "-v",
-        "--verbose",
-        help="Print information for every timestep",
-        action="store_true",
-    )
-
-    parser.add_argument(
-        "-l",
-        "--latency",
+        "--max-latency",
         type=int,
         help="Maximum latency allowed",
         default=100000,
     )
 
     parser.add_argument(
-        "-m",
         "--max-servers",
         type=int,
         help="Maximum pool of servers",
@@ -75,13 +64,6 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
-        "--rate",
-        type=int,
-        help="Specify a constant request rate per hour",
-    )
-
-    parser.add_argument(
-        "-c",
         "--server-capacity",
         type=int,
         help="The capacity of each server",
@@ -89,10 +71,26 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
+        "--region",
+        type=str,
+        choices=["na", "eu"],
+        help="The region we want to load our data from",
+        default="na",
+    )
+
+    parser.add_argument(
         "--scheduler",
         type=str,
+        choices=["carbon", "latency"],
         help="Define what you wish to minimize: carbon/latency",
         default="carbon",
+    )
+
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Print information for every timestep",
     )
 
     parser.add_argument(

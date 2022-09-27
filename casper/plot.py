@@ -184,7 +184,7 @@ class Plot:
                 "greedy_w.r.t.:",
                 self.conf.scheduler,
                 "latency:",
-                self.conf.latency,
+                self.conf.max_latency,
                 "max_servers:",
                 self.conf.max_servers,
                 "server_capacity:",

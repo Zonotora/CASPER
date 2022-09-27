@@ -20,13 +20,14 @@ def save_file(conf, plot):
         str(conf.start_date) + "_",
         str(conf.type_scheduler),
         "_latency_",
-        str(conf.latency),
+        str(conf.max_latency),
         "_max_servers_",
         str(conf.max_servers),
         "_timesteps_",
         str(conf.timesteps),
     ]
     df.to_csv(f"saved/{date_created}_{''.join(fingerprint)}.csv", index=False)
+
 
 def ui(conf, timestep, request_per_region, servers, servers_per_regions_list):
     """Interactive UI while running for debugging
@@ -51,6 +52,7 @@ def ui(conf, timestep, request_per_region, servers, servers_per_regions_list):
     print(servers)
     print("______________________________________")
 
+
 def required_files(conf):
     region_dir = __region_dir(conf)
     names = [
@@ -64,10 +66,12 @@ def required_files(conf):
     for name in names:
         print(f"\t{name}")
 
+
 def __region_dir(conf):
     scheduler_dir = os.path.dirname(os.path.abspath(__file__))
     data_dir = os.path.abspath(os.path.join(scheduler_dir, "../data"))
-    return os.path.join(data_dir, conf.region_kind)
+    return os.path.join(data_dir, conf.region)
+
 
 def load_region_df(conf, file_name):
     try:
@@ -77,6 +81,7 @@ def load_region_df(conf, file_name):
     except:
         print(f"Failed to load file: {file_name}")
         required_files(conf)
+
 
 def valid_date(conf, file_name):
     df = load_region_df(conf, file_name)
@@ -94,19 +99,24 @@ def valid_date(conf, file_name):
 
     return df, start, end
 
+
 def load_carbon_intensity(conf):
     df, start, end = valid_date(conf, "carbon_intensity.csv")
     return df.iloc[start:end].reset_index(drop=True)
+
 
 def load_request(conf):
     df, start, end = valid_date(conf, "request.csv")
     return df.iloc[start:end].reset_index(drop=True)
 
+
 def load_latency(conf):
     return load_region_df(conf, "latency.csv")
 
+
 def load_offset(conf):
     return load_region_df(conf, "offset.csv")
+
 
 def region_names(conf):
     df = load_offset(conf)

@@ -38,7 +38,7 @@ def main_replay():
 
             # call the scheduling algorithm
             latency, carbon_intensity, requests_per_region = schedule_requests(
-                conf, batches, server_manager, t, request_update_interval, max_latency=conf.latency
+                conf, batches, server_manager, t, request_update_interval, max_latency=conf.max_latency
             )
 
             # send requests to servers
