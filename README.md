@@ -1,9 +1,9 @@
 ## Table of Contents
-- [Description](#Description)
+- [Carbon Aware Scheduler and ProvisionER (CASPER)](#Carbon-Aware-Scheduler-and-ProvisionER-(CASPER))
 - [Installation](#Installation)
 - [Usage](#Usage)
 - [Datasets](#Datasets)
-- [Workflow diagram](#Workflow-diagram)
+- [References](#References)
 
 # Carbon Aware Scheduler and ProvisionER (CASPER)
 
@@ -59,13 +59,13 @@ With this implementation there are a few assumptions to consider:
 4. Instantaneous communication between regions and the scheduler.
 5. We ignore capacity planning, i.e. setting the maximum servers, capacities, etc such that all demand can be satisfied
 
-## Installation
+# Installation
 Install all required packages specified in requirements.txt
 ```
 pip install -r requirements.py
 ```
 
-## Usage
+# Usage
 
 To run the scheduler, make sure the working directory is the root folder of the repository. To display the help menu, run the following
 
@@ -111,7 +111,7 @@ python -m casper --region na -u 30 -t 48 --max-latency 200 --max-servers 150 --s
 
 In this respective order, we specify to run for the regions in north america, schedule ever 30 minutes, where each request's round-trip must be below 200ms, for 48 hours, capping maximum servers within one hour to 150, with a starting date of 2022-00-05.
 
-## Datasets
+# Datasets
 
 - _Latency_ uses [cloudping] [<sup id="a2">[2](#latency_cloudping)</sup>] containing inter-regional 50th percentile latency data for
 AWS during one year. These are processed and applied in the code.
@@ -124,24 +124,12 @@ AWS during one year. These are processed and applied in the code.
 [cloudping]: https://www.cloudping.co/grid/latency/timeframe/1Y
 [electricity map]: https://electricitymaps.com/
 
-
-## Footnotes
-[<a id="1">1</a>]
-Only includes the 6 regions of where AWS is present. See [<sup id="a4">[4](#aws_regions)</sup>] for the whole list.
-<b id="a1"></b> [↩](#a1)
-
-## References
-[<a id="2">2</a>]
+# References
 <a name="latency_cloudping"></a>
-https://www.cloudping.co/grid/latency/timeframe/1Y
-<b id="a1"></b> [↩](#a2)
+[1] https://www.cloudping.co/grid/latency/timeframe/1Y
 
-<a id="electricity_map">[3]</a>
 <a name="electricity_map"></a>
-https://electricitymaps.com/
-<b id="a1"></b> [↩](#a3)
+[2] https://electricitymaps.com/
 
-<a id="4">[4]</a>
 <a name="aws_regions"></a>
-https://aws.amazon.com/about-aws/global-infrastructure/regions_az/
-<b id="a1"></b> [↩](#a4)
+[3] https://aws.amazon.com/about-aws/global-infrastructure/regions_az/
