@@ -1,9 +1,8 @@
-## Table of Contents  
-- [Description](#Description)  
+## Table of Contents
+- [Description](#Description)
 - [Installation](#Installation)
-- [Usage](#Usage)  
-- [Testing](#Testing)  
-- [Datasets](#Datasets)  
+- [Usage](#Usage)
+- [Datasets](#Datasets)
 - [Workflow diagram](#Workflow)
 
 <a name="Description"/></a>
@@ -30,7 +29,7 @@ I.e. each region's outgoing requests are proxied through the "scheduler" which d
 
 ![diagram](https://user-images.githubusercontent.com/43207511/184157966-3a8c8033-b34c-49cf-bc98-338ea4a8106f.png)
 
-The scheduler is implemented in `scheduler/milp_sched.py`.
+The scheduler is implemented in `scheduler/milp_scheduler.py`.
 
 
 A more zoomed in version of when the requests coming from the scheduer goes into a region $R_i$ that contain $m_i$ different servers is shown below.
@@ -41,11 +40,11 @@ The `ServerManager` resides in `scheduler/server.py`.
 
 ### Assumptions and limitations
 
-With this implementation there are a few assumptions to consider: 
+With this implementation there are a few assumptions to consider:
 
 1. The requests within a time-slot are treated as interchangeable.
 2. The type of requests considered are short-lived, e.g. web requests.
-3. Complete knowledge of incoming request rate for next time-slot, i.e. perfect predictions. 
+3. Complete knowledge of incoming request rate for next time-slot, i.e. perfect predictions.
 4. Instantaneous communication between regions and the scheduler.
 5. We ignore capacity planning, i.e. setting the maximum servers, capacities, etc such that all demand can be satisfied
 
@@ -63,45 +62,46 @@ pip install -r requirements.py
 
 ## Usage
 
-### Running
-To run the scheduler, make sure the working directory is the root folder of the repository and run the following
+To run the scheduler, make sure the working directory is the root folder of the repository. To display the help menu, run the following
 
 ```
-python -m scheduler --help
+python -m casper --help
 ```
 
 ```
-usage: __main__.py [-h] [-a {latency_greedy,carbon_greedy,carbon_aware}] [-t TIMESTEPS] [-r [0-60]] [--load LOAD] [--save] [-d START_DATE] [-v] [-l LATENCY] [-m MAX_SERVERS]
-                   [--rate RATE]
+usage: __main__.py [-h] [-p {na,eu}] [-t TIMESTEPS] [-r [0-60]] [--load LOAD] [--save] [-d START_DATE] [-v] [-l LATENCY] [-m MAX_SERVERS] [--rate RATE] [-c SERVER_CAPACITY] [--scheduler SCHEDULER] [--verbose-milp]
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
-  -a {latency_greedy,carbon_greedy,carbon_aware}, --algorithm {latency_greedy,carbon_greedy,carbon_aware}
-                        The scheduling algorithm to use
+  -p {na,eu}, --region-kind {na,eu}
+                        The region we want to load our data from
   -t TIMESTEPS, --timesteps TIMESTEPS
                         The total number of hours
   -r [0-60], --request-update-interval [0-60]
                         The number of minutes between each scheduling
   --load LOAD           Name of file to load and plot
-  --save                Name of file to save
+  --save                Save file to /saved with the following format YYYY-MM-DD_hh:mm:ss
   -d START_DATE, --start-date START_DATE
                         Start date in ISO format (YYYY-MM-DD)
   -v, --verbose         Print information for every timestep
   -l LATENCY, --latency LATENCY
-                        Maximum latency allowed in milliseconds
+                        Maximum latency allowed
   -m MAX_SERVERS, --max-servers MAX_SERVERS
                         Maximum pool of servers
-  --rate RATE           Specify a constant rate
-  -ty TYPE OF SCHEDULER, --type-scheduler TYPE OF SCHEDULER
-                        Type of scheduler says to which respect we minimize, carbon/latency
+  --rate RATE           Specify a constant request rate per hour
+  -c SERVER_CAPACITY, --server-capacity SERVER_CAPACITY
+                        The capacity of each server
+  --scheduler SCHEDULER
+                        Define what you wish to minimize: carbon/latency
+  --verbose-milp        Print the log from the MILP scheduler
 ```
 
 For **example** we could run this:
 ```
-python -m scheduler -p "europe" -r 30 --latency 20 -t 48 --max-servers 15 --start-date 2021-10-22
+python -m casper -p "europe" -r 30 --latency 20 -t 48 --max-servers 15 --start-date 2021-10-22
 ```
 
-In this respective order, we specify to run for the regions in europe [<sup id="a1">[1](#1)</sup>], schedule ever 30 minutes, where each request's round-trip must be under 20ms, for 48 hours, capping maximum server at one timestep to 15, with a starting date of 2021-10-22.  
+In this respective order, we specify to run for the regions in europe [<sup id="a1">[1](#1)</sup>], schedule ever 30 minutes, where each request's round-trip must be under 20ms, for 48 hours, capping maximum server at one timestep to 15, with a starting date of 2021-10-22.
 
 ### Loading data into notebooks
 
@@ -109,33 +109,18 @@ To load saved files from previous runs, you locate the __latency_vs_carbon_plot.
 
 And one graph for comparing the total difference in carbon for both methods, which could look like this: INPUT IMG
 
-
-<a name="Testing"/></a>
-
-## Testing ![Test](https://github.com/Zonotora/umass/workflows/Test/badge.svg?branch=main&event=push)
-
-To run all the tests `pytest` is required
-```
-pip install pytest
-```
-
-Run the following command in the root folder
-
-```
-pytest -v
-```
 <a name="Datasets"/></a>
 
-## Datasets 
+## Datasets
 
 - _Latency_ uses [cloudping] [<sup id="a2">[2](#latency_cloudping)</sup>] containing inter-regional 50th percentile latency data for
-AWS during one year. These are processed and applied in the code. 
+AWS during one year. These are processed and applied in the code.
 
 - _Carbon Intensity_ uses [electricity map] [<sup id="a3">[3](#electricity_map)</sup>] for carbon metrics during decision making. We focus on the metric _average carbon intensity_ for regions.
 
 <a name="Workflow"/></a>
 
-## Workflow diagram 
+## Workflow diagram
 
 A few colors to signal configurations or states
 - ![#D5E8D4](https://via.placeholder.com/15/D5E8D4/D5E8D4.png) `Start of simulation`
@@ -145,7 +130,7 @@ A few colors to signal configurations or states
 - ![#B0E3E6](https://via.placeholder.com/15/B0E3E6/B0E3E6.png) `Type: latency greedy`
 - ![#F8CECC](https://via.placeholder.com/15/F8CECC/F8CECC.png) `End of simulation`
 
-<img src="https://github.com/umassos/casper/blob/main/Workflow-Diagram.jpg" width="500">
+<img src="https://github.com/umassos/casper/blob/main/images/Workflow-Diagram.jpg" width="500">
 
 
 <!-- THIS IS FOR HYPERLINKS -->
