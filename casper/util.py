@@ -118,6 +118,10 @@ def load_offset(conf):
     return load_region_df(conf, "offset.csv")
 
 
+def load_incoming(conf):
+    return load_region_df(conf, "incoming.csv")
+
+
 def region_names(conf):
     df = load_offset(conf)
     return df.columns

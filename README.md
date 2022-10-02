@@ -74,8 +74,8 @@ python -m casper --help
 ```
 
 ```
-usage: __main__.py [-h] [-t TIMESTEPS] [-u [0-60]] [-r REQUEST_RATE] [--save] [--load LOAD] [-d START_DATE] [--max-latency MAX_LATENCY] [--max-servers MAX_SERVERS] [--server-capacity SERVER_CAPACITY] [--region {na,eu}]
-                   [--scheduler {carbon,latency}] [-v] [--verbose-milp]
+usage: __main__.py [-h] [-t TIMESTEPS] [-u [0-60]] [-r REQUEST_RATE] [--save] [-d START_DATE] [--max-latency MAX_LATENCY] [--max-servers MAX_SERVERS] [--server-capacity SERVER_CAPACITY] [--region {na,eu}]
+                   [--scheduler {carbon,latency}] [--replay] [-v] [--verbose-milp]
 
 options:
   -h, --help            show this help message and exit
@@ -86,7 +86,6 @@ options:
   -r REQUEST_RATE, --request-rate REQUEST_RATE
                         Specify a constant request rate per hour
   --save                Save file to /saved with the following format YYYY-MM-DD_hh:mm:ss
-  --load LOAD           Name of file to load and plot
   -d START_DATE, --start-date START_DATE
                         Start date in ISO format (YYYY-MM-DD)
   --max-latency MAX_LATENCY
@@ -98,10 +97,9 @@ options:
   --region {na,eu}      The region we want to load our data from
   --scheduler {carbon,latency}
                         Define what you wish to minimize: carbon/latency
+  --replay              Use akamai dataset instead of MILP scheduler to produce output
   -v, --verbose         Print information for every timestep
   --verbose-milp        Print the log from the MILP scheduler
-
-
 ```
 
 For **example** we could run this:
@@ -112,6 +110,15 @@ python -m casper --region na -u 30 -t 48 --max-latency 200 --max-servers 150 --s
 In this respective order, we specify to run for the regions in north america, schedule ever 30 minutes, where each request's round-trip must be below 200ms, for 48 hours, capping maximum servers within one hour to 150, with a starting date of 2022-08-05.
 
 # Datasets
+```
+data
+└── <region>
+    ├── carbon_intensity.csv
+    ├── incoming.csv
+    ├── latency.csv
+    ├── offset.csv
+    └── request.csv
+```
 
 - _Latency_ uses [cloudping] [<sup id="a2">[2](#latency_cloudping)</sup>] containing inter-regional 50th percentile latency data for
 AWS during one year. These are processed and applied in the code.

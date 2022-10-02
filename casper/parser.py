@@ -36,12 +36,6 @@ def parse_arguments(argv):
     )
 
     parser.add_argument(
-        "--load",
-        type=str,
-        help="Name of file to load and plot",
-    )
-
-    parser.add_argument(
         "-d",
         "--start-date",
         type=str,
@@ -67,7 +61,7 @@ def parse_arguments(argv):
         "--server-capacity",
         type=int,
         help="The capacity of each server",
-        default=1000_000_000,
+        default=1_000_000,
     )
 
     parser.add_argument(
@@ -84,6 +78,12 @@ def parse_arguments(argv):
         choices=["carbon", "latency"],
         help="Define what you wish to minimize: carbon/latency",
         default="carbon",
+    )
+
+    parser.add_argument(
+        "--replay",
+        action="store_true",
+        help="Use akamai dataset instead of MILP scheduler to produce output",
     )
 
     parser.add_argument(

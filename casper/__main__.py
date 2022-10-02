@@ -3,21 +3,16 @@ from casper.request import RequestBatch
 from casper.parser import parse_arguments
 from casper.plot import Plot
 from casper.util import save_file, ui
-from casper.milp_scheduler import schedule_requests, schedule_servers
+from casper.milp_scheduler import schedule_requests, schedule_servers, compute_args
 import sys
 import random
+import math
 
 
 def main():
     """Central function where simulation is run, plots called, requests are injected, etc."""
     random.seed(1234)
     conf = parse_arguments(sys.argv[1:])
-
-    # if conf.load:
-    #     data = load_file(conf.load)
-    #     plot = Plot(conf, data=data)
-    #     plot.plot()
-    #     exit()
 
     plot = Plot(conf)
     server_manager = ServerManager(conf)
@@ -34,9 +29,14 @@ def main():
             batches = build_batches(conf, server_manager, t, request_update_interval=request_update_interval)
 
             # call the scheduling algorithm
-            latency, carbon_intensity, requests_per_region = schedule_requests(
-                conf, batches, server_manager, t, request_update_interval, max_latency=conf.max_latency
-            )
+            if conf.replay:
+                latency, carbon_intensity, requests_per_region = requests_with_incoming(
+                    conf, batches, server_manager, t
+                )
+            else:
+                latency, carbon_intensity, requests_per_region = schedule_requests(
+                    conf, batches, server_manager, t, request_update_interval, max_latency=conf.max_latency
+                )
 
             # send requests to servers
             server_manager.send(requests_per_region)
@@ -98,6 +98,24 @@ def build_batches(conf, server_manager, t, request_update_interval=None):
     return batches
 
 
+# Calculate the number of server required to handle the incoming requests to one
+# region without the scheduler. Thus the incoming requests are fixed beforehand.
+def servers_per_region_with_incoming(conf, server_manager, t):
+    servers_per_region = [0] * len(server_manager.regions)
+    for i, region in enumerate(server_manager.regions):
+        rate = region.get_incoming_per_interval(t)
+        n_servers = math.ceil(rate / conf.server_capacity)
+        servers_per_region[i] = n_servers
+    return servers_per_region
+
+
+def requests_with_incoming(conf, request_batches, server_manager, t):
+    carbon_intensity, latency, _, _ = compute_args(conf, request_batches, server_manager, t)
+    requests_per_region = np.array([region.get_incoming_per_interval(t) for region in server_manager.regions])
+
+    return latency, carbon_intensity, requests_per_region
+
+
 def move(conf, server_manager, t):
     """_summary_
 
@@ -107,9 +125,12 @@ def move(conf, server_manager, t):
         t: _description_
     """
     batches = build_batches(conf, server_manager, t)
-    servers_per_region = schedule_servers(
-        conf, batches, server_manager, t, max_latency=conf.max_latency, max_servers=conf.max_servers
-    )
+    if conf.replay:
+        servers_per_region = servers_per_region_with_incoming(conf, server_manager, t)
+    else:
+        servers_per_region = schedule_servers(
+            conf, batches, server_manager, t, max_latency=conf.max_latency, max_servers=conf.max_servers
+        )
     # move servers to regions according to scheduling estimation the next hour
     server_manager.move(servers_per_region)
 
