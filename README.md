@@ -1,9 +1,9 @@
 ## Table of Contents
-- [Carbon Aware Scheduler and ProvisionER (CASPER)](#Carbon-Aware-Scheduler-and-ProvisionER-(CASPER))
-- [Installation](#Installation)
-- [Usage](#Usage)
-- [Datasets](#Datasets)
-- [References](#References)
+- [Carbon Aware Scheduler and ProvisionER (CASPER)](#carbon-aware-scheduler-and-provisioner-casper)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Datasets](#datasets)
+- [References](#references)
 
 # Carbon Aware Scheduler and ProvisionER (CASPER)
 
@@ -109,7 +109,7 @@ For **example** we could run this:
 python -m casper --region na -u 30 -t 48 --max-latency 200 --max-servers 150 --start-date 2022-08-05
 ```
 
-In this respective order, we specify to run for the regions in north america, schedule ever 30 minutes, where each request's round-trip must be below 200ms, for 48 hours, capping maximum servers within one hour to 150, with a starting date of 2022-00-05.
+In this respective order, we specify to run for the regions in north america, schedule ever 30 minutes, where each request's round-trip must be below 200ms, for 48 hours, capping maximum servers within one hour to 150, with a starting date of 2022-08-05.
 
 # Datasets
 

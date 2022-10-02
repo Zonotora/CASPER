@@ -356,9 +356,10 @@ def compute_args(conf, request_batches, server_manager, t):
     latencies = np.array(
         [[region.latency(batch.region) for region in server_manager.regions] for batch in request_batches]
     )
-    # TODO: We should not allow nans
-    latencies[np.isnan(latencies)] = 10**6
-    logging.warning(f"Detected NaN value in latency adjacency matrix. Converted to 10^6 as penalty.")
+    if np.isnan(latencies).any():
+        latencies[np.isnan(latencies)] = 10**6
+        logging.warning(f"Detected NaN value in latency adjacency matrix. Converted to 10^6 as penalty.")
+
 
     capacities = [conf.server_capacity] * len(server_manager.regions)
     # reqs are the tentative requests
@@ -378,7 +379,7 @@ def validate_objective_value(obj_val, t, carbon_intensities, latencies, capaciti
             f"latency={latencies}\n"
             f"carbon_intenisties={carbon_intensities}\n"
         )
-        raise Exception("Could not place, look above for more info")
+        raise Exception("Infeasible problem, look above for more info")
 
 
 def schedule_servers(
