@@ -2,15 +2,19 @@ import pandas as pd
 import numpy as np
 import os
 
+'''
+
+För varje stat, gör en dataframe. När du stöter på staten i akamai så appenda bara en rad.
+'''
+
 def get_ecor_region(info_df, ecor):
     ecor_row = info_df[info_df["a.ecor"] == ecor]
-    country = str(ecor_row["b.country"])
+    country = ecor_row["b.country"].to_string()
+    state = ecor_row["b.state"].to_string()
     if country in ["United States", "Canada"]:
-        print(str(ecor_row["b.state"]))
-        return str(ecor_row["b.state"])
+        return state
     else:
-        print(ecor_row["b.country"])
-        return str(ecor_row["b.country"])
+        return country
 
 ts = 1375315200
 ts_end = 1375401600
@@ -43,10 +47,13 @@ for i in range(n_rows):
         l_from.append({})
         continue
 
-
+    print(info_df)
     #total reqs to region
+
+    print(req_df)
     to_df = req_df.groupby("ecor", as_index=False)["sum_hits"].sum()
-    to_df = to_df["ecor"].apply(lambda x: get_ecor_region(info_df, x))
+    print(to_df)
+    to_df["ecor"] = to_df["ecor"].apply(lambda x: get_ecor_region(info_df, x))
     print(to_df)
     exit()
     #total reqs from region
