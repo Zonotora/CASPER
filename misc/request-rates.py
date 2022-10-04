@@ -1,6 +1,11 @@
 import pandas as pd
 import numpy as np
 import os
+import sys
+sys.path.insert(1, os.path.join(sys.path[0], '..'))
+from casper.plot import Plot
+from casper.parser import parse_arguments
+from casper.util import region_names
 
 '''
 
@@ -20,6 +25,11 @@ ts = 1375315200
 ts_end = 1375401600
 PREFIX = r"data/na/akamai_data/ECORGeoLoad/ECORGeoLoad_"
 INFO_PREFIX = r"data/na/akamai_data/ECORInfo/"
+
+#conf = parse_arguments(["-m", "-1", "-l", "-1", "-c", "-1"])
+conf = parse_arguments(["--region", "na", "-u", "30", "-t", "48", "--max-latency", "200", "--max-servers", "150", "--start-date", "2022-08-05"])
+regions = region_names(conf)
+print(regions)
 
 n_rows = (ts_end - ts) // 600
 idx = pd.date_range(1375315200 * 1000 ** 3, periods=n_rows, freq="10T")
@@ -47,16 +57,34 @@ for i in range(n_rows):
         l_from.append({})
         continue
 
-    print(info_df)
+
+
+    # req_df.applymap(lambda x: )
+    # exit()
+    # print(info_df)
     #total reqs to region
 
+    # ecor | massachussets | california
+
+    # 1       3                  32646
+
+    # 2
+
+    # 3
+
+
     print(req_df)
-    to_df = req_df.groupby("ecor", as_index=False)["sum_hits"].sum()
+    #to_df = req_df.groupby("ecor", as_index=False)["sum_hits"].sum()
+    to_df = req_df.groupby(["ecor", "georegion"], as_index=False)["sum_hits"].sum()
+    #to_df["ecor"] = to_df["ecor"].apply(lambda x: get_ecor_region(info_df, x))
+
     print(to_df)
-    to_df["ecor"] = to_df["ecor"].apply(lambda x: get_ecor_region(info_df, x))
+    exit()
     print(to_df)
     exit()
     #total reqs from region
+    to_df["ecor"] = to_df["ecor"].apply(lambda x: get_ecor_region(info_df, x))
+
     from_df = req_df.groupby("georegion")["sum_hits"].sum()
     l_from.append(from_df.to_dict())
     l_to.append(to_df.to_dict())
