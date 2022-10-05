@@ -34,8 +34,6 @@ class Plot:
             *[f"{name}_carbon_emissions" for name in self.region_names],
             "mean_latency",
             *[f"{name}_latency" for name in self.region_names],
-            "total_dropped_requests",
-            *[f"{name}_dropped_requests" for name in self.region_names],
             "total_utilization",
             *[f"{name}_utilization" for name in self.region_names],
             "total_servers",
@@ -50,7 +48,6 @@ class Plot:
         latency,
         carbon_intensity,
         requests_per_region,
-        dropped_requests_per_region,
         t,
         interval,
         request_update_interval,
@@ -62,15 +59,18 @@ class Plot:
             latency: _description_
             carbon_intensity: _description_
             requests_per_region: _description_
-            dropped_requests_per_region: _description_
             t: _description_
             interval: _description_
             request_update_interval: _description_
         """
         total_requests_to_region = np.sum(requests_per_region, axis=0)
         total_requests_from_region = np.sum(requests_per_region, axis=1)
+        # print(requests_per_region)
+        # print(total_requests_from_region)
+        # print(total_requests_to_region)
+        # exit()
 
-        assert sum(total_requests_from_region) == sum(total_requests_to_region)
+        # assert sum(total_requests_from_region) == sum(total_requests_to_region)
 
         mask = total_requests_to_region != 0
 
@@ -87,7 +87,6 @@ class Plot:
         mean_latency = np.mean(latencies[mask])
         total_carbon_emissions = np.sum(carbon_emissions[mask])
         total_requests = np.sum(total_requests_to_region)
-        total_dropped_requests = np.sum(dropped_requests_per_region)
         total_utilization = np.mean(total_requests / np.sum(capacities + (capacities == 0)))
         total_servers = np.sum(servers_per_region)
 
@@ -102,8 +101,6 @@ class Plot:
             *carbon_emissions,
             mean_latency,
             *latencies,
-            total_dropped_requests,
-            *dropped_requests_per_region,
             total_utilization,
             *utilization_per_region,
             total_servers,
@@ -203,8 +200,6 @@ class Plot:
             df[[f"{name}_carbon_emissions" for name in self.region_names]].sum(),
             df["mean_latency"].mean(),
             df[[f"{name}_latency" for name in self.region_names]].mean(),
-            df["total_dropped_requests"].sum(),
-            df[[f"{name}_dropped_requests" for name in self.region_names]].sum(),
             df["total_utilization"].mean(),
             df[[f"{name}_utilization" for name in self.region_names]].mean(),
             df["total_servers"].mean(),
@@ -219,8 +214,6 @@ class Plot:
             "carbon_emissions",
             "mean_latency",
             "latency",
-            "total_dropped",
-            "dropped",
             "mean_utilization",
             "utilization",
             "total_servers",
@@ -228,7 +221,7 @@ class Plot:
         ]
         i = 0
         for df in dfs:
-            ax = plt.subplot(5, 3, i + 1)
+            ax = plt.subplot(4, 3, i + 1)
             if len(df.shape) > 1 and df.shape[1] > 0:
                 ax = df.plot(ax=ax)
             else:

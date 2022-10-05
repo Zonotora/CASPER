@@ -105,8 +105,8 @@ def load_carbon_intensity(conf):
     return df.iloc[start:end].reset_index(drop=True)
 
 
-def load_request(conf):
-    df, start, end = valid_date(conf, "request.csv")
+def load_request(conf, name):
+    df, start, end = valid_date(conf, f"request/{name}.csv")
     return df.iloc[start:end].reset_index(drop=True)
 
 
@@ -116,10 +116,6 @@ def load_latency(conf):
 
 def load_offset(conf):
     return load_region_df(conf, "offset.csv")
-
-
-def load_incoming(conf):
-    return load_region_df(conf, "incoming.csv")
 
 
 def region_names(conf):

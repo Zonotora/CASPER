@@ -40,7 +40,7 @@ def parse_arguments(argv):
         "--start-date",
         type=str,
         help="Start date in ISO format (YYYY-MM-DD)",
-        default="2022-08-04",
+        default="2022-08-03",
     )
 
     parser.add_argument(

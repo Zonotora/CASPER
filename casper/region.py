@@ -1,8 +1,8 @@
-from fnmatch import translate
 import os
 import pandas as pd
+import numpy as np
 import math
-from casper.util import load_carbon_intensity, load_request, load_latency, load_offset, load_incoming, region_names
+from casper.util import load_carbon_intensity, load_request, load_latency, load_offset, region_names
 
 
 class Region:
@@ -10,13 +10,13 @@ class Region:
     Region object to hold and get region-specific data.
     """
 
-    def __init__(self, name, carbon_intensity, request, incoming, latency, offset) -> None:
+    def __init__(self, conf, name, carbon_intensity, request, latency, offset) -> None:
         self.name = name
         self.request = request
-        self.incoming = incoming
         self.carbon_intensity = carbon_intensity
         self._latency = latency
         self.offset = offset
+        self.region_names = region_names(conf)
 
     def __repr__(self):
         return f"Region({self.name})"
@@ -25,10 +25,10 @@ class Region:
         return format(self.name, __format_spec)
 
     def get_requests_per_interval(self, t):
-        return self.request[t + self.offset]
+        return self.request.iloc[t][self.region_names].sum()
 
-    def get_incoming_per_interval(self, t):
-        return self.request[t + self.offset]
+    def get_requests_per_interval_per_region(self, t):
+        return self.request.iloc[t][self.region_names].to_numpy(dtype=np.float64)
 
     def latency(self, region):
         assert isinstance(region, Region)
@@ -70,17 +70,14 @@ def load_regions(conf):
 
     carbon_intensity_df = load_carbon_intensity(conf)
     latency_df = load_latency(conf)
-    request_df = load_request(conf)
-    incoming_df = load_incoming(conf)
     offset_df = load_offset(conf)
 
     for name in region_names(conf):
         latency = latency_df.loc[latency_df.iloc[:, 0] == name]
-        request = request_df[name].to_numpy()
-        incoming = incoming_df[name].to_numpy()
+        request = load_request(conf, name)
         carbon_intensity = carbon_intensity_df[name]
         offset = offset_df[name].values[0]
 
-        region = Region(name, carbon_intensity, request, incoming, latency, offset)
+        region = Region(conf, name, carbon_intensity, request, latency, offset)
         regions.append(region)
     return regions
