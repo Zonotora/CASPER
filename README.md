@@ -113,11 +113,13 @@ In this respective order, we specify to run for the regions in north america, sc
 ```
 data
 └── <region>
+    ├── request
+    │   ├── <1.csv>
+    │   ├── ...
+    │   └── <n.csv>
     ├── carbon_intensity.csv
-    ├── incoming.csv
     ├── latency.csv
-    ├── offset.csv
-    └── request.csv
+    └── offset.csv
 ```
 
 - _Latency_ uses [cloudping] [<sup id="a2">[2](#latency_cloudping)</sup>] containing inter-regional 50th percentile latency data for
