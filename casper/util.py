@@ -17,14 +17,14 @@ def save_file(conf, plot):
         os.makedirs("saved")
 
     fingerprint = [
+        "replay_" if conf.replay else str(conf.scheduler) + "_",
         str(conf.start_date) + "_",
-        str(conf.scheduler),
-        "_latency_",
+        "_timesteps_",
+        str(conf.timesteps),
+        "_max_latency_",
         str(conf.max_latency),
         "_max_servers_",
         str(conf.max_servers),
-        "_timesteps_",
-        str(conf.timesteps),
     ]
     df.to_csv(f"saved/{date_created}_{''.join(fingerprint)}.csv", index=False)
 
