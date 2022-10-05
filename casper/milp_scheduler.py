@@ -360,7 +360,6 @@ def compute_args(conf, request_batches, server_manager, t):
         latencies[np.isnan(latencies)] = 10**6
         logging.warning(f"Detected NaN value in latency adjacency matrix. Converted to 10^6 as penalty.")
 
-
     capacities = [conf.server_capacity] * len(server_manager.regions)
     # reqs are the tentative requests
     request_rates = np.array([batch.load for batch in request_batches], dtype=np.int64)
@@ -428,7 +427,7 @@ def schedule_requests(
 
     if conf.scheduler == "carbon":
         requests, obj_val = Carbon.schedule_requests(*schedule_args)
-    elif conf.type_scheduler == "latency":
+    elif conf.scheduler == "latency":
         requests, obj_val = Latency.schedule_requests(*schedule_args)
     else:
         raise Exception("Invalid scheduler")

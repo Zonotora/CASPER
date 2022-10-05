@@ -128,7 +128,6 @@ def move(conf, server_manager, t):
         servers_per_region = schedule_servers(
             conf, batches, server_manager, t, max_latency=conf.max_latency, max_servers=conf.max_servers
         )
-        print(servers_per_region)
     # move servers to regions according to scheduling estimation the next hour
     server_manager.move(servers_per_region)
 

@@ -47,7 +47,7 @@ def parse_arguments(argv):
         "--max-latency",
         type=int,
         help="Maximum latency allowed",
-        default=100000,
+        default=100,
     )
 
     parser.add_argument(

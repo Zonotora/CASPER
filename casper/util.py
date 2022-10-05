@@ -18,7 +18,7 @@ def save_file(conf, plot):
 
     fingerprint = [
         str(conf.start_date) + "_",
-        str(conf.type_scheduler),
+        str(conf.scheduler),
         "_latency_",
         str(conf.max_latency),
         "_max_servers_",

@@ -65,10 +65,6 @@ class Plot:
         """
         total_requests_to_region = np.sum(requests_per_region, axis=0)
         total_requests_from_region = np.sum(requests_per_region, axis=1)
-        # print(requests_per_region)
-        # print(total_requests_from_region)
-        # print(total_requests_to_region)
-        # exit()
 
         # assert sum(total_requests_from_region) == sum(total_requests_to_region)
 
