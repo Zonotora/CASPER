@@ -1,0 +1,25 @@
+\section{Appendix}
+
+Idea is to prevent the preemptive server scheduler to start redundant servers in random regions. Impose a cost to starting up servers, causing us to start up the minimum amount to satisfy the predicted requests. 
+
+\begin{equation*}
+\begin{aligned}
+C_{i}:= \text{Carbon cost of keeping one server running in region $i$}
+\end{aligned}
+\end{equation*}
+
+\subsection{Carbon Aware Provisioning Model}
+\label{sec:capm}
+
+\begin{subequations}
+    \begin{align}
+    \underset{x}{\min} \quad & \sum_j I_j\sum_i x_{ij} + \sum_i s_i C_i \\
+    \text{s.t.}  \quad & \sum_i x_{ij} \leq s_jc_j \\
+    & \sum_j s_j \leq K \\
+    & x_{ij}\left(\ell_{ij}-L_i\right) \leq 0 \\
+    & \sum_j x_{ij} = E(\lambda_i) \\
+    & \bar{x}_js_j=0 \\
+    & x_{ij},s_j \in\mathbb{Z}_{\geq 0}
+    \end{align}
+    \label{provEq}
+\end{subequations}
